@@ -1,0 +1,144 @@
+[
+  {
+    "title": "Lumi Atelier · Estudio creativo",
+    "summary": "Sitio para un estudio de branding: 3 paletas intercambiables, carrusel con filtros, cotizador, validación en tiempo real y dossier en PDF.",
+    "category": "web",
+    "tags": [
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "jsPDF"
+    ],
+    "status": "Plantilla de portafolio",
+    "demo": "projects/plantillas/01-estudio-creativo/",
+    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/01-estudio-creativo"
+  },
+  {
+    "title": "Lunaria Learn · Plataforma de cursos",
+    "summary": "Academia online con modo oscuro, buscador y filtros de cursos, testimonios en carrusel, planes mensual/anual y temario en PDF.",
+    "category": "web",
+    "tags": [
+      "React 18",
+      "TypeScript",
+      "Tailwind CSS",
+      "jsPDF"
+    ],
+    "status": "Plantilla de portafolio",
+    "demo": "projects/plantillas/02-tech-platform/",
+    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/02-tech-platform"
+  },
+  {
+    "title": "Maison Pétale · Boutique de moda",
+    "summary": "Tienda con carrito lateral, favoritos, guía de tallas interactiva, lookbook en carrusel y selector de idioma español/inglés.",
+    "category": "web",
+    "tags": [
+      "Vue 3",
+      "JavaScript",
+      "i18n",
+      "jsPDF"
+    ],
+    "status": "Plantilla de portafolio",
+    "demo": "projects/plantillas/03-boutique-moda/",
+    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/03-boutique-moda"
+  },
+  {
+    "title": "Serena Flow · Estudio de bienestar",
+    "summary": "Ejercicio de respiración animado, reservas por día, diario de ánimo con gráfico y plan de bienestar descargable en PDF.",
+    "category": "web",
+    "tags": [
+      "Bootstrap 5",
+      "Alpine.js",
+      "jsPDF"
+    ],
+    "status": "Plantilla de portafolio",
+    "demo": "projects/plantillas/04-bienestar/",
+    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/04-bienestar"
+  },
+  {
+    "title": "Orquídea UX Lab · Agencia UX",
+    "summary": "Animaciones con scroll, proceso en desplazamiento horizontal, comparador antes/después y mini auditoría UX con informe en PDF.",
+    "category": "web",
+    "tags": [
+      "GSAP",
+      "ScrollTrigger",
+      "JavaScript",
+      "jsPDF"
+    ],
+    "status": "Plantilla de portafolio",
+    "demo": "projects/plantillas/05-agencia-ux/",
+    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/05-agencia-ux"
+  },
+  {
+    "title": "CV interactivo",
+    "summary": "Currículum web con tema claro/oscuro, filtros de habilidades, animaciones al hacer scroll y versión optimizada para imprimir o exportar a PDF.",
+    "category": "web",
+    "tags": [
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "Responsive"
+    ],
+    "status": "Proyecto personal",
+    "demo": "projects/cv/",
+    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/cv"
+  },
+  {
+    "title": "Inventario ICAR",
+    "summary": "Sistema web de inventario desarrollado principalmente en JavaScript, con componentes en PHP y estilos propios.",
+    "category": "fullstack",
+    "tags": [
+      "JavaScript",
+      "PHP",
+      "CSS"
+    ],
+    "status": "Proyecto académico",
+    "repo": "https://github.com/ValentinaDessire/ICARINVENTARY"
+  },
+  {
+    "title": "Sitio Embotelladora",
+    "summary": "Maquetación web de un sitio para una embotelladora, con hojas de estilo propias.",
+    "category": "web",
+    "tags": [
+      "HTML",
+      "CSS"
+    ],
+    "status": "Proyecto académico",
+    "repo": "https://github.com/ValentinaDessire/embotelladora"
+  },
+  {
+    "title": "Gestión de empleados",
+    "summary": "Práctica de la cátedra Programación Web: aplicación en PHP para la gestión de registros de empleados.",
+    "category": "fullstack",
+    "tags": [
+      "PHP"
+    ],
+    "status": "Proyecto académico",
+    "repo": "https://github.com/ValentinaDessire/PW-Empleados-Valentina"
+  },
+  {
+    "title": "Registro de alumnos",
+    "summary": "Práctica de la cátedra Programación Web: páginas para el registro y la consulta de alumnos.",
+    "category": "web",
+    "tags": [
+      "HTML"
+    ],
+    "status": "Proyecto académico",
+    "repo": "https://github.com/ValentinaDessire/PW-Alumnos-Valentina"
+  },
+  {
+    "title": "Bloc de notas web",
+    "summary": "Práctica de la cátedra Programación Web: aplicación de notas desarrollada en PHP.",
+    "category": "fullstack",
+    "tags": [
+      "PHP"
+    ],
+    "status": "Proyecto académico",
+    "repo": "https://github.com/ValentinaDessire/PW-BlocNotas"
+  },
+  {
+    "slot": true,
+    "title": "Tu próximo proyecto",
+    "summary": "Landing pages, sitios corporativos y rediseños. Cuéntame qué necesitas y te propongo un plan por entregables.",
+    "category": "web"
+  }
+]

@@ -1,0 +1,533 @@
+<!doctype html>
+<!--
+  ============================================================
+  04 · Serena Flow — Estudio de bienestar y meditación
+  Stack: HTML5 + Bootstrap 5.3 (CDN) + Alpine.js 3 (CDN) + jsPDF (CDN)
+  Proyecto de muestra para portafolio. Marca y textos ficticios.
+  Fotografías: Unsplash (licencia Unsplash). Código: licencia MIT.
+  Autora: Valentina Dessire
+  ============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Serena Flow · Bienestar y meditación (proyecto de muestra)</title>
+  <meta name="description" content="Serena Flow: estudio ficticio de bienestar hecho con Bootstrap 5 y Alpine.js. Plantilla de portafolio por Valentina Dessire.">
+  <meta name="theme-color" content="#FDF0F3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
+  <style>
+    /* ================= TOKENS (sobrescriben Bootstrap) ================= */
+    :root {
+      --rosa: #FDF0F3; --salvia: #DDE8E1; --salvia-d: #7f9e8b; --malva: #B784A7; --malva-d: #94618a; --ciruela: #4A2340;
+      --ink: #2e1d2a; --ink-soft: #6b5866; --white: #fff; --line: #f0dde4;
+      --bs-body-font-family: "Nunito Sans", system-ui, sans-serif; --bs-body-color: var(--ink); --bs-body-bg: #fffafb;
+      --bs-primary: var(--malva-d); --bs-primary-rgb: 148, 97, 138; --bs-link-color: var(--ciruela); --bs-border-radius: 1rem;
+      --display: "Fraunces", Georgia, serif; --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    html { font-size: clamp(16px, .35vw + 11px, 20px); scroll-behavior: smooth; }
+    body { overflow-x: hidden; }
+    [x-cloak] { display: none !important; }
+    .container-xxl { max-width: 1440px; padding-inline: clamp(1.25rem, 5vw, 7rem); }
+    h1, h2, h3, .display-font { font-family: var(--display); font-weight: 400; letter-spacing: -.01em; }
+    .eyebrow { display: inline-block; font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; color: var(--malva-d); margin-bottom: .6rem; }
+    section { padding-block: clamp(4rem, 8vw, 7rem); }
+    .btn-serena { background: var(--ciruela); color: #fff; border-radius: 999px; padding: .85rem 1.6rem; font-weight: 700; border: 2px solid var(--ciruela); transition: transform .3s var(--ease), background .3s; }
+    .btn-serena:hover { background: var(--malva-d); border-color: var(--malva-d); color: #fff; transform: translateY(-2px); }
+    .btn-soft { background: transparent; color: var(--ciruela); border: 2px solid var(--ciruela); border-radius: 999px; padding: .85rem 1.6rem; font-weight: 700; }
+    .btn-soft:hover { background: var(--ciruela); color: #fff; }
+
+    /* ================= NAVBAR ================= */
+    .navbar { background: rgba(253, 240, 243, .9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .navbar-brand { font-family: var(--display); font-size: 1.5rem; color: var(--ciruela) !important; display: flex; align-items: center; gap: .5rem; }
+    .navbar-brand svg { width: 30px; height: 30px; }
+    .nav-link { font-weight: 600; color: var(--ink) !important; }
+    .nav-link:hover { color: var(--malva-d) !important; }
+    .navbar-toggler { border: 0; box-shadow: none !important; }
+    @media (max-width: 991.98px) { .navbar-collapse { padding: 1rem 0 1.4rem; } .navbar-collapse .nav-link { padding: .8rem 0; border-bottom: 1px solid var(--line); font-family: var(--display); font-size: 1.3rem; font-weight: 400; } }
+
+    /* ================= HERO ================= */
+    .hero { background: radial-gradient(circle at 85% 20%, var(--salvia), transparent 45%), var(--rosa); padding-block: clamp(3rem, 6vw, 6rem); }
+    .hero h1 { font-size: clamp(2.7rem, 6vw, 5.6rem); line-height: 1.02; color: var(--ciruela); }
+    .hero h1 em { color: var(--malva); }
+    .hero .lead { color: var(--ink-soft); max-width: 34rem; }
+    .hero-img { position: relative; }
+    .hero-img img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 999px 999px 2rem 2rem; box-shadow: 0 40px 70px -40px rgba(74, 35, 64, .6); max-height: 80vh; }
+    .float-card { position: absolute; background: #fff; border-radius: 1.2rem; padding: .8rem 1rem; box-shadow: 0 20px 40px -24px rgba(74, 35, 64, .45); display: flex; align-items: center; gap: .7rem; font-size: .85rem; font-weight: 600; animation: float 5s ease-in-out infinite; }
+    .float-card .dot { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--salvia); }
+    .fc1 { left: -8%; top: 18%; } .fc2 { right: -6%; bottom: 14%; animation-delay: -2.5s; }
+    @keyframes float { 50% { transform: translateY(-10px); } }
+    .credit { position: absolute; right: 1rem; bottom: 1rem; font-size: .65rem; color: #fff; background: rgba(46, 29, 42, .45); padding: .15rem .55rem; border-radius: 999px; }
+
+    /* ================= RESPIRACIÓN ================= */
+    .breath { background: var(--salvia); }
+    .breath-circle { width: min(320px, 70vw); aspect-ratio: 1; border-radius: 50%; margin-inline: auto; display: grid; place-items: center; position: relative; }
+    .breath-circle::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, #fff 0%, var(--rosa) 55%, var(--malva) 100%); transform: scale(var(--s, .6)); transition: transform var(--d, 4s) ease-in-out; box-shadow: 0 0 80px rgba(183, 132, 167, .45); }
+    .breath-circle span { position: relative; font-family: var(--display); font-size: 1.6rem; color: var(--ciruela); text-align: center; }
+    .breath-circle small { display: block; font-family: var(--bs-body-font-family); font-size: .85rem; color: var(--ink-soft); }
+    .technique .btn { border-radius: 999px; font-weight: 600; }
+    .technique .btn.active { background: var(--ciruela); color: #fff; border-color: var(--ciruela); }
+
+    /* ================= PROGRAMAS (carrusel Bootstrap) ================= */
+    .program-card { background: #fff; border-radius: 2rem; overflow: hidden; box-shadow: 0 30px 60px -40px rgba(74, 35, 64, .5); }
+    .program-card img { width: 100%; height: 100%; object-fit: cover; min-height: 320px; }
+    .program-card .p-body { padding: clamp(1.5rem, 4vw, 3.5rem); }
+    .program-card h3 { font-size: clamp(1.8rem, 3vw, 2.6rem); color: var(--ciruela); }
+    .carousel-indicators [data-bs-target] { width: 10px; height: 10px; border-radius: 50%; background: var(--malva); border: 0; }
+    .carousel-indicators { position: static; margin: 1.6rem 0 0; }
+    .car-btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--ciruela); background: #fff; color: var(--ciruela); display: grid; place-items: center; }
+    .car-btn:hover { background: var(--ciruela); color: #fff; }
+
+    /* ================= HORARIO ================= */
+    .days { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .4rem; scrollbar-width: thin; }
+    .days button { flex: 0 0 auto; border: 1px solid var(--line); background: #fff; border-radius: 1rem; padding: .7rem 1.1rem; font-weight: 700; min-width: 74px; }
+    .days button small { display: block; font-weight: 400; font-size: .72rem; color: var(--ink-soft); }
+    .days button.active { background: var(--ciruela); color: #fff; border-color: var(--ciruela); }
+    .days button.active small { color: var(--rosa); }
+    .class-row { display: grid; grid-template-columns: 90px 1fr auto; gap: 1rem; align-items: center; padding: 1.1rem 1.3rem; background: #fff; border: 1px solid var(--line); border-radius: 1.2rem; margin-bottom: .7rem; transition: transform .3s var(--ease); }
+    .class-row:hover { transform: translateX(4px); }
+    .class-row time { font-family: var(--display); font-size: 1.4rem; color: var(--ciruela); }
+    .spots { font-size: .78rem; color: var(--ink-soft); }
+    .spots.low { color: #b04a6b; font-weight: 700; }
+    .btn-book { border-radius: 999px; font-weight: 700; padding: .5rem 1.1rem; }
+    .btn-book.booked { background: var(--salvia); border-color: var(--salvia); color: var(--ciruela); }
+
+    /* ================= DIARIO / ÁNIMO ================= */
+    .journal { background: var(--rosa); }
+    .mood-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: .5rem; }
+    .mood-grid button { border: 2px solid transparent; background: #fff; border-radius: 1rem; padding: .8rem .2rem; font-size: 1.6rem; line-height: 1; transition: transform .25s; }
+    .mood-grid button small { display: block; font-size: .7rem; margin-top: .35rem; color: var(--ink-soft); }
+    .mood-grid button:hover { transform: translateY(-3px); }
+    .mood-grid button.active { border-color: var(--malva-d); background: var(--salvia); }
+    .journal-img { border-radius: 2rem; overflow: hidden; position: relative; height: 100%; min-height: 320px; }
+    .journal-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+    .week { display: flex; gap: .4rem; align-items: flex-end; height: 90px; }
+    .week div { flex: 1; background: var(--malva); border-radius: .5rem .5rem 0 0; opacity: .85; transition: height .5s var(--ease); }
+
+    /* ================= PLANES ================= */
+    .plan { background: #fff; border: 1px solid var(--line); border-radius: 1.6rem; padding: 2rem; height: 100%; display: flex; flex-direction: column; transition: transform .35s var(--ease), box-shadow .35s; }
+    .plan:hover { transform: translateY(-6px); box-shadow: 0 30px 60px -40px rgba(74, 35, 64, .55); }
+    .plan.featured { background: var(--ciruela); color: #fff; border-color: var(--ciruela); }
+    .plan.featured .text-soft { color: var(--rosa) !important; }
+    .plan .price { font-family: var(--display); font-size: 2.8rem; }
+    .plan ul { list-style: none; padding: 0; margin: 1.2rem 0 1.8rem; }
+    .plan li { padding: .35rem 0; display: flex; gap: .5rem; }
+    .plan li::before { content: "✿"; color: var(--malva); }
+    .text-soft { color: var(--ink-soft) !important; }
+    .form-switch .form-check-input:checked { background-color: var(--ciruela); border-color: var(--ciruela); }
+
+    /* ================= CONTACTO ================= */
+    .form-control, .form-select { border-radius: 1rem; padding: .8rem 1rem; border-color: var(--line); }
+    .form-control:focus, .form-select:focus { border-color: var(--malva); box-shadow: 0 0 0 .25rem rgba(183, 132, 167, .25); }
+    .contact-card { background: #fff; border-radius: 2rem; padding: clamp(1.5rem, 4vw, 3rem); box-shadow: 0 30px 60px -40px rgba(74, 35, 64, .45); }
+
+    /* ================= FOOTER / TOAST ================= */
+    footer { background: var(--ciruela); color: var(--rosa); padding: 3rem 0 2rem; }
+    footer a { color: #fff; }
+    .footer-note { font-family: var(--display); font-style: italic; text-align: center; margin: 1.6rem 0 0; color: #fff; }
+    .toast-serena { position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%); background: var(--ciruela); color: #fff; padding: .8rem 1.3rem; border-radius: 999px; z-index: 1090; font-size: .9rem; box-shadow: 0 20px 40px -20px rgba(0, 0, 0, .4); }
+
+    @media (max-width: 575.98px) {
+      .fc1 { left: 0; } .fc2 { right: 0; }
+      .class-row { grid-template-columns: 1fr auto; }
+      .class-row time { grid-column: 1 / -1; font-size: 1.15rem; }
+      .mood-grid button { font-size: 1.3rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body x-data="serena()">
+
+  <!-- ===== NAVBAR (menú móvil = collapse de Bootstrap) ===== -->
+  <nav class="navbar navbar-expand-lg sticky-top" aria-label="Principal">
+    <div class="container-xxl">
+      <a class="navbar-brand" href="#inicio">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#DDE8E1"/><path d="M16 7c4 4 4 14 0 18-4-4-4-14 0-18z" fill="#B784A7"/><path d="M7 16c4-3 14-3 18 0-4 3-14 3-18 0z" fill="#4A2340" opacity=".55"/></svg>
+        Serena Flow
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav ms-auto me-lg-4 gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="#respira">Respira</a></li>
+          <li class="nav-item"><a class="nav-link" href="#programas">Programas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#horario">Horario</a></li>
+          <li class="nav-item"><a class="nav-link" href="#planes">Planes</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+        </ul>
+        <a class="btn btn-serena mt-3 mt-lg-0" href="#horario">Reservar clase</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="inicio">
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="container-xxl">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6">
+            <span class="eyebrow">Meditación · Yoga · Pausas activas</span>
+            <h1>Encuentra tu <em>calma</em>, una respiración a la vez</h1>
+            <p class="lead my-4">Clases presenciales y en línea, programas guiados y herramientas sencillas para crear un hábito de bienestar que se adapte a tu rutina.</p>
+            <div class="d-flex flex-wrap gap-3">
+              <a class="btn btn-serena" href="#respira">Probar una respiración</a>
+              <button class="btn btn-soft" type="button" @click="downloadPlan()">Descargar plan PDF</button>
+            </div>
+            <div class="d-flex gap-4 gap-md-5 mt-5">
+              <div><div class="display-font fs-2" x-text="count.alumnas + '+'">0</div><small class="text-soft">alumnas activas</small></div>
+              <div><div class="display-font fs-2" x-text="count.clases">0</div><small class="text-soft">clases por semana</small></div>
+              <div><div class="display-font fs-2" x-text="count.min + ' min'">0</div><small class="text-soft">meditadas este mes</small></div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="hero-img mx-auto" style="max-width:520px">
+              <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1100&q=80" alt="Mujer meditando en una sala luminosa con vista a la naturaleza" fetchpriority="high">
+              <div class="float-card fc1"><span class="dot">🌿</span>Clase de 7:00 a. m.</div>
+              <div class="float-card fc2"><span class="dot">💗</span>Racha de 12 días</div>
+              <span class="credit">Foto: Jared Rice / Unsplash</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RESPIRACIÓN GUIADA (Alpine) ===== -->
+    <section id="respira" class="breath">
+      <div class="container-xxl">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-5">
+            <span class="eyebrow">Herramienta interactiva</span>
+            <h2 class="display-5">Respiración guiada</h2>
+            <p class="text-soft">Elige una técnica y sigue el círculo: crece al inhalar y se recoge al exhalar. Tres ciclos bastan para bajar el ritmo.</p>
+            <div class="technique d-flex flex-wrap gap-2 my-4" role="group" aria-label="Técnica de respiración">
+              <template x-for="(t, key) in techniques" :key="key">
+                <button type="button" class="btn btn-outline-dark" :class="{ active: technique === key }" @click="setTechnique(key)" x-text="t.name"></button>
+              </template>
+            </div>
+            <p class="small text-soft" x-text="techniques[technique].desc"></p>
+            <div class="d-flex gap-2 align-items-center">
+              <button class="btn btn-serena" type="button" @click="toggleBreath()" x-text="breathing ? 'Pausar' : 'Comenzar'"></button>
+              <span class="small text-soft" aria-live="polite" x-text="'Ciclos: ' + cycles"></span>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="breath-circle" :style="`--s:${scale};--d:${phaseDur}s`" aria-live="polite">
+              <span><span x-text="phase"></span><small x-text="breathing ? secondsLeft + ' s' : 'Pulsa comenzar'"></small></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROGRAMAS (carrusel de Bootstrap) ===== -->
+    <section id="programas">
+      <div class="container-xxl">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+          <div><span class="eyebrow">Programas</span><h2 class="display-5 mb-0">Rutas de 21 días</h2></div>
+          <div class="d-flex gap-2">
+            <button class="car-btn" type="button" data-bs-target="#progCarousel" data-bs-slide="prev" aria-label="Programa anterior">‹</button>
+            <button class="car-btn" type="button" data-bs-target="#progCarousel" data-bs-slide="next" aria-label="Programa siguiente">›</button>
+          </div>
+        </div>
+        <div id="progCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000" data-bs-touch="true">
+          <div class="carousel-inner">
+            <template x-for="(p, i) in programs" :key="p.title">
+              <div class="carousel-item" :class="{ active: i === 0 }">
+                <div class="program-card row g-0">
+                  <div class="col-md-6 position-relative"><img :src="p.img" :alt="p.alt" loading="lazy"><span class="credit" x-text="'Foto: ' + p.credit + ' / Unsplash'"></span></div>
+                  <div class="col-md-6 p-body d-flex flex-column justify-content-center">
+                    <span class="eyebrow" x-text="p.level"></span>
+                    <h3 x-text="p.title"></h3>
+                    <p class="text-soft" x-text="p.text"></p>
+                    <ul class="list-unstyled small mb-4"><template x-for="b in p.bullets"><li class="mb-1">✿ <span x-text="b"></span></li></template></ul>
+                    <div><button class="btn btn-serena" type="button" @click="notify('Te avisaremos cuando abra ' + p.title)">Quiero unirme</button></div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div class="carousel-indicators">
+            <template x-for="(p, i) in programs" :key="'i' + i">
+              <button type="button" data-bs-target="#progCarousel" :data-bs-slide-to="i" :class="{ active: i === 0 }" :aria-label="'Programa ' + (i + 1)"></button>
+            </template>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== HORARIO + RESERVAS ===== -->
+    <section id="horario" style="padding-top:0">
+      <div class="container-xxl">
+        <span class="eyebrow">Horario semanal</span>
+        <h2 class="display-5">Reserva tu clase</h2>
+        <div class="days my-4" role="tablist" aria-label="Días de la semana">
+          <template x-for="(d, i) in days" :key="d.key">
+            <button type="button" role="tab" :aria-selected="day === d.key" :class="{ active: day === d.key }" @click="day = d.key"><span x-text="d.short"></span><small x-text="d.date"></small></button>
+          </template>
+        </div>
+        <div role="tabpanel">
+          <template x-for="c in classesFor(day)" :key="c.id">
+            <div class="class-row">
+              <time x-text="c.time"></time>
+              <div>
+                <strong x-text="c.name"></strong> <span class="badge rounded-pill text-bg-light ms-1" x-text="c.mode"></span>
+                <div class="spots" :class="{ low: c.spots - (booked.includes(c.id) ? 1 : 0) <= 3 }" x-text="(c.spots - (booked.includes(c.id) ? 1 : 0)) + ' cupos · con ' + c.teacher"></div>
+              </div>
+              <button type="button" class="btn btn-outline-dark btn-book" :class="{ booked: booked.includes(c.id) }" @click="toggleBook(c)" x-text="booked.includes(c.id) ? 'Reservada ✓' : 'Reservar'"></button>
+            </div>
+          </template>
+        </div>
+        <p class="small text-soft mt-3" x-show="booked.length" x-cloak x-text="'Tienes ' + booked.length + ' clase(s) reservada(s). Se incluyen en tu plan PDF.'"></p>
+      </div>
+    </section>
+
+    <!-- ===== DIARIO DE ÁNIMO ===== -->
+    <section class="journal">
+      <div class="container-xxl">
+        <div class="row g-5 align-items-stretch">
+          <div class="col-lg-5">
+            <div class="journal-img"><img src="https://images.unsplash.com/photo-1692158960466-1c25f5e22d9e?auto=format&fit=crop&w=1000&q=80" alt="Agenda de bienestar abierta junto a una taza de café" loading="lazy"><span class="credit">Foto: My Profit Tutor / Unsplash</span></div>
+          </div>
+          <div class="col-lg-7">
+            <span class="eyebrow">Diario de ánimo</span>
+            <h2 class="display-5">¿Cómo te sientes hoy?</h2>
+            <p class="text-soft">Registra tu estado de ánimo y recibe una práctica sugerida. Tu semana se dibuja en el gráfico.</p>
+            <div class="mood-grid my-4" role="group" aria-label="Estado de ánimo">
+              <template x-for="m in moods" :key="m.key">
+                <button type="button" :class="{ active: mood === m.key }" @click="setMood(m)" :aria-pressed="mood === m.key"><span x-text="m.emoji" aria-hidden="true"></span><small x-text="m.label"></small></button>
+              </template>
+            </div>
+            <div class="p-4 bg-white rounded-4 mb-4" x-show="mood" x-cloak x-transition>
+              <strong>Práctica sugerida:</strong> <span x-text="suggestion"></span>
+            </div>
+            <div class="week" aria-hidden="true"><template x-for="(v, i) in week" :key="i"><div :style="`height:${v * 20}%`"></div></template></div>
+            <div class="d-flex justify-content-between small text-soft mt-1"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PLANES ===== -->
+    <section id="planes">
+      <div class="container-xxl">
+        <div class="text-center mb-5">
+          <span class="eyebrow">Planes</span>
+          <h2 class="display-5">Elige tu ritmo</h2>
+          <div class="form-check form-switch d-inline-flex align-items-center gap-2 mt-2">
+            <label class="form-check-label" for="annual">Mensual</label>
+            <input class="form-check-input ms-0" type="checkbox" role="switch" id="annual" x-model="annual">
+            <label class="form-check-label" for="annual">Anual <span class="badge rounded-pill" style="background:var(--salvia);color:var(--ciruela)">-20 %</span></label>
+          </div>
+        </div>
+        <div class="row g-4">
+          <template x-for="p in plans" :key="p.name">
+            <div class="col-md-4">
+              <div class="plan" :class="{ featured: p.featured }">
+                <span class="eyebrow" :style="p.featured ? 'color:var(--rosa)' : ''" x-text="p.tag"></span>
+                <h3 x-text="p.name"></h3>
+                <div><span class="price" x-text="'$' + price(p)"></span><span class="text-soft" x-text="annual ? ' /mes, pago anual' : ' /mes'"></span></div>
+                <ul><template x-for="f in p.features"><li x-text="f"></li></template></ul>
+                <a href="#contacto" class="btn mt-auto" :class="p.featured ? 'btn-light rounded-pill fw-bold py-3' : 'btn-serena'" @click="form.plan = p.name">Elegir plan</a>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACTO ===== -->
+    <section id="contacto" class="breath">
+      <div class="container-xxl">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-5">
+            <span class="eyebrow">Contacto</span>
+            <h2 class="display-5">Agenda una clase de prueba</h2>
+            <p class="text-soft">Te escribimos en menos de 24 horas para coordinar tu primera sesión gratuita.</p>
+            <img class="rounded-4 w-100 mt-3" style="aspect-ratio:16/10;object-fit:cover" src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=80" alt="Taza de té sobre una mesa" loading="lazy">
+            <small class="text-soft d-block mt-2">Foto: Drew Jemmett / Unsplash</small>
+          </div>
+          <div class="col-lg-7">
+            <form class="contact-card" novalidate @submit.prevent="submit()">
+              <div class="row g-3">
+                <div class="col-sm-6">
+                  <label class="form-label fw-semibold" for="name">Nombre</label>
+                  <input id="name" class="form-control" :class="fieldClass('name')" x-model.trim="form.name" @blur="touch('name')" @input="errors.name !== undefined && check('name')" autocomplete="name">
+                  <div class="invalid-feedback" x-text="errors.name"></div>
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label fw-semibold" for="mail">Correo</label>
+                  <input id="mail" type="email" class="form-control" :class="fieldClass('email')" x-model.trim="form.email" @blur="touch('email')" @input="errors.email !== undefined && check('email')" autocomplete="email">
+                  <div class="invalid-feedback" x-text="errors.email"></div>
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label fw-semibold" for="plan">Plan de interés</label>
+                  <select id="plan" class="form-select" x-model="form.plan"><template x-for="p in plans"><option :value="p.name" x-text="p.name"></option></template></select>
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label fw-semibold" for="mode">Modalidad</label>
+                  <select id="mode" class="form-select" x-model="form.mode"><option>Presencial</option><option>En línea</option></select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold" for="msg">¿Qué te gustaría trabajar?</label>
+                  <textarea id="msg" rows="4" class="form-control" :class="fieldClass('msg')" x-model.trim="form.msg" @blur="touch('msg')" @input="errors.msg !== undefined && check('msg')"></textarea>
+                  <div class="d-flex justify-content-between"><div class="invalid-feedback d-block" x-text="errors.msg"></div><small class="text-soft ms-auto" x-text="form.msg.length + '/300'"></small></div>
+                </div>
+                <div class="col-12"><button class="btn btn-serena w-100 py-3" type="submit">Enviar solicitud</button></div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container-xxl">
+      <div class="d-flex flex-wrap justify-content-between gap-3 small">
+        <span class="display-font fs-4 text-white">Serena Flow</span>
+        <span>Estudio ficticio · hola@serenaflow.example</span>
+        <span>© 2026 · Plantilla MIT</span>
+      </div>
+      <p class="small text-center mt-4 mb-0" style="opacity:.8">Fotografías de <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>: Jared Rice, My Profit Tutor, Drew Jemmett, Dylan Gillis y Benedetta Cauzzi.</p>
+      <p class="footer-note">Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire</p>
+    </div>
+  </footer>
+
+  <div class="toast-serena" role="status" aria-live="polite" x-show="toast" x-cloak x-transition x-text="toast"></div>
+
+<script>
+function serena() {
+  const IMG = (id, w = 1100) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+  const today = new Date();
+  const names = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+  return {
+    /* ---------- contadores ---------- */
+    count: { alumnas: 0, clases: 0, min: 0 },
+    /* ---------- respiración ---------- */
+    techniques: {
+      cuadrada: { name: "Cuadrada 4-4-4-4", desc: "Inhala, sostén, exhala y sostén 4 segundos cada fase. Ideal para enfocarte.", steps: [["Inhala", 4, 1], ["Sostén", 4, 1], ["Exhala", 4, .6], ["Sostén", 4, .6]] },
+      relajante: { name: "Relajante 4-7-8", desc: "Inhala 4 s, sostén 7 s y exhala lento 8 s. Perfecta antes de dormir.", steps: [["Inhala", 4, 1], ["Sostén", 7, 1], ["Exhala", 8, .6]] },
+      coherente: { name: "Coherente 5-5", desc: "Inhala y exhala 5 segundos. Equilibra el ritmo cardíaco.", steps: [["Inhala", 5, 1], ["Exhala", 5, .6]] }
+    },
+    technique: "cuadrada", breathing: false, phase: "Respira", phaseDur: 4, scale: .6, secondsLeft: 0, cycles: 0, stepIdx: 0, _bt: null, _tick: null,
+    /* ---------- programas ---------- */
+    programs: [
+      { title: "Despertar consciente", level: "Principiante", img: IMG("1588286840104-8957b019727f"), credit: "Dylan Gillis", alt: "Mujer practicando yoga al aire libre", text: "Rutinas de 15 minutos para empezar el día con energía y presencia.", bullets: ["21 clases cortas en video", "Diario de gratitud", "Recordatorios amables"] },
+      { title: "Mente en calma", level: "Intermedio", img: IMG("1506126613408-eca07ce68773"), credit: "Jared Rice", alt: "Mujer meditando en una sala de madera", text: "Meditaciones guiadas para gestionar el estrés laboral y dormir mejor.", bullets: ["Audios de 10 a 25 min", "Técnicas de respiración", "Sesión grupal semanal"] },
+      { title: "Rituales de té y pausa", level: "Todos los niveles", img: IMG("1571934811356-5cc061b6821f"), credit: "Drew Jemmett", alt: "Taza de té humeante", text: "Pequeñas pausas con infusiones, journaling y estiramientos suaves.", bullets: ["Guía de infusiones", "Plantillas de journaling", "Estiramientos de escritorio"] },
+      { title: "Florecer", level: "Avanzado", img: IMG("1653907212356-f26fac10ed16"), credit: "Benedetta Cauzzi", alt: "Ramo de flores en tonos rosa", text: "Un programa profundo de autocuidado con yoga, meditación y metas personales.", bullets: ["Plan personalizado", "Mentoría 1 a 1", "Comunidad privada"] }
+    ],
+    /* ---------- horario ---------- */
+    days: Array.from({ length: 7 }, (_, i) => { const d = new Date(today); d.setDate(today.getDate() + i); return { key: i, short: i === 0 ? "Hoy" : names[d.getDay()], date: d.getDate() + "/" + (d.getMonth() + 1) }; }),
+    day: 0, booked: [],
+    schedule: [
+      ["07:00", "Yoga suave", "Presencial", "Ana", 8], ["12:30", "Pausa activa", "En línea", "Lucía", 20], ["18:00", "Meditación guiada", "Presencial", "Sofía", 3],
+      ["19:30", "Yin yoga", "En línea", "Ana", 12], ["08:00", "Respiración consciente", "En línea", "Mar", 15], ["17:30", "Pilates mat", "Presencial", "Lucía", 2]
+    ],
+    /* ---------- ánimo ---------- */
+    moods: [
+      { key: 1, emoji: "😣", label: "Tensa", tip: "Respiración 4-7-8 durante 3 ciclos y un estiramiento de cuello." },
+      { key: 2, emoji: "😕", label: "Cansada", tip: "Clase de yoga suave de 15 minutos y una infusión de manzanilla." },
+      { key: 3, emoji: "😐", label: "Neutral", tip: "Meditación de escaneo corporal de 10 minutos." },
+      { key: 4, emoji: "🙂", label: "Bien", tip: "Escribe tres cosas que agradeces hoy en tu diario." },
+      { key: 5, emoji: "🥰", label: "Radiante", tip: "Comparte tu energía: invita a alguien a tu próxima clase." }
+    ],
+    mood: null, suggestion: "", week: [3, 2, 4, 3, 5, 4, 0],
+    /* ---------- planes ---------- */
+    annual: false,
+    plans: [
+      { name: "Semilla", tag: "Para empezar", price: 19, features: ["4 clases al mes", "Biblioteca de audios", "Diario de ánimo"] },
+      { name: "Brote", tag: "Más elegido", price: 39, featured: true, features: ["Clases ilimitadas", "Programas de 21 días", "Sesión grupal semanal", "Plan PDF personalizado"] },
+      { name: "Flor", tag: "Experiencia completa", price: 69, features: ["Todo lo de Brote", "Mentoría 1 a 1 mensual", "Retiro de fin de semana -30 %"] }
+    ],
+    /* ---------- formulario ---------- */
+    form: { name: "", email: "", plan: "Brote", mode: "Presencial", msg: "" }, errors: {},
+    toast: "", _toastT: null,
+
+    init() {
+      this.animateCount();
+      this.week[(today.getDay() + 6) % 7] = 0;
+    },
+    animateCount() {
+      const target = { alumnas: 1200, clases: 36, min: 8450 }, t0 = performance.now(), dur = 1600;
+      const step = now => {
+        const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+        for (const k in target) this.count[k] = Math.round(target[k] * e).toLocaleString("es");
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    },
+    setTechnique(k) { this.technique = k; if (this.breathing) { this.stopBreath(); this.startBreath(); } },
+    toggleBreath() { this.breathing ? this.stopBreath() : this.startBreath(); },
+    startBreath() { this.breathing = true; this.stepIdx = 0; this.runStep(); },
+    stopBreath() { this.breathing = false; clearTimeout(this._bt); clearInterval(this._tick); this.phase = "Respira"; this.scale = .6; this.phaseDur = 1; },
+    runStep() {
+      const steps = this.techniques[this.technique].steps, [label, secs, scale] = steps[this.stepIdx];
+      this.phase = label; this.phaseDur = secs; this.scale = scale; this.secondsLeft = secs;
+      clearInterval(this._tick); this._tick = setInterval(() => { if (this.secondsLeft > 1) this.secondsLeft--; }, 1000);
+      this._bt = setTimeout(() => {
+        this.stepIdx = (this.stepIdx + 1) % steps.length;
+        if (this.stepIdx === 0) this.cycles++;
+        if (this.breathing) this.runStep();
+      }, secs * 1000);
+    },
+    classesFor(d) {
+      // Rotamos el horario según el día para que cada pestaña muestre clases distintas
+      return [0, 1, 2, 3].map(n => { const s = this.schedule[(d + n) % this.schedule.length]; return { id: `${d}-${n}`, time: s[0], name: s[1], mode: s[2], teacher: s[3], spots: s[4] }; })
+        .sort((a, b) => a.time.localeCompare(b.time));
+    },
+    toggleBook(c) {
+      const i = this.booked.indexOf(c.id);
+      if (i > -1) { this.booked.splice(i, 1); this.notify("Reserva cancelada"); }
+      else { this.booked.push(c.id); this.notify(`¡Listo! ${c.name} a las ${c.time} reservada`); }
+    },
+    setMood(m) { this.mood = m.key; this.suggestion = m.tip; this.week[(today.getDay() + 6) % 7] = m.key; },
+    price(p) { return this.annual ? Math.round(p.price * .8) : p.price; },
+    rules: {
+      name: v => v.length < 2 ? "Escribe tu nombre (mínimo 2 letras)." : "",
+      email: v => !v ? "Escribe tu correo." : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "Revisa el formato: nombre@correo.com" : "",
+      msg: v => v.length < 10 ? "Cuéntanos un poco más (mínimo 10 caracteres)." : v.length > 300 ? "Máximo 300 caracteres." : ""
+    },
+    check(f) { this.errors[f] = this.rules[f](this.form[f]); return !this.errors[f]; },
+    touch(f) { this.check(f); },
+    fieldClass(f) { if (this.errors[f] === undefined) return ""; return this.errors[f] ? "is-invalid" : "is-valid"; },
+    submit() {
+      const ok = ["name", "email", "msg"].map(f => this.check(f)).every(Boolean);
+      if (!ok) return this.notify("Revisa los campos marcados");
+      this.notify(`Gracias, ${this.form.name.split(" ")[0]}. Te escribiremos pronto 🌸`);
+      this.form = { name: "", email: "", plan: this.form.plan, mode: "Presencial", msg: "" }; this.errors = {};
+    },
+    notify(m) { this.toast = m; clearTimeout(this._toastT); this._toastT = setTimeout(() => this.toast = "", 2800); },
+    downloadPlan() {
+      if (!window.jspdf) return this.notify("Cargando generador de PDF…");
+      const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: "mm", format: "a4" });
+      doc.setFillColor(74, 35, 64); doc.rect(0, 0, 210, 44, "F");
+      doc.setTextColor(253, 240, 243); doc.setFont("times", "italic"); doc.setFontSize(26); doc.text("Serena Flow", 18, 22);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.text("Tu plan de bienestar de 7 días", 18, 33);
+      doc.setTextColor(46, 29, 42); let y = 60;
+      const h = t => { doc.setFont("times", "bold"); doc.setFontSize(14); doc.setTextColor(148, 97, 138); doc.text(t, 18, y); y += 7; doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(46, 29, 42); };
+      h("Respiración recomendada");
+      doc.text(doc.splitTextToSize(this.techniques[this.technique].name + ": " + this.techniques[this.technique].desc, 174), 18, y); y += 14;
+      h("Práctica según tu ánimo");
+      doc.text(doc.splitTextToSize(this.suggestion || "Registra tu ánimo en la web para recibir una práctica personalizada.", 174), 18, y); y += 14;
+      h("Clases reservadas");
+      const list = this.booked.map(id => { const [d] = id.split("-"); const c = this.classesFor(+d).find(x => x.id === id); return `${this.days[+d].short} ${this.days[+d].date} · ${c.time} · ${c.name} (${c.mode})`; });
+      (list.length ? list : ["Aún no tienes clases reservadas."]).forEach(l => { doc.text("• " + l, 18, y); y += 6.5; }); y += 6;
+      h("Rutina sugerida");
+      ["Lunes: 10 min de respiración al despertar", "Martes: yoga suave de 15 min", "Miércoles: pausa activa a mediodía", "Jueves: meditación guiada", "Viernes: journaling de gratitud", "Sábado: clase grupal", "Domingo: descanso consciente y té"].forEach(l => { doc.text("- " + l, 18, y); y += 6.5; });
+      doc.setDrawColor(183, 132, 167); doc.line(18, 280, 192, 280); doc.setFontSize(8); doc.setTextColor(107, 88, 102);
+      doc.text("Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire", 105, 286, { align: "center" });
+      doc.save("serena-flow-plan.pdf"); this.notify("Plan PDF descargado");
+    }
+  };
+}
+</script>
+</body>
+</html>

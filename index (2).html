@@ -1,0 +1,946 @@
+<!doctype html>
+<!--
+  ============================================================
+  01 · Lumi Atelier — Estudio creativo digital
+  Stack: HTML5 semántico + CSS3 moderno (Grid, Flexbox, variables)
+         + JavaScript Vanilla (ES6+) + jsPDF (CDN)
+  Proyecto de muestra para portafolio. Marca, textos e ilustraciones
+  ficticios y originales. Licencia MIT.
+  Autora: Valentina Dessire
+  ============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lumi Atelier · Estudio creativo digital (proyecto de muestra)</title>
+  <meta name="description" content="Lumi Atelier: estudio creativo ficticio de branding y diseño web. Plantilla de portafolio por Valentina Dessire.">
+  <meta name="theme-color" content="#fce8ee">
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- jsPDF para generar el dossier en PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+
+  <style>
+    /* ==========================================================
+       1. TOKENS DE DISEÑO (paletas intercambiables)
+       ========================================================== */
+    :root {
+      --white: #ffffff;
+      --bg: #fffafb;
+      --blush: #fce8ee;      /* rosa pastel */
+      --powder: #d98ba0;     /* rosa empolvado */
+      --accent: #b9566f;     /* acento legible */
+      --wine: #6e1f3a;       /* vino para alto contraste */
+      --lilac: #ece6f8;      /* lila tenue */
+      --ink: #2b1a22;
+      --ink-soft: #6d5560;
+      --line: #f0d9e0;
+      --shadow: 0 24px 60px -28px rgba(110, 31, 58, 0.35);
+
+      --font-display: "Cormorant Garamond", Georgia, serif;
+      --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+      --radius: 22px;
+      --radius-sm: 12px;
+      --container: 1440px;
+      --gutter: clamp(1.25rem, 5vw, 7rem);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    /* Paleta "Lila" */
+    :root[data-palette="lila"] {
+      --bg: #fcfaff; --blush: #efe8fb; --powder: #b59ad8; --accent: #7c5cb3;
+      --wine: #43275f; --lilac: #fbe9f0; --ink: #241a2e; --ink-soft: #645870; --line: #e4dbf3;
+      --shadow: 0 24px 60px -28px rgba(67, 39, 95, 0.35);
+    }
+    /* Paleta "Noche vino" (modo oscuro suave) */
+    :root[data-palette="noche"] {
+      --white: #2a1520; --bg: #1d0f16; --blush: #33192a; --powder: #e6a5b6; --accent: #f0a9bc;
+      --wine: #ffd9e3; --lilac: #2c1d34; --ink: #fbeef2; --ink-soft: #d3b6c0; --line: #47263a;
+      --shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.7);
+    }
+
+    /* ==========================================================
+       2. BASE
+       ========================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+    /* Tipografía fluida: 16px en laptops y hasta 20px en pantallas 2K/4K */
+    html { scroll-behavior: smooth; font-size: clamp(16px, 0.35vw + 11px, 20px); }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font: 400 1rem/1.65 var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .5s var(--ease), color .5s var(--ease);
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+    .container { width: min(100% - 2 * var(--gutter), var(--container)); margin-inline: auto; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
+    /* Tipografía de títulos */
+    .display { font-family: var(--font-display); font-weight: 500; letter-spacing: -.01em; line-height: 1.02; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: .55rem;
+      font-size: .78rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
+    }
+    .eyebrow::before { content: ""; width: 22px; height: 1px; background: currentColor; }
+
+    /* Botones */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+      padding: .9rem 1.4rem; border-radius: 999px; border: 1px solid transparent;
+      font-weight: 600; font-size: .95rem;
+      transition: transform .35s var(--ease), box-shadow .35s var(--ease), background-color .3s, color .3s, border-color .3s;
+    }
+    .btn svg { width: 18px; height: 18px; }
+    .btn-primary { background: var(--wine); color: var(--bg); box-shadow: var(--shadow); }
+    .btn-primary:hover { transform: translateY(-2px); background: var(--accent); }
+    .btn-soft { background: var(--white); border-color: var(--line); }
+    .btn-soft:hover { border-color: var(--powder); transform: translateY(-2px); }
+
+    /* ==========================================================
+       3. ENCABEZADO Y NAVEGACIÓN
+       ========================================================== */
+    .header {
+      position: sticky; top: 0; z-index: 40;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(14px); border-bottom: 1px solid transparent;
+      transition: border-color .3s;
+    }
+    .header.scrolled { border-color: var(--line); }
+    .nav { height: 74px; display: flex; align-items: center; gap: 1rem; }
+    .logo { display: flex; align-items: center; gap: .6rem; font-family: var(--font-display); font-size: 1.55rem; font-weight: 600; }
+    .logo svg { width: 34px; height: 34px; }
+    .nav-menu { display: flex; align-items: center; gap: .3rem; list-style: none; margin: 0 0 0 auto; padding: 0; }
+    .nav-menu a { padding: .5rem .85rem; border-radius: 999px; font-size: .93rem; color: var(--ink-soft); transition: color .25s, background-color .25s; }
+    .nav-menu a:hover { color: var(--ink); background: var(--blush); }
+    .burger { display: none; width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); place-items: center; }
+    .burger span, .burger span::before, .burger span::after { display: block; width: 18px; height: 1.6px; background: var(--ink); position: relative; transition: transform .3s var(--ease), background-color .3s; }
+    .burger span::before, .burger span::after { content: ""; position: absolute; left: 0; }
+    .burger span::before { top: -6px; } .burger span::after { top: 6px; }
+    .burger[aria-expanded="true"] span { background: transparent; }
+    .burger[aria-expanded="true"] span::before { transform: translateY(6px) rotate(45deg); }
+    .burger[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
+
+    /* Selector de paleta */
+    .palette { display: flex; gap: .35rem; padding: .3rem; border: 1px solid var(--line); border-radius: 999px; background: var(--white); }
+    .swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; transition: transform .25s var(--ease), border-color .25s; }
+    .swatch:hover { transform: scale(1.12); }
+    .swatch[aria-pressed="true"] { border-color: var(--ink); }
+    .swatch[data-set="rose"] { background: linear-gradient(135deg, #fce8ee 50%, #6e1f3a 50%); }
+    .swatch[data-set="lila"] { background: linear-gradient(135deg, #efe8fb 50%, #43275f 50%); }
+    .swatch[data-set="noche"] { background: linear-gradient(135deg, #33192a 50%, #f0a9bc 50%); }
+
+    /* ==========================================================
+       4. HERO
+       ========================================================== */
+    .hero { position: relative; padding: 5rem 0 4rem; overflow: hidden; min-height: min(calc(100svh - 74px), 1100px); display: flex; align-items: center; }
+    .hero > .container { width: min(100% - 2 * var(--gutter), var(--container)); }
+    .hero::before {
+      content: ""; position: absolute; inset: -20% -10% auto auto; width: 60vw; height: 60vw; max-width: 760px; max-height: 760px;
+      background: radial-gradient(circle, var(--blush), transparent 65%); z-index: -1;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 5vw, 6rem); align-items: center; }
+    .badge-pill { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .85rem; border-radius: 999px; background: var(--white); border: 1px solid var(--line); font-size: .82rem; color: var(--ink-soft); }
+    .badge-pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .hero h1 { font-size: clamp(2.8rem, 1.6rem + 5vw, 5.4rem); margin: 1.2rem 0 1.2rem; }
+    .hero h1 em { color: var(--accent); font-style: italic; }
+    .hero p.lead { font-size: 1.12rem; color: var(--ink-soft); max-width: 50ch; margin: 0 0 1.8rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+    .hero-note { margin-top: 1rem; font-size: .85rem; color: var(--ink-soft); }
+
+    /* Composición ilustrada del hero (SVG + tarjetas flotantes) */
+    .hero-art { position: relative; aspect-ratio: 1 / 1; }
+    .art-frame {
+      position: absolute; inset: 6% 8%; border-radius: 40% 40% var(--radius) var(--radius);
+      background: linear-gradient(160deg, var(--blush), var(--lilac)); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .art-frame svg { width: 100%; height: 100%; }
+    .float-chip {
+      position: absolute; display: flex; align-items: center; gap: .55rem;
+      padding: .65rem .9rem; border-radius: 14px; background: var(--white); border: 1px solid var(--line);
+      box-shadow: var(--shadow); font-size: .85rem; font-weight: 600; animation: float 6s var(--ease) infinite;
+    }
+    .float-chip svg { width: 18px; height: 18px; color: var(--accent); }
+    .float-chip.c1 { top: 12%; left: -2%; }
+    .float-chip.c2 { bottom: 20%; right: -3%; animation-delay: -2s; }
+    .float-chip.c3 { bottom: 4%; left: 12%; animation-delay: -4s; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* ==========================================================
+       5. SECCIONES GENERALES
+       ========================================================== */
+    section { padding: 5rem 0; scroll-margin-top: 80px; }
+    .section-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1.2rem; margin-bottom: 2.6rem; }
+    .section-head h2 { font-size: clamp(2rem, 1.4rem + 2.2vw, 3.2rem); margin: .5rem 0 0; }
+    .section-head p { max-width: 44ch; margin: 0; color: var(--ink-soft); }
+
+    /* Marcas ficticias (emblemas originales en SVG) */
+    .brands { padding: 2rem 0 1rem; }
+    .brands p { text-align: center; font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 1.2rem; }
+    .brand-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.4rem; opacity: .75; }
+    .brand-row span { display: inline-flex; align-items: center; gap: .45rem; font-family: var(--font-display); font-size: 1.35rem; color: var(--ink-soft); }
+    .brand-row svg { width: 22px; height: 22px; }
+
+    /* Servicios */
+    .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .service {
+      position: relative; padding: 2rem; border-radius: var(--radius); background: var(--white);
+      border: 1px solid var(--line); transition: transform .45s var(--ease), box-shadow .45s var(--ease), border-color .3s;
+    }
+    .service:hover { transform: translateY(-6px); box-shadow: var(--shadow); border-color: var(--powder); }
+    .service .num { font-family: var(--font-display); font-size: 1.1rem; color: var(--accent); }
+    .service h3 { font-family: var(--font-display); font-size: 1.7rem; font-weight: 500; margin: .6rem 0 .4rem; }
+    .service p { color: var(--ink-soft); margin: 0 0 1rem; font-size: .95rem; }
+    .service ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .35rem; font-size: .9rem; }
+    .service li::before { content: "✦"; color: var(--powder); margin-right: .5rem; }
+
+    /* ==========================================================
+       6. PROYECTOS: filtros + carrusel
+       ========================================================== */
+    .filters { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .chip {
+      padding: .55rem 1rem; border-radius: 999px; border: 1px solid var(--line); background: var(--white);
+      font-size: .88rem; color: var(--ink-soft); transition: all .3s var(--ease);
+    }
+    .chip:hover { border-color: var(--powder); color: var(--ink); }
+    .chip[aria-pressed="true"] { background: var(--wine); border-color: var(--wine); color: var(--bg); }
+
+    .carousel { position: relative; }
+    .carousel-viewport { overflow: hidden; border-radius: var(--radius); touch-action: pan-y; }
+    .carousel-track { display: flex; gap: 1.2rem; transition: transform .7s var(--ease); will-change: transform; }
+    .slide {
+      flex: 0 0 calc((100% - 2.4rem) / 3); border-radius: var(--radius); background: var(--white);
+      border: 1px solid var(--line); overflow: hidden; cursor: pointer; user-select: none;
+      transition: transform .45s var(--ease), box-shadow .45s var(--ease);
+    }
+    .slide:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .slide-art { aspect-ratio: 4 / 3; display: grid; place-items: center; }
+    .slide-art svg { width: 70%; height: 70%; }
+    .slide-body { padding: 1.2rem 1.3rem 1.4rem; }
+    .slide-body small { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    .slide-body h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.6rem; margin: .25rem 0 .2rem; }
+    .slide-body p { margin: 0; color: var(--ink-soft); font-size: .9rem; }
+    .carousel-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 1.4rem; gap: 1rem; }
+    .dots { display: flex; gap: .45rem; flex-wrap: wrap; }
+    .dot { width: 9px; height: 9px; border-radius: 999px; border: 0; background: var(--line); padding: 0; transition: width .4s var(--ease), background-color .3s; }
+    .dot[aria-current="true"] { width: 28px; background: var(--accent); }
+    .arrows { display: flex; align-items: center; gap: .5rem; }
+    .counter { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: .9rem; margin-right: .4rem; }
+    .arrow { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: var(--white); display: grid; place-items: center; transition: all .3s var(--ease); }
+    .arrow:hover { background: var(--wine); color: var(--bg); border-color: var(--wine); }
+    .arrow svg { width: 18px; height: 18px; }
+    .empty-msg { padding: 2rem; text-align: center; color: var(--ink-soft); }
+
+    /* ==========================================================
+       7. ESTADÍSTICAS + PROCESO
+       ========================================================== */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; padding: 2.2rem; border-radius: var(--radius); background: linear-gradient(135deg, var(--blush), var(--lilac)); }
+    .stat b { display: block; font-family: var(--font-display); font-size: clamp(2.2rem, 1.6rem + 2vw, 3.4rem); font-weight: 500; color: var(--wine); line-height: 1; }
+    .stat span { font-size: .9rem; color: var(--ink-soft); }
+    .process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; counter-reset: step; }
+    .step { padding: 1.6rem; border-top: 1px solid var(--line); counter-increment: step; }
+    .step::before { content: counter(step, decimal-leading-zero); font-family: var(--font-display); font-size: 2.4rem; color: var(--powder); }
+    .step h3 { margin: .3rem 0; font-size: 1.1rem; }
+    .step p { margin: 0; font-size: .92rem; color: var(--ink-soft); }
+
+    /* ==========================================================
+       8. COTIZADOR + FORMULARIO
+       ========================================================== */
+    .quote { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    .panel { padding: 2rem; border-radius: var(--radius); background: var(--white); border: 1px solid var(--line); }
+    .panel h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.9rem; margin: 0 0 .3rem; }
+    .panel > p { margin: 0 0 1.4rem; color: var(--ink-soft); font-size: .95rem; }
+    .opt { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .85rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-sm); margin-bottom: .55rem; cursor: pointer; transition: border-color .25s, background-color .25s; }
+    .opt:hover { border-color: var(--powder); }
+    .opt:has(input:checked) { border-color: var(--accent); background: var(--blush); }
+    .opt span { display: flex; align-items: center; gap: .65rem; font-size: .95rem; }
+    .opt input { accent-color: var(--accent); width: 18px; height: 18px; }
+    .opt em { font-style: normal; color: var(--ink-soft); font-size: .88rem; }
+    .range-row { margin: 1.2rem 0 .6rem; }
+    .range-row label { display: flex; justify-content: space-between; font-size: .92rem; margin-bottom: .4rem; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; margin: 1rem 0; font-size: .92rem; }
+    .switch { position: relative; width: 48px; height: 28px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch span { position: absolute; inset: 0; border-radius: 999px; background: var(--line); transition: background-color .3s; cursor: pointer; }
+    .switch span::after { content: ""; position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--white); transition: transform .35s var(--ease); box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+    .switch input:checked + span { background: var(--accent); }
+    .switch input:checked + span::after { transform: translateX(20px); }
+    .total { display: flex; align-items: baseline; justify-content: space-between; padding-top: 1.1rem; margin-top: .6rem; border-top: 1px dashed var(--line); }
+    .total b { font-family: var(--font-display); font-size: 2.6rem; font-weight: 500; color: var(--wine); }
+    .total small { color: var(--ink-soft); }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: .88rem; font-weight: 600; margin-bottom: .35rem; }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: .85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--line);
+      background: var(--bg); transition: border-color .25s, box-shadow .25s;
+    }
+    .field textarea { min-height: 110px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--powder); box-shadow: 0 0 0 4px color-mix(in srgb, var(--powder) 25%, transparent); }
+    .field.valid input, .field.valid textarea { border-color: #6bb49a; }
+    .field.invalid input, .field.invalid textarea { border-color: #d0566c; }
+    .hint { display: block; min-height: 1.2em; margin-top: .3rem; font-size: .8rem; color: var(--ink-soft); }
+    .field.invalid .hint { color: #c2445c; }
+    .field.valid .hint { color: #3f8f73; }
+    .form-ok { display: none; padding: 1rem; border-radius: var(--radius-sm); background: var(--blush); color: var(--wine); font-weight: 600; margin-top: .6rem; }
+    .form-ok.show { display: block; animation: pop .5s var(--ease); }
+    @keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* ==========================================================
+       9. DOSSIER (PDF) + MODAL + FOOTER
+       ========================================================== */
+    .dossier { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; align-items: center; padding: 2.6rem; border-radius: var(--radius); background: var(--wine); color: #fff6f8; overflow: hidden; position: relative; }
+    .dossier::after { content: ""; position: absolute; right: -80px; top: -80px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(252,232,238,.25), transparent 70%); }
+    .dossier h2 { font-size: clamp(2rem, 1.4rem + 2vw, 3rem); margin: .4rem 0 .6rem; }
+    .dossier p { color: #f3d5de; margin: 0; }
+    .dossier .eyebrow { color: #f6bccb; }
+    .dossier .btn { background: #fff6f8; color: #6e1f3a; justify-self: end; }
+    .dossier .btn:hover { transform: translateY(-2px); background: #fce8ee; }
+    :root[data-palette="noche"] .dossier { background: #3a1a2b; }
+
+    .modal { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 1.2rem; background: rgba(43, 26, 34, .45); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .35s var(--ease); }
+    .modal.open { opacity: 1; pointer-events: auto; }
+    .modal-card { width: min(100%, 720px); background: var(--white); border-radius: var(--radius); overflow: hidden; transform: translateY(20px) scale(.98); transition: transform .45s var(--ease); display: grid; grid-template-columns: 1fr 1fr; }
+    .modal.open .modal-card { transform: none; }
+    .modal-art { min-height: 260px; display: grid; place-items: center; }
+    .modal-art svg { width: 70%; }
+    .modal-body { padding: 2rem; position: relative; }
+    .modal-body h3 { font-family: var(--font-display); font-weight: 500; font-size: 2rem; margin: .3rem 0; }
+    .modal-body p { color: var(--ink-soft); font-size: .95rem; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--white); }
+    .modal-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: 1rem; }
+    .modal-tags span { padding: .3rem .65rem; border-radius: 999px; background: var(--blush); font-size: .78rem; }
+
+    .footer { padding: 3rem 0 2rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+    .footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem; align-items: center; }
+    .footer small { color: var(--ink-soft); }
+    .slide-art { overflow: hidden; background: var(--bg); }
+    .slide-art img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s var(--ease); }
+    .slide:hover .slide-art img { transform: scale(1.05); }
+    .modal-art { position: relative; overflow: hidden; }
+    .modal-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .credit { position: absolute; left: .7rem; bottom: .6rem; font-size: .68rem; color: #fff; background: rgba(43,26,34,.45); padding: .2rem .5rem; border-radius: 999px; backdrop-filter: blur(4px); }
+    .art-frame .hero-photo { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; }
+    .art-frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(110,31,58,.35)); pointer-events: none; z-index: 2; }
+    .photo-credits { margin-top: .8rem; text-align: center; font-size: .72rem; color: var(--ink-soft); }
+    .photo-credits a { color: inherit; }
+    .footer-note { margin-top: 1.6rem; text-align: center; font-size: .82rem; color: var(--ink-soft); font-style: italic; }
+    .footer-note::before { content: "✦ "; color: var(--powder); font-style: normal; }
+
+    /* Aparición al hacer scroll (solo si JS está activo) */
+    .js .reveal { opacity: 0; transform: translateY(26px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+    .js .reveal.in { opacity: 1; transform: none; }
+
+    /* Aviso flotante */
+    .toast { position: fixed; left: 50%; bottom: 1.4rem; transform: translate(-50%, 20px); background: var(--wine); color: var(--bg); padding: .8rem 1.2rem; border-radius: 999px; font-size: .9rem; font-weight: 600; opacity: 0; pointer-events: none; transition: all .4s var(--ease); z-index: 90; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* ==========================================================
+       10. RESPONSIVE (1440+ · 768 · 360)
+       ========================================================== */
+    @media (max-width: 1024px) {
+      .services { grid-template-columns: repeat(2, 1fr); }
+      .slide { flex-basis: calc((100% - 1.2rem) / 2); }
+      .process, .stats { grid-template-columns: repeat(2, 1fr); }
+      .quote, .dossier { grid-template-columns: 1fr; }
+      .dossier .btn { justify-self: start; }
+    }
+    @media (max-width: 900px) {
+      .hero { min-height: 0; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-art { max-width: 460px; margin-inline: auto; width: 100%; }
+    }
+    @media (max-width: 820px) {
+      .burger { display: grid; }
+      .palette { margin-left: auto; }
+      .nav-menu {
+        position: absolute; top: 74px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0;
+        background: var(--bg); border-bottom: 1px solid var(--line); padding: .6rem 1.25rem 1.4rem;
+        opacity: 0; transform: translateY(-10px); pointer-events: none; transition: all .35s var(--ease);
+      }
+      .nav-menu.open { opacity: 1; transform: none; pointer-events: auto; }
+      .nav-menu a { display: block; padding: .9rem 0; border-radius: 0; font-size: 1.05rem; }
+      .nav-menu a:hover { background: none; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-art { max-width: 460px; margin-inline: auto; width: 100%; }
+      .modal-card { grid-template-columns: 1fr; }
+      .modal-art { min-height: 180px; }
+    }
+    @media (max-width: 560px) {
+      .services, .process, .stats { grid-template-columns: 1fr; }
+      .slide { flex-basis: 100%; }
+      .panel, .dossier { padding: 1.4rem; }
+      .hero { padding-top: 3rem; }
+      .palette { margin-left: auto; padding: .25rem; }
+      .swatch { width: 18px; height: 18px; }
+      .logo { font-size: 1.3rem; }
+      .float-chip.c1 { left: 0; } .float-chip.c2 { right: 0; }
+      .float-chip { font-size: .75rem; padding: .5rem .7rem; }
+      section { padding: 3.6rem 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ======================= ENCABEZADO ======================= -->
+  <header class="header" id="top">
+    <nav class="container nav" aria-label="Principal">
+      <a class="logo" href="#top" aria-label="Lumi Atelier, inicio">
+        <!-- Emblema original: luna creciente + destello -->
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="19" fill="var(--blush)" stroke="var(--powder)"/>
+          <path d="M24 10a10 10 0 1 0 6 18 8 8 0 1 1-6-18z" fill="var(--wine)"/>
+          <path d="M27 9l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="var(--accent)"/>
+        </svg>
+        Lumi Atelier
+      </a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#proyectos">Proyectos</a></li>
+        <li><a href="#proceso">Proceso</a></li>
+        <li><a href="#cotizar">Cotizar</a></li>
+      </ul>
+      <div class="palette" role="group" aria-label="Paleta de color">
+        <button class="swatch" type="button" data-set="rose" aria-pressed="true" aria-label="Paleta rosé"></button>
+        <button class="swatch" type="button" data-set="lila" aria-pressed="false" aria-label="Paleta lila"></button>
+        <button class="swatch" type="button" data-set="noche" aria-pressed="false" aria-label="Paleta noche vino"></button>
+      </div>
+      <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-menu"><span></span></button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ======================= HERO ======================= -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div>
+          <span class="badge-pill reveal"><i></i> Estudio creativo · Branding & Web</span>
+          <h1 id="hero-title" class="display reveal">Marcas que se sienten <em>delicadas</em> y se recuerdan.</h1>
+          <p class="lead reveal">Diseñamos identidades visuales y sitios web con alma: elegantes, rápidos y pensados para que tus clientes confíen en ti desde el primer vistazo.</p>
+          <div class="hero-actions reveal">
+            <a class="btn btn-primary" href="#cotizar">Cotizar mi proyecto
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a class="btn btn-soft" href="#proyectos">Ver proyectos</a>
+          </div>
+          <p class="hero-note reveal">Propuesta personalizada en 48 h · Sin compromiso</p>
+        </div>
+
+        <div class="hero-art reveal" aria-hidden="true">
+          <div class="art-frame">
+            <img class="hero-photo" src="https://images.unsplash.com/photo-1790877740796-434fff25a05e?auto=format&fit=crop&w=1100&q=80" alt="" fetchpriority="high" onerror="this.remove()">
+            <!-- Ilustración original: arco, sol y flores abstractas -->
+            <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--powder)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient>
+              </defs>
+              <circle cx="200" cy="170" r="78" fill="url(#g1)" opacity=".9"/>
+              <path d="M0 300 C 90 250, 160 330, 240 290 S 360 260, 400 290 V400 H0Z" fill="var(--wine)" opacity=".88"/>
+              <path d="M0 330 C 110 300, 180 360, 270 330 S 370 320, 400 340 V400 H0Z" fill="var(--powder)" opacity=".7"/>
+              <g fill="var(--white)" opacity=".9">
+                <circle cx="96" cy="120" r="3"/><circle cx="320" cy="92" r="2.5"/><circle cx="300" cy="200" r="2"/><circle cx="70" cy="220" r="2"/>
+              </g>
+              <g transform="translate(96 330)" fill="var(--blush)"><ellipse rx="9" ry="20"/><ellipse rx="9" ry="20" transform="rotate(60)"/><ellipse rx="9" ry="20" transform="rotate(120)"/><circle r="5" fill="var(--accent)"/></g>
+            </svg>
+          </div>
+          <div class="float-chip c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2 8 12.7 4 8.8l5.5-.8z"/></svg>Branding a medida</div>
+          <div class="float-chip c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8"/></svg>Web 100 % adaptable</div>
+          <div class="float-chip c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Carga ultrarrápida</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= MARCAS FICTICIAS ======================= -->
+    <div class="brands container" aria-label="Marcas ficticias de ejemplo">
+      <p>Marcas ficticias que nos imaginan como su estudio</p>
+      <div class="brand-row">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>Brisa</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c4 4 4 14 0 18-4-4-4-14 0-18z"/></svg>Pétalo&amp;Co</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18 12 4l8 14z"/></svg>Alba</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="14" height="14" rx="7"/></svg>Musa</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6h12v12H6z" transform="rotate(45 12 12)"/></svg>Vela</span>
+      </div>
+    </div>
+
+    <!-- ======================= SERVICIOS ======================= -->
+    <section id="servicios" aria-labelledby="serv-title">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">Servicios</span><h2 id="serv-title" class="display">Todo lo que tu marca necesita</h2></div>
+          <p>De la primera idea al lanzamiento: un solo equipo creativo acompaña cada detalle.</p>
+        </div>
+        <div class="services">
+          <article class="service reveal"><span class="num">01</span><h3>Identidad visual</h3><p>Logo, paleta, tipografías y manual para una marca coherente.</p><ul><li>Concepto creativo</li><li>Manual de marca</li><li>Plantillas para redes</li></ul></article>
+          <article class="service reveal"><span class="num">02</span><h3>Diseño web</h3><p>Sitios elegantes que cargan rápido y se ven perfectos en el móvil.</p><ul><li>Diseño a medida</li><li>SEO básico</li><li>Panel autogestionable</li></ul></article>
+          <article class="service reveal"><span class="num">03</span><h3>Landing pages</h3><p>Páginas enfocadas en convertir visitas en clientes.</p><ul><li>Copy persuasivo</li><li>Formularios inteligentes</li><li>Medición de resultados</li></ul></article>
+          <article class="service reveal"><span class="num">04</span><h3>Tienda online</h3><p>Catálogos encantadores con pedidos en línea.</p><ul><li>Catálogo con filtros</li><li>Carrito y pedidos</li><li>Gestión sencilla</li></ul></article>
+          <article class="service reveal"><span class="num">05</span><h3>Contenido & copy</h3><p>Textos claros y cálidos que cuentan tu historia.</p><ul><li>Voz de marca</li><li>Textos web</li><li>Calendario editorial</li></ul></article>
+          <article class="service reveal"><span class="num">06</span><h3>Mantenimiento</h3><p>Acompañamiento continuo después del lanzamiento.</p><ul><li>Actualizaciones</li><li>Copias de seguridad</li><li>Soporte prioritario</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= PROYECTOS (FILTROS + CARRUSEL) ======================= -->
+    <section id="proyectos" aria-labelledby="proj-title">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">Proyectos</span><h2 id="proj-title" class="display">Casos de muestra</h2></div>
+          <div class="filters" role="group" aria-label="Filtrar proyectos">
+            <button class="chip" type="button" data-filter="todos" aria-pressed="true">Todos</button>
+            <button class="chip" type="button" data-filter="branding" aria-pressed="false">Branding</button>
+            <button class="chip" type="button" data-filter="web" aria-pressed="false">Web</button>
+            <button class="chip" type="button" data-filter="ecommerce" aria-pressed="false">E-commerce</button>
+          </div>
+        </div>
+
+        <div class="carousel reveal" id="carousel" aria-roledescription="carrusel" aria-label="Proyectos de muestra">
+          <div class="carousel-viewport" id="viewport">
+            <div class="carousel-track" id="track" aria-live="polite"></div>
+          </div>
+          <div class="carousel-controls">
+            <div class="dots" id="dots" role="tablist" aria-label="Seleccionar diapositiva"></div>
+            <div class="arrows">
+              <span class="counter" id="counter">01 / 06</span>
+              <button class="arrow" type="button" id="prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+              <button class="arrow" type="button" id="next" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= ESTADÍSTICAS + PROCESO ======================= -->
+    <section id="proceso" aria-labelledby="proc-title">
+      <div class="container">
+        <div class="stats reveal" aria-label="Cifras ficticias del estudio">
+          <div class="stat"><b data-count="48">0</b><span>marcas acompañadas*</span></div>
+          <div class="stat"><b data-count="12">0</b><span>industrias atendidas*</span></div>
+          <div class="stat"><b data-count="48" data-suffix=" h">0</b><span>para tu propuesta</span></div>
+          <div class="stat"><b data-count="3">0</b><span>rondas de revisión</span></div>
+        </div>
+        <p style="font-size:.78rem;color:var(--ink-soft);margin:.6rem 0 3.5rem">* Cifras ficticias con fines demostrativos.</p>
+
+        <div class="section-head reveal">
+          <div><span class="eyebrow">Cómo trabajamos</span><h2 id="proc-title" class="display">Un proceso claro y sereno</h2></div>
+          <p>Sabrás en todo momento en qué etapa está tu proyecto.</p>
+        </div>
+        <div class="process">
+          <div class="step reveal"><h3>Conversación</h3><p>Conocemos tu marca, tus objetivos y a tu cliente ideal.</p></div>
+          <div class="step reveal"><h3>Propuesta</h3><p>Alcance, plazos e inversión en un documento claro.</p></div>
+          <div class="step reveal"><h3>Diseño</h3><p>Creamos, iteramos contigo y pulimos cada detalle.</p></div>
+          <div class="step reveal"><h3>Lanzamiento</h3><p>Publicamos y te acompañamos después del estreno.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= COTIZADOR + FORMULARIO ======================= -->
+    <section id="cotizar" aria-labelledby="cot-title">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">Cotización</span><h2 id="cot-title" class="display">Calcula tu inversión</h2></div>
+          <p>Un estimado orientativo en segundos. La propuesta final se ajusta a tu proyecto.</p>
+        </div>
+        <div class="quote">
+          <!-- Cotizador interactivo -->
+          <form class="panel reveal" id="calc" aria-labelledby="calc-title" onsubmit="return false">
+            <h3 id="calc-title">Cotizador</h3>
+            <p>Elige servicios y ajusta el alcance.</p>
+            <label class="opt"><span><input type="checkbox" value="350" data-name="Identidad visual" checked> Identidad visual</span><em>desde $350</em></label>
+            <label class="opt"><span><input type="checkbox" value="600" data-name="Sitio web"> Sitio web</span><em>desde $600</em></label>
+            <label class="opt"><span><input type="checkbox" value="280" data-name="Landing page"> Landing page</span><em>desde $280</em></label>
+            <label class="opt"><span><input type="checkbox" value="200" data-name="Contenido & copy"> Contenido &amp; copy</span><em>desde $200</em></label>
+            <div class="range-row">
+              <label for="pages">Páginas o secciones <output id="pages-out">5</output></label>
+              <input type="range" id="pages" min="1" max="15" value="5">
+            </div>
+            <div class="toggle-row"><span>Entrega express (−30 % de tiempo)</span><label class="switch"><input type="checkbox" id="express"><span></span><b class="sr-only">Entrega express</b></label></div>
+            <div class="total" aria-live="polite"><small>Estimado</small><b id="total">$0</b></div>
+          </form>
+
+          <!-- Formulario con validación en tiempo real -->
+          <form class="panel reveal" id="contact-form" novalidate aria-labelledby="form-title">
+            <h3 id="form-title">Cuéntanos tu idea</h3>
+            <p>Te respondemos en menos de 48 horas.</p>
+            <div class="field"><label for="f-name">Nombre *</label><input id="f-name" name="name" autocomplete="name" required minlength="2"><span class="hint">Mínimo 2 caracteres.</span></div>
+            <div class="field"><label for="f-email">Correo electrónico *</label><input id="f-email" name="email" type="email" autocomplete="email" required><span class="hint">Usaremos este correo para enviarte la propuesta.</span></div>
+            <div class="field"><label for="f-service">Servicio de interés</label>
+              <select id="f-service" name="service"><option>Identidad visual</option><option>Sitio web</option><option>Landing page</option><option>Tienda online</option><option>Otro</option></select><span class="hint"></span></div>
+            <div class="field"><label for="f-msg">Mensaje *</label><textarea id="f-msg" name="message" required minlength="20"></textarea><span class="hint">Cuéntanos al menos 20 caracteres.</span></div>
+            <button class="btn btn-primary" type="submit" style="width:100%">Enviar solicitud</button>
+            <p class="form-ok" id="form-ok" role="status">¡Gracias! Este es un formulario de demostración: tu mensaje no se envió a ningún servidor.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= DOSSIER PDF ======================= -->
+    <section aria-labelledby="dos-title">
+      <div class="container">
+        <div class="dossier reveal">
+          <div>
+            <span class="eyebrow">Dossier del estudio</span>
+            <h2 id="dos-title" class="display">Llévate nuestra propuesta en PDF</h2>
+            <p>Servicios, proceso y tu estimado actual del cotizador, en un documento listo para compartir.</p>
+          </div>
+          <button class="btn" type="button" id="pdf-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
+            Descargar dossier PDF
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <a class="logo" href="#top" style="font-size:1.3rem">Lumi Atelier</a>
+        <small>Estudio ficticio · hola@lumi-atelier.example</small>
+        <small>© <span id="year">2026</span> · Plantilla MIT</small>
+      </div>
+      <p class="photo-credits">Fotografías de <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>: Abigail Ybarra, Nafinia Putra, Dylan Gillis, Benedetta Cauzzi, Luke Southern, Sixteen Miles Out y Aleksandrs Karevs.</p>
+      <p class="footer-note">Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire</p>
+    </div>
+  </footer>
+
+  <!-- Modal de vista rápida -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-art" id="modal-art"></div>
+      <div class="modal-body">
+        <button class="modal-close" type="button" id="modal-close" aria-label="Cerrar vista rápida">✕</button>
+        <span class="eyebrow" id="modal-cat"></span>
+        <h3 id="modal-title"></h3>
+        <p id="modal-desc"></p>
+        <div class="modal-tags" id="modal-tags"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* ============================================================
+       Lumi Atelier · JavaScript Vanilla (ES6+)
+       Módulos: paleta, menú, reveal, carrusel+filtros, modal,
+       contadores, cotizador, formulario y PDF.
+       ============================================================ */
+    (() => {
+      "use strict";
+      document.documentElement.classList.add("js");
+
+      const $ = (sel, ctx = document) => ctx.querySelector(sel);
+      const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+      const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      /* ---------- Aviso flotante ---------- */
+      const toast = (msg) => {
+        const t = $("#toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => t.classList.remove("show"), 2600);
+      };
+
+      /* ---------- 1. Paleta de color (con memoria) ---------- */
+      const applyPalette = (name) => {
+        if (name === "rose") delete document.documentElement.dataset.palette;
+        else document.documentElement.dataset.palette = name;
+        $$(".swatch").forEach((s) => s.setAttribute("aria-pressed", String(s.dataset.set === name)));
+        try { localStorage.setItem("lumi-palette", name); } catch (e) { /* sin almacenamiento */ }
+      };
+      $$(".swatch").forEach((s) => s.addEventListener("click", () => {
+        applyPalette(s.dataset.set);
+        toast("Paleta aplicada: " + s.getAttribute("aria-label").replace("Paleta ", ""));
+      }));
+      try { const saved = localStorage.getItem("lumi-palette"); if (saved) applyPalette(saved); } catch (e) { /* sin almacenamiento */ }
+
+      /* ---------- 2. Encabezado y menú móvil ---------- */
+      const header = $(".header");
+      const onScroll = () => header.classList.toggle("scrolled", scrollY > 10);
+      addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+      const burger = $("#burger"), menu = $("#nav-menu");
+      const closeMenu = () => { menu.classList.remove("open"); burger.setAttribute("aria-expanded", "false"); };
+      burger.addEventListener("click", () => {
+        const open = menu.classList.toggle("open");
+        burger.setAttribute("aria-expanded", String(open));
+        burger.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      });
+      menu.addEventListener("click", (e) => { if (e.target.closest("a")) closeMenu(); });
+
+      /* ---------- 3. Aparición al hacer scroll ---------- */
+      const io = "IntersectionObserver" in window && !reduceMotion
+        ? new IntersectionObserver((entries) => entries.forEach((en) => {
+            if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+          }), { threshold: 0.12 })
+        : null;
+      const observeReveal = (root = document) => $$(".reveal", root).forEach((el) => io ? io.observe(el) : el.classList.add("in"));
+      observeReveal();
+
+      /* ---------- 4. Datos de proyectos (ficticios) ---------- */
+      const art = (c1, c2, shape) => `
+        <svg viewBox="0 0 200 150" aria-hidden="true">
+          <rect width="200" height="150" rx="16" fill="${c1}"/>
+          ${shape === "circle" ? `<circle cx="100" cy="75" r="42" fill="${c2}"/><circle cx="128" cy="52" r="14" fill="#fff" opacity=".7"/>` : ""}
+          ${shape === "arch" ? `<path d="M55 125V75a45 45 0 0 1 90 0v50z" fill="${c2}"/><circle cx="100" cy="80" r="12" fill="#fff" opacity=".8"/>` : ""}
+          ${shape === "petal" ? `<g transform="translate(100 75)" fill="${c2}"><ellipse rx="14" ry="36"/><ellipse rx="14" ry="36" transform="rotate(60)"/><ellipse rx="14" ry="36" transform="rotate(120)"/></g><circle cx="100" cy="75" r="9" fill="#fff"/>` : ""}
+          ${shape === "screen" ? `<rect x="40" y="35" width="120" height="80" rx="10" fill="#fff"/><rect x="52" y="48" width="60" height="8" rx="4" fill="${c2}"/><rect x="52" y="62" width="96" height="6" rx="3" fill="${c2}" opacity=".4"/><rect x="52" y="74" width="80" height="6" rx="3" fill="${c2}" opacity=".4"/><rect x="52" y="90" width="40" height="14" rx="7" fill="${c2}"/>` : ""}
+          ${shape === "bag" ? `<path d="M65 60h70l8 60H57z" fill="${c2}"/><path d="M82 60v-8a18 18 0 0 1 36 0v8" fill="none" stroke="${c2}" stroke-width="6"/>` : ""}
+          ${shape === "wave" ? `<path d="M0 100c40-30 70 20 110-5s60-35 90-10v65H0z" fill="${c2}"/><circle cx="60" cy="55" r="18" fill="#fff" opacity=".8"/>` : ""}
+        </svg>`;
+
+      const projects = [
+        { id: 1, cat: "branding", label: "Branding", title: "Brisa Café", desc: "Identidad cálida para una cafetería de especialidad: logotipo, empaques y señalética.", tags: ["Logo", "Packaging", "Manual"], art: art("#fce8ee", "#d98ba0", "circle"), img: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&w=900&q=80", credit: "Nafinia Putra" },
+        { id: 2, cat: "web", label: "Sitio web", title: "Alba Yoga", desc: "Sitio con reservas de clases, horarios y blog, pensado primero para el móvil.", tags: ["UX/UI", "Reservas", "SEO"], art: art("#ece6f8", "#9b7cc9", "arch"), img: "https://images.unsplash.com/photo-1588286840104-8957b019727f?auto=format&fit=crop&w=900&q=80", credit: "Dylan Gillis" },
+        { id: 3, cat: "ecommerce", label: "E-commerce", title: "Pétalo & Co", desc: "Tienda de flores con catálogo filtrable, carrito y pedidos programados.", tags: ["Catálogo", "Carrito", "Pagos"], art: art("#fde3e8", "#b9566f", "petal"), img: "https://images.unsplash.com/photo-1653907212356-f26fac10ed16?auto=format&fit=crop&w=900&q=80", credit: "Benedetta Cauzzi" },
+        { id: 4, cat: "web", label: "Landing page", title: "Musa Studio", desc: "Landing de lanzamiento para un curso online con formulario de preinscripción.", tags: ["Conversión", "Copy", "Formularios"], art: art("#f6eef2", "#6e1f3a", "screen"), img: "https://images.unsplash.com/photo-1602016736566-7ed6a58894bd?auto=format&fit=crop&w=900&q=80", credit: "Luke Southern" },
+        { id: 5, cat: "ecommerce", label: "E-commerce", title: "Vela Atelier", desc: "Boutique de velas artesanales con fichas de producto y guía de aromas.", tags: ["Producto", "Fotografía", "Tienda"], art: art("#fff3f0", "#c97b84", "bag"), img: "https://images.unsplash.com/photo-1602523961358-f9f03dd557db?auto=format&fit=crop&w=900&q=80", credit: "Sixteen Miles Out" },
+        { id: 6, cat: "branding", label: "Branding", title: "Mar de Lila", desc: "Rebranding para una marca de cosmética natural con paleta lavanda.", tags: ["Rebranding", "Redes", "Paleta"], art: art("#efe8fb", "#7c5cb3", "wave"), img: "https://images.unsplash.com/photo-1739980213756-753aea153bb8?auto=format&fit=crop&w=900&q=80", credit: "Aleksandrs Karevs" }
+      ];
+
+      /* ---------- 5. Carrusel con filtros, flechas, puntos, teclado y gestos ---------- */
+      const track = $("#track"), dotsBox = $("#dots"), counter = $("#counter"), viewport = $("#viewport");
+      let list = projects.slice(), index = 0, autoTimer = null;
+
+      const perView = () => (innerWidth <= 560 ? 1 : innerWidth <= 1024 ? 2 : 3);
+      const maxIndex = () => Math.max(0, list.length - perView());
+      const pad = (n) => String(n).padStart(2, "0");
+
+      const render = () => {
+        if (!list.length) {
+          track.innerHTML = `<p class="empty-msg">No hay proyectos en esta categoría.</p>`;
+          dotsBox.innerHTML = ""; counter.textContent = "00 / 00"; return;
+        }
+        track.innerHTML = list.map((p, i) => `
+          <article class="slide" role="group" aria-roledescription="diapositiva" aria-label="${i + 1} de ${list.length}" tabindex="0" data-id="${p.id}">
+            <div class="slide-art"><img src="${p.img}" alt="${p.title}: ${p.desc}" loading="lazy" width="900" height="675" onerror="this.style.display='none'"></div>
+            <div class="slide-body"><small>${p.label}</small><h3>${p.title}</h3><p>${p.desc}</p></div>
+          </article>`).join("");
+        index = 0;
+        update();
+      };
+
+      const update = () => {
+        index = Math.min(Math.max(index, 0), maxIndex());
+        const slide = track.querySelector(".slide");
+        if (!slide) return;
+        const gap = parseFloat(getComputedStyle(track).gap) || 0;
+        track.style.transform = `translateX(${-index * (slide.offsetWidth + gap)}px)`;
+        const pages = maxIndex() + 1;
+        dotsBox.innerHTML = Array.from({ length: pages }, (_, i) =>
+          `<button class="dot" type="button" role="tab" aria-label="Ir a la posición ${i + 1}" aria-current="${i === index}"></button>`).join("");
+        counter.textContent = `${pad(index + 1)} / ${pad(pages)}`;
+      };
+
+      const go = (dir) => { index = index + dir > maxIndex() ? 0 : index + dir < 0 ? maxIndex() : index + dir; update(); };
+      $("#prev").addEventListener("click", () => { go(-1); restartAuto(); });
+      $("#next").addEventListener("click", () => { go(1); restartAuto(); });
+      dotsBox.addEventListener("click", (e) => {
+        const dot = e.target.closest(".dot"); if (!dot) return;
+        index = $$(".dot", dotsBox).indexOf(dot); update(); restartAuto();
+      });
+      $("#carousel").addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") go(1);
+        if (e.key === "ArrowLeft") go(-1);
+        if (e.key === "Enter" && e.target.classList.contains("slide")) openModal(+e.target.dataset.id);
+      });
+      addEventListener("resize", update);
+
+      // Gestos táctiles y arrastre con ratón
+      let startX = 0, dragging = false, moved = false;
+      viewport.addEventListener("pointerdown", (e) => { dragging = true; moved = false; startX = e.clientX; });
+      addEventListener("pointerup", (e) => {
+        if (!dragging) return;
+        dragging = false;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 45) { moved = true; go(dx < 0 ? 1 : -1); restartAuto(); }
+      });
+      track.addEventListener("click", (e) => {
+        const slide = e.target.closest(".slide");
+        if (slide && !moved) openModal(+slide.dataset.id);
+      });
+
+      // Reproducción automática (se pausa al pasar el cursor)
+      const startAuto = () => { if (!reduceMotion) autoTimer = setInterval(() => go(1), 5000); };
+      const restartAuto = () => { clearInterval(autoTimer); startAuto(); };
+      $("#carousel").addEventListener("mouseenter", () => clearInterval(autoTimer));
+      $("#carousel").addEventListener("mouseleave", restartAuto);
+
+      // Filtros
+      $$(".chip").forEach((chip) => chip.addEventListener("click", () => {
+        $$(".chip").forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
+        const f = chip.dataset.filter;
+        list = f === "todos" ? projects.slice() : projects.filter((p) => p.cat === f);
+        render(); restartAuto();
+      }));
+      render(); startAuto();
+
+      /* ---------- 6. Modal de vista rápida ---------- */
+      const modal = $("#modal");
+      let lastFocus = null;
+      function openModal(id) {
+        const p = projects.find((x) => x.id === id); if (!p) return;
+        lastFocus = document.activeElement;
+        $("#modal-art").innerHTML = `<img src="${p.img}" alt="${p.title}"><span class="credit">Foto: ${p.credit} / Unsplash</span>`;
+        $("#modal-cat").textContent = p.label;
+        $("#modal-title").textContent = p.title;
+        $("#modal-desc").textContent = p.desc + " (Proyecto ficticio de muestra.)";
+        $("#modal-tags").innerHTML = p.tags.map((t) => `<span>${t}</span>`).join("");
+        modal.classList.add("open"); modal.setAttribute("aria-hidden", "false");
+        $("#modal-close").focus();
+      }
+      const closeModal = () => {
+        modal.classList.remove("open"); modal.setAttribute("aria-hidden", "true");
+        if (lastFocus) lastFocus.focus();
+      };
+      $("#modal-close").addEventListener("click", closeModal);
+      modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+      addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeMenu(); } });
+
+      /* ---------- 7. Contadores animados ---------- */
+      const countUp = (el) => {
+        const end = +el.dataset.count, suffix = el.dataset.suffix || (end > 10 ? "+" : "");
+        if (reduceMotion) { el.textContent = end + suffix; return; }
+        const t0 = performance.now(), dur = 1400;
+        const tick = (t) => {
+          const k = Math.min(1, (t - t0) / dur), eased = 1 - Math.pow(1 - k, 3);
+          el.textContent = Math.round(end * eased) + (k === 1 ? suffix : "");
+          if (k < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+      const counters = $$("[data-count]");
+      if ("IntersectionObserver" in window) {
+        const co = new IntersectionObserver((ens) => ens.forEach((en) => {
+          if (en.isIntersecting) { countUp(en.target); co.unobserve(en.target); }
+        }), { threshold: 0.6 });
+        counters.forEach((c) => co.observe(c));
+      } else counters.forEach(countUp);
+
+      /* ---------- 8. Cotizador ---------- */
+      const calc = $("#calc"), pages = $("#pages"), pagesOut = $("#pages-out"), express = $("#express"), totalEl = $("#total");
+      const quote = () => {
+        const chosen = $$("input[type=checkbox][value]", calc).filter((c) => c.checked);
+        const base = chosen.reduce((sum, c) => sum + Number(c.value), 0);
+        const extraPages = Math.max(0, Number(pages.value) - 3) * 45;
+        let total = base ? base + extraPages : 0;
+        if (express.checked && total) total *= 1.25;
+        return { total: Math.round(total), services: chosen.map((c) => c.dataset.name), pages: pages.value, express: express.checked };
+      };
+      const animateNumber = (el, to) => {
+        const from = Number(el.dataset.v || 0); el.dataset.v = to;
+        if (reduceMotion) { el.textContent = "$" + to.toLocaleString("es"); return; }
+        const t0 = performance.now();
+        const step = (t) => {
+          const k = Math.min(1, (t - t0) / 450);
+          el.textContent = "$" + Math.round(from + (to - from) * k).toLocaleString("es");
+          if (k < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+      const refresh = () => { pagesOut.textContent = pages.value; animateNumber(totalEl, quote().total); };
+      calc.addEventListener("input", refresh); refresh();
+
+      /* ---------- 9. Formulario con validación en tiempo real ---------- */
+      const form = $("#contact-form");
+      const rules = {
+        name: (v) => v.trim().length >= 2 || "Escribe al menos 2 caracteres.",
+        email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) || "Revisa el formato del correo.",
+        message: (v) => v.trim().length >= 20 || `Faltan ${20 - v.trim().length} caracteres.`
+      };
+      const okMsg = { name: "¡Perfecto!", email: "Correo válido.", message: "Mensaje listo." };
+      const validate = (input, force = false) => {
+        const rule = rules[input.name]; if (!rule) return true;
+        const field = input.closest(".field"), hint = $(".hint", field), res = rule(input.value);
+        const valid = res === true;
+        field.classList.toggle("valid", valid);
+        field.classList.toggle("invalid", !valid && (force || input.value.length > 0));
+        hint.textContent = valid ? okMsg[input.name] : res;
+        input.setAttribute("aria-invalid", String(!valid));
+        return valid;
+      };
+      $$("input, textarea", form).forEach((el) => el.addEventListener("input", () => validate(el)));
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fields = $$("input[name], textarea[name]", form);
+        const allValid = fields.map((f) => validate(f, true)).every(Boolean);
+        if (!allValid) { toast("Revisa los campos marcados"); fields.find((f) => f.getAttribute("aria-invalid") === "true")?.focus(); return; }
+        $("#form-ok").classList.add("show"); form.reset();
+        $$(".field", form).forEach((f) => f.classList.remove("valid", "invalid"));
+        toast("Solicitud de demostración registrada");
+      });
+
+      /* ---------- 10. Dossier PDF con jsPDF ---------- */
+      $("#pdf-btn").addEventListener("click", () => {
+        if (!window.jspdf || !window.jspdf.jsPDF) { toast("Cargando generador de PDF… inténtalo de nuevo"); return; }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: "mm", format: "a4" });
+        const W = 210, M = 18, q = quote();
+        const wine = [110, 31, 58], blush = [252, 232, 238], ink = [43, 26, 34], soft = [109, 85, 96];
+
+        // Portada
+        doc.setFillColor(...blush); doc.rect(0, 0, W, 70, "F");
+        doc.setFillColor(...wine); doc.circle(W - 30, 30, 16, "F");
+        doc.setTextColor(...wine); doc.setFont("times", "italic"); doc.setFontSize(30);
+        doc.text("Lumi Atelier", M, 34);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.setTextColor(...soft);
+        doc.text("Estudio creativo digital · Dossier de servicios", M, 44);
+        doc.text("Documento de muestra para portafolio", M, 51);
+
+        let y = 86;
+        const title = (t) => { doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(...wine); doc.text(t, M, y); y += 7; };
+        const para = (t) => { doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(...ink); const lines = doc.splitTextToSize(t, W - 2 * M); doc.text(lines, M, y); y += lines.length * 5.2 + 4; };
+
+        title("Quiénes somos");
+        para("Lumi Atelier es un estudio creativo ficticio que diseña identidades visuales y sitios web elegantes, rápidos y pensados para generar confianza desde el primer vistazo.");
+
+        title("Servicios");
+        ["Identidad visual", "Diseño web", "Landing pages", "Tienda online", "Contenido & copy", "Mantenimiento"].forEach((s, i) => {
+          doc.setFillColor(...blush); doc.roundedRect(M + (i % 2) * 88, y - 5, 84, 10, 2, 2, "F");
+          doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(...ink);
+          doc.text(`0${i + 1}  ${s}`, M + 4 + (i % 2) * 88, y + 1.5);
+          if (i % 2 === 1) y += 13;
+        });
+        y += 4;
+
+        title("Proceso");
+        para("1. Conversación  ·  2. Propuesta  ·  3. Diseño  ·  4. Lanzamiento y acompañamiento.");
+
+        title("Tu estimado actual");
+        doc.setDrawColor(...wine); doc.setLineWidth(0.4); doc.roundedRect(M, y - 4, W - 2 * M, 34, 3, 3, "S");
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(...ink);
+        doc.text("Servicios: " + (q.services.join(", ") || "ninguno seleccionado"), M + 5, y + 4);
+        doc.text(`Páginas o secciones: ${q.pages}   ·   Entrega express: ${q.express ? "sí" : "no"}`, M + 5, y + 11);
+        doc.setFont("times", "bold"); doc.setFontSize(20); doc.setTextColor(...wine);
+        doc.text("$" + q.total.toLocaleString("es"), M + 5, y + 24);
+        y += 44;
+
+        para("Este documento y la marca Lumi Atelier son ficticios y se generaron automáticamente como demostración técnica (JavaScript + jsPDF).");
+
+        // Pie
+        doc.setFillColor(...wine); doc.rect(0, 287, W, 10, "F");
+        doc.setFont("helvetica", "italic"); doc.setFontSize(8.5); doc.setTextColor(255, 246, 248);
+        doc.text("Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire", W / 2, 293, { align: "center" });
+
+        doc.save("Lumi-Atelier-Dossier.pdf");
+        toast("Dossier descargado");
+      });
+
+      $("#year").textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valentina Quintero · Diseño web y desarrollo frontend</title>
+  <meta name="description" content="Portafolio de Valentina Quintero, Ingeniera en Informática. Diseño web, desarrollo frontend y contenido para marcas y negocios. Disponible para proyectos remotos.">
+  <meta name="theme-color" content="#0c0d10">
+  <meta property="og:title" content="Valentina Quintero · Diseño web y desarrollo frontend">
+  <meta property="og:description" content="Sitios web modernos, rápidos y fáciles de usar. Disponible para proyectos freelance y remotos.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230c0d10'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Georgia' font-size='34' fill='%23ff5a3c'%3EV%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>document.documentElement.classList.remove('no-js');try{var t=localStorage.getItem('vq-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+  <script type="module" src="assets/js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header" id="top">
+    <nav class="container nav" aria-label="Principal">
+      <a class="brand" href="#top" aria-label="Inicio">Valentina<span>.</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#tesis">Tesis</a></li>
+        <li><a href="#proyectos">Proyectos</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#sobre-mi">Sobre mí</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Cambiar entre tema claro y oscuro">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="contenido">
+    <!-- ========== HERO ========== -->
+    <section class="hero container" aria-labelledby="hero-title">
+      <p class="status reveal"><i aria-hidden="true"></i> Disponible para proyectos remotos</p>
+      <h1 id="hero-title" class="reveal">Diseño web que se ve <em>bien</em> y funciona mejor.</h1>
+      <p class="hero-lead reveal">Soy <strong>Valentina Quintero</strong>, Ingeniera en Informática. Diseño y desarrollo sitios web modernos, rápidos y fáciles de usar, y escribo el contenido que los hace vender. Combino criterio técnico con seis años de experiencia tratando con clientes reales.</p>
+      <div class="hero-actions reveal">
+        <a class="btn btn-primary magnetic" href="#proyectos">Ver proyectos
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost magnetic" href="#contacto">Trabajemos juntos</a>
+        <a class="btn btn-ghost magnetic" href="#descargar">Descargar código</a>
+      </div>
+      <div class="hero-meta reveal">
+        <div><b>6+</b><span>años de experiencia profesional</span></div>
+        <div><b>Full-stack</b><span>tesis con Node.js, Express y MySQL</span></div>
+        <div><b>B2</b><span>inglés certificado · español nativo</span></div>
+      </div>
+    </section>
+
+    <!-- ========== TESIS (CASO DESTACADO) ========== -->
+    <section id="tesis" class="container" aria-labelledby="tesis-title">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Caso de estudio principal</span>
+          <h2 id="tesis-title">Tesis de grado</h2>
+        </div>
+        <p>El proyecto que mejor resume cómo pienso: de un problema real a una aplicación completa.</p>
+      </div>
+
+      <article class="card featured reveal">
+        <div class="featured-body">
+          <span class="badge" style="align-self:start">Full-stack · Trabajo en equipo</span>
+          <h3>Chanchito Aplicación</h3>
+          <p>Aplicación web para una clínica veterinaria: los dueños de mascotas registran a sus pacientes (perros y gatos), solicitan consultas y siguen su estado, mientras el veterinario acepta o rechaza solicitudes y lleva el historial clínico.</p>
+          <dl class="facts">
+            <div><dt>Rol</dt><dd>Co-desarrolladora</dd></div>
+            <div><dt>Tipo</dt><dd>Tesis de grado</dd></div>
+            <div><dt>Alcance</dt><dd>Front + Back + BD</dd></div>
+          </dl>
+          <ul class="tag-row" aria-label="Tecnologías">
+            <li class="tag">Node.js</li><li class="tag">Express</li><li class="tag">MySQL</li>
+            <li class="tag">JavaScript</li><li class="tag">SCSS</li><li class="tag">Nodemailer</li>
+          </ul>
+          <div class="hero-actions" style="margin-top:.5rem">
+            <a class="btn btn-primary magnetic" href="case-studies/chanchito.html">Leer el caso completo
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </div>
+        <div class="featured-visual" aria-hidden="true">
+          <div>
+            <div class="mock">
+              <div class="mock-top">Chanchito <small>/inicio</small></div>
+              <div class="mock-body">
+                <div class="mock-pill"><span class="on">Perros</span><span>Gatos</span><span>Veterinario</span></div>
+                <div class="mock-item"><i>🐶</i><div><b>Consulta general</b><small>Paciente: Luna · 3 años</small></div><em class="ok">Aceptada</em></div>
+                <div class="mock-item"><i>🐱</i><div><b>Vacunación</b><small>Paciente: Milo · 1 año</small></div><em>En revisión</em></div>
+                <div class="mock-item"><i>📋</i><div><b>Historial clínico</b><small>4 consultas registradas</small></div></div>
+                <div class="mock-cta">Solicitar consulta</div>
+              </div>
+            </div>
+            <p class="mock-note">Recreación ilustrativa de la interfaz</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ========== PROYECTOS ========== -->
+    <section id="proyectos" class="container" aria-labelledby="proyectos-title">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Trabajo seleccionado</span>
+          <h2 id="proyectos-title">Proyectos</h2>
+        </div>
+        <div class="filters" role="group" aria-label="Filtrar proyectos">
+          <button class="filter" type="button" data-filter="all" aria-pressed="true">Todos</button>
+          <button class="filter" type="button" data-filter="web" aria-pressed="false">Diseño web</button>
+          <button class="filter" type="button" data-filter="fullstack" aria-pressed="false">Full-stack</button>
+        </div>
+      </div>
+      <div class="grid" id="project-grid" aria-live="polite">
+        <noscript><p>Activa JavaScript para ver la lista de proyectos, o visita <a href="https://github.com/ValentinaDessire">github.com/ValentinaDessire</a>.</p></noscript>
+      </div>
+    </section>
+
+    <!-- ========== SERVICIOS ========== -->
+    <section id="servicios" class="container" aria-labelledby="servicios-title">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Cómo te puedo ayudar</span>
+          <h2 id="servicios-title">Servicios por proyecto</h2>
+        </div>
+        <p>Trabajo por entregables claros, con fechas y revisiones acordadas desde el inicio.</p>
+      </div>
+      <div class="services">
+        <article class="card service reveal"><span class="num">01</span><h3>Diseño y desarrollo web</h3><p>Sitios corporativos y landing pages responsivos, rápidos y fáciles de mantener.</p></article>
+        <article class="card service reveal"><span class="num">02</span><h3>Rediseño de sitios</h3><p>Modernizo tu web actual: mejor estructura, contraste, tipografía y experiencia móvil.</p></article>
+        <article class="card service reveal"><span class="num">03</span><h3>Redacción y contenido</h3><p>Textos claros y persuasivos en español para tu web, tus productos y tus redes.</p></article>
+        <article class="card service reveal"><span class="num">04</span><h3>Transcripción en español</h3><p>Transcripciones precisas y revisadas, entregadas a tiempo y con formato limpio.</p></article>
+      </div>
+    </section>
+
+    <!-- ========== SOBRE MÍ ========== -->
+    <section id="sobre-mi" class="container" aria-labelledby="sobre-title">
+      <div class="about">
+        <div class="about-text reveal">
+          <span class="eyebrow">Sobre mí</span>
+          <h2 id="sobre-title" class="section-head" style="margin:0 0 1.5rem;font-family:var(--font-display);font-weight:500;font-size:var(--fs-xl);letter-spacing:-.025em">Ingeniera con visión de negocio</h2>
+          <p>Soy <strong>Ingeniera en Informática</strong> (URBE) y curso una <strong>Maestría en Telemática</strong>. Antes de escribir código, aprendí a vender: pasé de vendedora a gerente de sucursal, y hoy apoyo a la gerencia de una distribuidora mayorista, incluida la migración de la empresa al ERP Odoo.</p>
+          <p>Por eso diseño pensando en quien usa el sitio y en quien paga por él: <strong>claridad, rapidez y resultados</strong>. Trabajo de forma remota, con comunicación constante y entregas puntuales.</p>
+          <ol class="timeline">
+            <li><time>2024 — hoy</time><div><b>Asistente de Gerencia · Celena Internacional</b><span>Facturación, logística y migración a Odoo ERP.</span></div></li>
+            <li><time>2020 — 2024</time><div><b>Vendedora → Gerente de Sucursal · Frío Partes J.N.</b><span>Ventas técnicas, inventario de 3 sucursales y equipo a cargo.</span></div></li>
+            <li><time>2020 — 2025</time><div><b>Ingeniería en Informática · URBE</b><span>Tesis: Chanchito Aplicación.</span></div></li>
+          </ol>
+        </div>
+        <div class="stack reveal">
+          <div class="card" style="padding:1.5rem">
+            <h3>Frontend</h3>
+            <ul class="tag-row"><li class="tag">HTML5</li><li class="tag">CSS3 / SCSS</li><li class="tag">JavaScript</li><li class="tag">React</li><li class="tag">Diseño responsive</li><li class="tag">UX/UI</li></ul>
+          </div>
+          <div class="card" style="padding:1.5rem">
+            <h3>Backend y datos</h3>
+            <ul class="tag-row"><li class="tag">Node.js</li><li class="tag">Express</li><li class="tag">PHP</li><li class="tag">MySQL</li><li class="tag">SQL</li><li class="tag">Python (básico)</li></ul>
+          </div>
+          <div class="card" style="padding:1.5rem">
+            <h3>Herramientas</h3>
+            <ul class="tag-row"><li class="tag">Git y GitHub</li><li class="tag">Odoo ERP</li><li class="tag">Excel avanzado</li><li class="tag">Power BI</li></ul>
+          </div>
+          <div class="card" style="padding:1.5rem">
+            <h3>Idiomas</h3>
+            <ul class="tag-row"><li class="tag">Español · nativo</li><li class="tag">Inglés · B2 (EF SET)</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== DESCARGA ========== -->
+    <section id="descargar" class="container" aria-labelledby="descargar-title">
+      <div class="card download reveal">
+        <div>
+          <span class="eyebrow">Código abierto · Licencia MIT</span>
+          <h2 id="descargar-title">Llévate este portafolio</h2>
+          <p>Todo el código es abierto. Descarga el proyecto completo o una plantilla HTML limpia en un solo archivo para crear el tuyo.</p>
+        </div>
+        <div class="download-actions">
+          <a class="btn btn-primary" id="dl-source" href="https://github.com/ValentinaDessire/ValentinaDessire.github.io/archive/refs/heads/main.zip">Código fuente completo (.zip)
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg></a>
+          <a class="btn btn-ghost" href="template/portfolio-template.html" download="portfolio-template.html">Plantilla HTML limpia (1 archivo)
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg></a>
+          <code class="code-hint">git clone https://github.com/ValentinaDessire/ValentinaDessire.github.io.git</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTACTO ========== -->
+    <section id="contacto" class="container contact" aria-labelledby="contacto-title">
+      <span class="eyebrow reveal">¿Tienes un proyecto?</span>
+      <h2 id="contacto-title" class="reveal"><a href="mailto:valentinaquintero14102002@gmail.com">Hablemos.</a></h2>
+      <div class="contact-links reveal">
+        <a class="btn btn-primary magnetic" href="mailto:valentinaquintero14102002@gmail.com">Escríbeme un correo</a>
+        <a class="btn btn-ghost magnetic" href="https://www.linkedin.com/in/valentina-quintero-09a809272" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-ghost magnetic" href="https://github.com/ValentinaDessire" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© <span id="year">2026</span> Valentina Quintero · Zulia, Venezuela · Remoto</span>
+      <span>Hecho a mano con HTML, CSS y JavaScript · <a href="https://github.com/ValentinaDessire/ValentinaDessire.github.io" style="text-decoration:underline">Ver código</a></span>
+    </div>
+  </footer>
+</body>
+</html>

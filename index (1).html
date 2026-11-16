@@ -1,0 +1,555 @@
+<!doctype html>
+<!--
+  ============================================================
+  02 · Lunaria Learn — Plataforma EdTech de tecnología
+  Stack: HTML5 + Tailwind CSS (CDN) + React 18 + TypeScript
+         (transpilado en el navegador con Babel Standalone) + jsPDF
+  Proyecto de muestra para portafolio. Marca y contenidos ficticios.
+  Fotografías: Unsplash (licencia Unsplash). Licencia del código: MIT.
+  Autora: Valentina Dessire
+  ============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lunaria Learn · Aprende tecnología a tu ritmo (proyecto de muestra)</title>
+  <meta name="description" content="Lunaria Learn: plataforma EdTech ficticia construida con React, TypeScript y Tailwind. Plantilla de portafolio por Valentina Dessire.">
+  <meta name="theme-color" content="#eee8fb">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS (Play CDN) con paleta personalizada -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            lila: { 50: "#f8f5fe", 100: "#eee8fb", 200: "#ddd2f6", 400: "#a58fe0", 600: "#7c5cc4", 800: "#4a3485" },
+            rosa: { 100: "#fbe8ef", 200: "#f4c6d7", 400: "#e48aa8" },
+            tinta: { DEFAULT: "#1f1a2e", soft: "#5d5670" }
+          },
+          fontFamily: { display: ["Sora", "sans-serif"], body: ["Inter", "system-ui", "sans-serif"] },
+          boxShadow: { suave: "0 24px 60px -28px rgba(74, 52, 133, .35)" }
+        }
+      }
+    };
+  </script>
+  <style>
+    html { scroll-behavior: smooth; font-size: clamp(16px, 0.35vw + 11px, 20px); }
+    body { font-family: Inter, system-ui, sans-serif; }
+    .fade-in { animation: fadeIn .7s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .fade-in { animation: none; } * { transition: none !important; } }
+    /* Respaldo mientras React monta la interfaz */
+    #root:empty::before { content: "Cargando Lunaria Learn…"; display: block; padding: 4rem 1.5rem; text-align: center; color: #5d5670; }
+  </style>
+
+  <!-- React 18, Babel Standalone (TSX) y jsPDF -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    /* Preset para escribir componentes en TypeScript + JSX (TSX) */
+    Babel.registerPreset("tsx", {
+      presets: [[Babel.availablePresets["typescript"], { allExtensions: true, isTSX: true }]]
+    });
+  </script>
+</head>
+<body class="bg-white text-tinta antialiased transition-colors duration-500 dark:bg-[#15111f] dark:text-lila-50">
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="tsx,react">
+    /* ============================================================
+       Tipos (TypeScript)
+       ============================================================ */
+    type Categoria = "todos" | "frontend" | "datos" | "diseño";
+    interface Curso {
+      id: number; titulo: string; categoria: Exclude<Categoria, "todos">; nivel: "Inicial" | "Intermedio" | "Avanzado";
+      horas: number; precio: number; resumen: string; temario: string[]; img: string;
+    }
+    interface Testimonio { nombre: string; rol: string; texto: string; }
+
+    const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+    /* ============================================================
+       Imágenes (Unsplash). Si una URL queda vacía se muestra un
+       degradado de respaldo, así la página nunca se rompe.
+       ============================================================ */
+    const IMG: Record<string, string> = {
+      hero: "https://images.unsplash.com/photo-1617629927392-f6afae49ad61?auto=format&fit=crop&w=1100&q=80",
+      frontend: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1100&q=80",
+      datos: "https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?auto=format&fit=crop&w=1100&q=80",
+      diseño: "https://images.unsplash.com/photo-1576153192396-180ecef2a715?auto=format&fit=crop&w=1100&q=80",
+      comunidad: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1100&q=80"
+    };
+
+    const CURSOS: Curso[] = [
+      { id: 1, titulo: "HTML y CSS desde cero", categoria: "frontend", nivel: "Inicial", horas: 18, precio: 39, img: IMG.frontend,
+        resumen: "Construye tu primera web responsive paso a paso.", temario: ["Estructura semántica", "Flexbox y Grid", "Diseño responsive", "Proyecto final: landing page"] },
+      { id: 2, titulo: "JavaScript moderno", categoria: "frontend", nivel: "Intermedio", horas: 24, precio: 59, img: IMG.frontend,
+        resumen: "Domina ES6+, el DOM y la lógica de interfaces.", temario: ["Fundamentos ES6+", "DOM y eventos", "Promesas y fetch", "Proyecto: app de tareas"] },
+      { id: 3, titulo: "React con TypeScript", categoria: "frontend", nivel: "Avanzado", horas: 30, precio: 79, img: IMG.frontend,
+        resumen: "Componentes tipados, hooks y buenas prácticas.", temario: ["Tipos esenciales", "Componentes y props", "Hooks y estado", "Proyecto: dashboard"] },
+      { id: 4, titulo: "Análisis de datos con Python", categoria: "datos", nivel: "Inicial", horas: 22, precio: 49, img: IMG.datos,
+        resumen: "De la hoja de cálculo a tus primeros gráficos.", temario: ["Python básico", "Pandas", "Visualización", "Proyecto: informe de ventas"] },
+      { id: 5, titulo: "SQL para principiantes", categoria: "datos", nivel: "Inicial", horas: 14, precio: 35, img: IMG.datos,
+        resumen: "Consultas claras para responder preguntas de negocio.", temario: ["SELECT y filtros", "JOIN", "Agrupaciones", "Proyecto: base de una tienda"] },
+      { id: 6, titulo: "UX/UI para la web", categoria: "diseño", nivel: "Intermedio", horas: 20, precio: 55, img: IMG.diseño,
+        resumen: "Diseña interfaces bonitas, accesibles y usables.", temario: ["Investigación de usuarios", "Wireframes", "Sistemas de diseño", "Proyecto: prototipo"] }
+    ];
+
+    const TESTIMONIOS: Testimonio[] = [
+      { nombre: "Camila R.", rol: "Estudiante de Frontend", texto: "Los proyectos guiados me dieron la confianza para crear mi propio portafolio." },
+      { nombre: "Daniela P.", rol: "Analista en formación", texto: "Aprendí SQL en dos semanas, con ejemplos que sí entiendo." },
+      { nombre: "Sofía M.", rol: "Diseñadora UX junior", texto: "La comunidad responde rapidísimo; nunca me sentí sola aprendiendo." },
+      { nombre: "Valeria G.", rol: "Desarrolladora autodidacta", texto: "El ritmo flexible me permitió estudiar mientras trabajaba." }
+    ];
+
+    /* ============================================================
+       Utilidades
+       ============================================================ */
+    const cx = (...c: (string | false | undefined)[]) => c.filter(Boolean).join(" ");
+
+    function Foto({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
+      if (!src) {
+        return (
+          <div role="img" aria-label={alt}
+            className={cx("bg-gradient-to-br from-lila-100 via-rosa-100 to-lila-200 dark:from-lila-800 dark:to-[#2a2140] grid place-items-center", className)}>
+            <svg viewBox="0 0 24 24" className="w-10 h-10 text-lila-400" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 18 9 12l4 4 3-3 4 5M4 5h16v14H4z"/></svg>
+          </div>
+        );
+      }
+      return <img src={src} alt={alt} loading="lazy" className={cx("object-cover", className)} />;
+    }
+
+    function useToast() {
+      const [msg, setMsg] = useState<string>("");
+      useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(""), 2600); return () => clearTimeout(t); }, [msg]);
+      const Toast = () => (
+        <div role="status" aria-live="polite"
+          className={cx("fixed left-1/2 -translate-x-1/2 bottom-6 z-[90] px-5 py-3 rounded-full bg-lila-800 text-white text-sm font-semibold shadow-suave transition-all duration-500",
+            msg ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none")}>{msg}</div>
+      );
+      return { toast: setMsg, Toast };
+    }
+
+    /* ============================================================
+       Encabezado con menú móvil y modo oscuro
+       ============================================================ */
+    function Header({ oscuro, setOscuro }: { oscuro: boolean; setOscuro: (v: boolean) => void }) {
+      const [abierto, setAbierto] = useState(false);
+      const enlaces = [["#cursos", "Cursos"], ["#planes", "Planes"], ["#comunidad", "Comunidad"], ["#contacto", "Contacto"]];
+      return (
+        <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-[#15111f]/80 border-b border-lila-100 dark:border-white/10">
+          <nav className="mx-auto max-w-[1440px] px-[clamp(1.25rem,5vw,7rem)] h-[72px] flex items-center gap-4" aria-label="Principal">
+            <a href="#inicio" className="flex items-center gap-2 font-display font-bold text-xl">
+              <svg viewBox="0 0 36 36" className="w-9 h-9" aria-hidden="true">
+                <rect width="36" height="36" rx="11" fill="#7c5cc4"/>
+                <path d="M22 9a9 9 0 1 0 5 15 7 7 0 1 1-5-15z" fill="#f4c6d7"/>
+              </svg>
+              Lunaria<span className="text-lila-600 dark:text-rosa-200">Learn</span>
+            </a>
+            <ul className={cx("md:flex md:static md:flex-row md:p-0 md:border-0 md:bg-transparent md:opacity-100 md:pointer-events-auto md:translate-y-0 md:ml-auto gap-1",
+              "absolute top-[72px] inset-x-0 flex flex-col p-5 bg-white dark:bg-[#15111f] border-b border-lila-100 dark:border-white/10 transition-all duration-300",
+              abierto ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none md:pointer-events-auto")}>
+              {enlaces.map(([href, txt]) => (
+                <li key={href}><a href={href} onClick={() => setAbierto(false)}
+                  className="block px-4 py-3 md:py-2 rounded-full text-tinta-soft dark:text-lila-100 hover:bg-lila-100 dark:hover:bg-white/10 hover:text-tinta transition">{txt}</a></li>
+              ))}
+            </ul>
+            <button type="button" onClick={() => setOscuro(!oscuro)} aria-pressed={oscuro} aria-label="Cambiar modo oscuro"
+              className="ml-auto md:ml-2 w-11 h-11 rounded-full border border-lila-200 dark:border-white/15 grid place-items-center hover:rotate-12 transition">
+              {oscuro
+                ? <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                : <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>}
+            </button>
+            <button type="button" className="md:hidden w-11 h-11 rounded-full border border-lila-200 dark:border-white/15 grid place-items-center"
+              aria-label={abierto ? "Cerrar menú" : "Abrir menú"} aria-expanded={abierto} onClick={() => setAbierto(!abierto)}>
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2">{abierto ? <path d="M6 6l12 12M18 6 6 18"/> : <path d="M4 7h16M4 12h16M4 17h10"/>}</svg>
+            </button>
+          </nav>
+        </header>
+      );
+    }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+    function Hero() {
+      return (
+        <section id="inicio" className="relative overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-[42rem] h-[42rem] rounded-full bg-lila-100 dark:bg-lila-800/30 blur-3xl -z-10" aria-hidden="true"></div>
+          <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,5vw,7rem)] py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100svh-72px)]">
+            <div className="fade-in">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-lila-100 dark:bg-white/10 text-lila-800 dark:text-lila-100 text-sm font-medium">
+                <span className="w-2 h-2 rounded-full bg-rosa-400"></span> Plataforma EdTech · Proyecto de muestra
+              </span>
+              <h1 className="font-display font-bold text-[clamp(2.4rem,1.4rem+4.5vw,4.8rem)] leading-[1.05] tracking-tight mt-5">
+                Aprende tecnología <span className="text-lila-600 dark:text-rosa-200">a tu ritmo</span>, con una comunidad que te impulsa.
+              </h1>
+              <p className="mt-5 text-lg text-tinta-soft dark:text-lila-100/80 max-w-xl">Cursos cortos y prácticos de programación, datos y diseño, con proyectos reales y mentorías en vivo.</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a href="#cursos" className="px-6 py-3.5 rounded-full bg-lila-600 text-white font-semibold shadow-suave hover:bg-lila-800 hover:-translate-y-0.5 transition">Explorar cursos</a>
+                <a href="#planes" className="px-6 py-3.5 rounded-full border border-lila-200 dark:border-white/15 font-semibold hover:border-lila-600 hover:-translate-y-0.5 transition">Ver planes</a>
+              </div>
+              <dl className="mt-10 grid grid-cols-3 gap-4 max-w-md">
+                {[["120+", "lecciones*"], ["4,9", "valoración*"], ["24/7", "acceso"]].map(([n, t]) => (
+                  <div key={t}><dt className="font-display text-2xl font-bold text-lila-800 dark:text-rosa-200">{n}</dt><dd className="text-sm text-tinta-soft dark:text-lila-100/70">{t}</dd></div>
+                ))}
+              </dl>
+              <p className="text-xs text-tinta-soft/70 mt-2">* Cifras ficticias con fines demostrativos.</p>
+            </div>
+            <div className="relative fade-in" style={{ animationDelay: ".15s" }}>
+              <Foto src={IMG.hero} alt="Estudiante aprendiendo en línea con su computadora" className="w-full aspect-[4/5] lg:aspect-[4/4.6] rounded-[2rem] shadow-suave" />
+              <div className="absolute -left-4 md:-left-8 bottom-10 bg-white dark:bg-[#211a30] rounded-2xl shadow-suave p-4 flex items-center gap-3 border border-lila-100 dark:border-white/10">
+                <span className="w-10 h-10 rounded-xl bg-rosa-100 grid place-items-center text-lg" aria-hidden="true">🎓</span>
+                <div><p className="text-sm font-semibold">Certificado incluido</p><p className="text-xs text-tinta-soft dark:text-lila-100/70">al completar cada ruta</p></div>
+              </div>
+              <div className="absolute -right-2 md:-right-6 top-10 bg-white dark:bg-[#211a30] rounded-2xl shadow-suave px-4 py-3 border border-lila-100 dark:border-white/10">
+                <p className="text-xs text-tinta-soft dark:text-lila-100/70">Progreso semanal</p>
+                <div className="mt-2 w-36 h-2 rounded-full bg-lila-100 dark:bg-white/10 overflow-hidden"><div className="h-full w-3/4 bg-gradient-to-r from-lila-600 to-rosa-400 rounded-full"></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ============================================================
+       Cursos: filtros + buscador + modal de vista previa + PDF
+       ============================================================ */
+    function Cursos({ onPDF }: { onPDF: (c: Curso) => void }) {
+      const [cat, setCat] = useState<Categoria>("todos");
+      const [q, setQ] = useState("");
+      const [activo, setActivo] = useState<Curso | null>(null);
+      const lista = useMemo(() => CURSOS.filter(c =>
+        (cat === "todos" || c.categoria === cat) && c.titulo.toLowerCase().includes(q.trim().toLowerCase())), [cat, q]);
+
+      useEffect(() => {
+        const esc = (e: KeyboardEvent) => e.key === "Escape" && setActivo(null);
+        addEventListener("keydown", esc); return () => removeEventListener("keydown", esc);
+      }, []);
+
+      const cats: Categoria[] = ["todos", "frontend", "datos", "diseño"];
+      return (
+        <section id="cursos" className="mx-auto max-w-[1440px] px-[clamp(1.25rem,5vw,7rem)] py-20 scroll-mt-20">
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-10">
+            <div>
+              <p className="text-sm font-semibold tracking-widest uppercase text-lila-600 dark:text-rosa-200">Catálogo</p>
+              <h2 className="font-display font-bold text-[clamp(1.8rem,1.2rem+2vw,3rem)] mt-2">Encuentra tu próximo curso</h2>
+            </div>
+            <label className="relative w-full sm:w-72">
+              <span className="sr-only">Buscar curso</span>
+              <input value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar curso…"
+                className="w-full pl-11 pr-4 py-3 rounded-full border border-lila-200 dark:border-white/15 bg-white dark:bg-white/5 focus:outline-none focus:ring-4 focus:ring-lila-200 dark:focus:ring-lila-800" />
+              <svg viewBox="0 0 24 24" className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-lila-400" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            </label>
+          </div>
+          <div className="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filtrar por categoría">
+            {cats.map(c => (
+              <button key={c} type="button" onClick={() => setCat(c)} aria-pressed={cat === c}
+                className={cx("px-4 py-2 rounded-full border text-sm capitalize transition",
+                  cat === c ? "bg-lila-800 border-lila-800 text-white" : "border-lila-200 dark:border-white/15 hover:border-lila-600")}>{c}</button>
+            ))}
+          </div>
+
+          {lista.length === 0 && <p className="text-tinta-soft py-10 text-center">No encontramos cursos con esa búsqueda.</p>}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {lista.map((c, i) => (
+              <article key={c.id} className="fade-in group rounded-3xl border border-lila-100 dark:border-white/10 bg-white dark:bg-white/[.03] overflow-hidden hover:-translate-y-1.5 hover:shadow-suave transition duration-500" style={{ animationDelay: `${i * 60}ms` }}>
+                <div className="overflow-hidden"><Foto src={c.img} alt={`Imagen del curso ${c.titulo}`} className="w-full aspect-[16/10] group-hover:scale-105 transition duration-700" /></div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="px-2.5 py-1 rounded-full bg-lila-100 dark:bg-white/10 text-lila-800 dark:text-lila-100 capitalize">{c.categoria}</span>
+                    <span className="text-tinta-soft dark:text-lila-100/70">{c.nivel} · {c.horas} h</span>
+                  </div>
+                  <h3 className="font-display font-semibold text-xl mt-3">{c.titulo}</h3>
+                  <p className="text-sm text-tinta-soft dark:text-lila-100/70 mt-1">{c.resumen}</p>
+                  <div className="flex items-center justify-between mt-5">
+                    <span className="font-display font-bold text-2xl text-lila-800 dark:text-rosa-200">${c.precio}</span>
+                    <button type="button" onClick={() => setActivo(c)} className="text-sm font-semibold text-lila-600 dark:text-rosa-200 hover:underline">Vista previa →</button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* Modal de vista previa */}
+          <div className={cx("fixed inset-0 z-[80] grid place-items-center p-4 bg-tinta/50 backdrop-blur-sm transition-opacity duration-300",
+            activo ? "opacity-100" : "opacity-0 pointer-events-none")} onClick={e => e.target === e.currentTarget && setActivo(null)}
+            role="dialog" aria-modal="true" aria-hidden={!activo} aria-label={activo ? `Vista previa de ${activo.titulo}` : undefined}>
+            {activo && (
+              <div className="w-full max-w-2xl bg-white dark:bg-[#1d1729] rounded-3xl overflow-hidden grid md:grid-cols-2 fade-in">
+                <Foto src={activo.img} alt={activo.titulo} className="w-full h-48 md:h-full" />
+                <div className="p-7 relative">
+                  <button type="button" onClick={() => setActivo(null)} aria-label="Cerrar" className="absolute top-4 right-4 w-9 h-9 rounded-full border border-lila-200 dark:border-white/15">✕</button>
+                  <p className="text-xs uppercase tracking-widest text-lila-600 dark:text-rosa-200">{activo.nivel} · {activo.horas} h</p>
+                  <h3 className="font-display font-bold text-2xl mt-2 pr-8">{activo.titulo}</h3>
+                  <ol className="mt-4 space-y-2 text-sm">
+                    {activo.temario.map((t, i) => <li key={t} className="flex gap-3"><span className="text-lila-600 dark:text-rosa-200 font-semibold">0{i + 1}</span>{t}</li>)}
+                  </ol>
+                  <button type="button" onClick={() => onPDF(activo)} className="mt-6 w-full px-5 py-3 rounded-full bg-lila-600 text-white font-semibold hover:bg-lila-800 transition">Descargar temario PDF</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    /* ============================================================
+       Carrusel de testimonios (flechas, puntos, teclado, táctil)
+       ============================================================ */
+    function Carrusel() {
+      const [i, setI] = useState(0);
+      const [pausa, setPausa] = useState(false);
+      const inicioX = useRef<number | null>(null);
+      const total = TESTIMONIOS.length;
+      const ir = useCallback((d: number) => setI(v => (v + d + total) % total), [total]);
+
+      useEffect(() => {
+        if (pausa || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const t = setInterval(() => ir(1), 5000); return () => clearInterval(t);
+      }, [pausa, ir]);
+
+      return (
+        <section id="comunidad" className="bg-lila-50 dark:bg-white/[.02] py-20 scroll-mt-20">
+          <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,5vw,7rem)] grid lg:grid-cols-[1fr_1.3fr] gap-12 items-center">
+            <div>
+              <p className="text-sm font-semibold tracking-widest uppercase text-lila-600 dark:text-rosa-200">Comunidad</p>
+              <h2 className="font-display font-bold text-[clamp(1.8rem,1.2rem+2vw,3rem)] mt-2">Historias que inspiran</h2>
+              <p className="text-tinta-soft dark:text-lila-100/70 mt-3">Testimonios ficticios que muestran la experiencia que buscamos crear.</p>
+              <Foto src={IMG.comunidad} alt="Grupo de estudiantes colaborando" className="hidden lg:block w-full aspect-[16/10] rounded-3xl mt-8 shadow-suave" />
+            </div>
+            <div onMouseEnter={() => setPausa(true)} onMouseLeave={() => setPausa(false)}
+              onKeyDown={e => { if (e.key === "ArrowRight") ir(1); if (e.key === "ArrowLeft") ir(-1); }}
+              onPointerDown={e => (inicioX.current = e.clientX)}
+              onPointerUp={e => { if (inicioX.current === null) return; const dx = e.clientX - inicioX.current; if (Math.abs(dx) > 45) ir(dx < 0 ? 1 : -1); inicioX.current = null; }}
+              aria-roledescription="carrusel" aria-label="Testimonios" tabIndex={0} className="touch-pan-y select-none focus:outline-none">
+              <div className="overflow-hidden rounded-3xl">
+                <div className="flex transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)]" style={{ transform: `translateX(-${i * 100}%)` }}>
+                  {TESTIMONIOS.map((t, k) => (
+                    <figure key={t.nombre} className="min-w-full p-8 md:p-12 bg-white dark:bg-[#1d1729] border border-lila-100 dark:border-white/10 rounded-3xl"
+                      aria-roledescription="diapositiva" aria-label={`${k + 1} de ${total}`} aria-hidden={k !== i}>
+                      <svg viewBox="0 0 24 24" className="w-10 h-10 text-rosa-400" fill="currentColor" aria-hidden="true"><path d="M7 7h4v4H8a3 3 0 0 0 3 3v3a6 6 0 0 1-6-6V9a2 2 0 0 1 2-2zm9 0h4v4h-3a3 3 0 0 0 3 3v3a6 6 0 0 1-6-6V9a2 2 0 0 1 2-2z"/></svg>
+                      <blockquote className="font-display text-[clamp(1.2rem,1rem+1vw,1.8rem)] leading-snug mt-4">“{t.texto}”</blockquote>
+                      <figcaption className="mt-6 text-sm"><b>{t.nombre}</b> · <span className="text-tinta-soft dark:text-lila-100/70">{t.rol}</span></figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-between mt-6">
+                <div className="flex gap-2" role="tablist" aria-label="Elegir testimonio">
+                  {TESTIMONIOS.map((_, k) => (
+                    <button key={k} type="button" role="tab" aria-selected={k === i} aria-label={`Testimonio ${k + 1}`} onClick={() => setI(k)}
+                      className={cx("h-2.5 rounded-full transition-all duration-500", k === i ? "w-8 bg-lila-600" : "w-2.5 bg-lila-200 dark:bg-white/20")}></button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm tabular-nums text-tinta-soft dark:text-lila-100/70 mr-2">{String(i + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
+                  {[-1, 1].map(d => (
+                    <button key={d} type="button" onClick={() => ir(d)} aria-label={d < 0 ? "Anterior" : "Siguiente"}
+                      className="w-11 h-11 rounded-full border border-lila-200 dark:border-white/15 grid place-items-center hover:bg-lila-800 hover:text-white transition">
+                      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2"><path d={d < 0 ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"}/></svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ============================================================
+       Planes con interruptor mensual / anual
+       ============================================================ */
+    function Planes({ onPDF }: { onPDF: () => void }) {
+      const [anual, setAnual] = useState(true);
+      const planes = [
+        { nombre: "Explora", precio: 0, desc: "Para empezar sin compromiso.", items: ["3 lecciones gratis", "Comunidad abierta", "Retos semanales"] },
+        { nombre: "Impulsa", precio: 19, desc: "El favorito para aprender en serio.", items: ["Todos los cursos", "Proyectos guiados", "Certificados", "Mentoría grupal"], destacado: true },
+        { nombre: "Brilla", precio: 39, desc: "Acompañamiento personalizado.", items: ["Todo lo de Impulsa", "Mentoría 1:1 mensual", "Revisión de portafolio", "Bolsa de empleo"] }
+      ];
+      return (
+        <section id="planes" className="mx-auto max-w-[1440px] px-[clamp(1.25rem,5vw,7rem)] py-20 scroll-mt-20">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-sm font-semibold tracking-widest uppercase text-lila-600 dark:text-rosa-200">Planes</p>
+            <h2 className="font-display font-bold text-[clamp(1.8rem,1.2rem+2vw,3rem)] mt-2">Elige cómo quieres aprender</h2>
+            <div className="inline-flex items-center gap-3 mt-6 p-1.5 rounded-full bg-lila-100 dark:bg-white/10" role="group" aria-label="Periodo de facturación">
+              {[false, true].map(a => (
+                <button key={String(a)} type="button" aria-pressed={anual === a} onClick={() => setAnual(a)}
+                  className={cx("px-5 py-2 rounded-full text-sm font-semibold transition", anual === a ? "bg-white dark:bg-lila-800 shadow" : "text-tinta-soft dark:text-lila-100/70")}>
+                  {a ? "Anual (−20 %)" : "Mensual"}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 mt-12">
+            {planes.map(p => {
+              const precio = anual ? Math.round(p.precio * 0.8) : p.precio;
+              return (
+                <article key={p.nombre} className={cx("rounded-3xl p-8 border transition duration-500 hover:-translate-y-1.5",
+                  p.destacado ? "bg-lila-800 text-white border-lila-800 shadow-suave" : "bg-white dark:bg-white/[.03] border-lila-100 dark:border-white/10")}>
+                  <h3 className="font-display font-semibold text-xl">{p.nombre}</h3>
+                  <p className={cx("text-sm mt-1", p.destacado ? "text-lila-100" : "text-tinta-soft dark:text-lila-100/70")}>{p.desc}</p>
+                  <p className="mt-6"><span className="font-display font-bold text-5xl">${precio}</span><span className="text-sm opacity-80"> /mes</span></p>
+                  <ul className="mt-6 space-y-2.5 text-sm">{p.items.map(it => <li key={it} className="flex gap-2"><span className={p.destacado ? "text-rosa-200" : "text-lila-600"}>✓</span>{it}</li>)}</ul>
+                  <a href="#contacto" className={cx("block text-center mt-8 px-5 py-3 rounded-full font-semibold transition",
+                    p.destacado ? "bg-white text-lila-800 hover:bg-rosa-100" : "border border-lila-200 dark:border-white/15 hover:border-lila-600")}>Elegir {p.nombre}</a>
+                </article>
+              );
+            })}
+          </div>
+          <div className="text-center mt-10">
+            <button type="button" onClick={onPDF} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-lila-200 dark:border-white/15 font-semibold hover:border-lila-600 transition">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
+              Descargar catálogo completo (PDF)
+            </button>
+          </div>
+        </section>
+      );
+    }
+
+    /* ============================================================
+       Formulario con validación en tiempo real
+       ============================================================ */
+    function Contacto({ toast }: { toast: (m: string) => void }) {
+      const [datos, setDatos] = useState({ nombre: "", correo: "", interes: "frontend", acepto: false });
+      const [tocado, setTocado] = useState<Record<string, boolean>>({});
+      const errores = {
+        nombre: datos.nombre.trim().length < 2 ? "Escribe al menos 2 caracteres." : "",
+        correo: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(datos.correo) ? "" : "Revisa el formato del correo.",
+        acepto: datos.acepto ? "" : "Necesitamos tu autorización."
+      };
+      const valido = !errores.nombre && !errores.correo && !errores.acepto;
+      const campo = (k: keyof typeof errores) => cx("w-full px-4 py-3 rounded-2xl border bg-white dark:bg-white/5 focus:outline-none focus:ring-4 focus:ring-lila-200 dark:focus:ring-lila-800 transition",
+        !tocado[k] ? "border-lila-200 dark:border-white/15" : errores[k] ? "border-rose-400" : "border-emerald-400");
+
+      const enviar = (e: React.FormEvent) => {
+        e.preventDefault();
+        setTocado({ nombre: true, correo: true, acepto: true });
+        if (!valido) { toast("Revisa los campos marcados"); return; }
+        toast("¡Listo! Formulario de demostración: no se envió ningún dato.");
+        setDatos({ nombre: "", correo: "", interes: "frontend", acepto: false }); setTocado({});
+      };
+
+      return (
+        <section id="contacto" className="mx-auto max-w-[1440px] px-[clamp(1.25rem,5vw,7rem)] pb-20 scroll-mt-20">
+          <div className="rounded-[2rem] bg-gradient-to-br from-lila-100 via-white to-rosa-100 dark:from-lila-800/40 dark:via-transparent dark:to-rosa-400/10 p-8 md:p-14 grid lg:grid-cols-2 gap-10">
+            <div>
+              <p className="text-sm font-semibold tracking-widest uppercase text-lila-600 dark:text-rosa-200">Clase de prueba</p>
+              <h2 className="font-display font-bold text-[clamp(1.8rem,1.2rem+2vw,3rem)] mt-2">Reserva tu clase gratuita</h2>
+              <p className="text-tinta-soft dark:text-lila-100/70 mt-3 max-w-md">Te enviaremos el enlace y un plan de estudio sugerido según tu interés.</p>
+            </div>
+            <form noValidate onSubmit={enviar} className="space-y-4" aria-label="Reservar clase gratuita">
+              <div>
+                <label htmlFor="nombre" className="block text-sm font-semibold mb-1.5">Nombre *</label>
+                <input id="nombre" className={campo("nombre")} value={datos.nombre} aria-invalid={!!(tocado.nombre && errores.nombre)}
+                  onChange={e => { setDatos({ ...datos, nombre: e.target.value }); setTocado({ ...tocado, nombre: true }); }} />
+                <p className={cx("text-xs mt-1 min-h-4", tocado.nombre && errores.nombre ? "text-rose-500" : "text-emerald-600")}>{tocado.nombre ? (errores.nombre || "¡Perfecto!") : ""}</p>
+              </div>
+              <div>
+                <label htmlFor="correo" className="block text-sm font-semibold mb-1.5">Correo *</label>
+                <input id="correo" type="email" className={campo("correo")} value={datos.correo} aria-invalid={!!(tocado.correo && errores.correo)}
+                  onChange={e => { setDatos({ ...datos, correo: e.target.value }); setTocado({ ...tocado, correo: true }); }} />
+                <p className={cx("text-xs mt-1 min-h-4", tocado.correo && errores.correo ? "text-rose-500" : "text-emerald-600")}>{tocado.correo ? (errores.correo || "Correo válido.") : ""}</p>
+              </div>
+              <div>
+                <label htmlFor="interes" className="block text-sm font-semibold mb-1.5">Me interesa</label>
+                <select id="interes" className="w-full px-4 py-3 rounded-2xl border border-lila-200 dark:border-white/15 bg-white dark:bg-[#1d1729]" value={datos.interes}
+                  onChange={e => setDatos({ ...datos, interes: e.target.value })}>
+                  <option value="frontend">Frontend</option><option value="datos">Datos</option><option value="diseño">Diseño UX/UI</option>
+                </select>
+              </div>
+              <label className="flex items-start gap-3 text-sm">
+                <input type="checkbox" className="mt-1 w-4 h-4 accent-[#7c5cc4]" checked={datos.acepto}
+                  onChange={e => { setDatos({ ...datos, acepto: e.target.checked }); setTocado({ ...tocado, acepto: true }); }} />
+                Acepto recibir información sobre la clase de prueba.
+              </label>
+              {tocado.acepto && errores.acepto && <p className="text-xs text-rose-500">{errores.acepto}</p>}
+              <button type="submit" className="w-full px-6 py-3.5 rounded-full bg-lila-600 text-white font-semibold hover:bg-lila-800 transition">Reservar clase</button>
+            </form>
+          </div>
+        </section>
+      );
+    }
+
+    /* ============================================================
+       Generación de PDF (jsPDF)
+       ============================================================ */
+    function generarPDF(cursos: Curso[], titulo: string, archivo: string) {
+      const jspdf = (window as any).jspdf;
+      if (!jspdf) { alert("El generador de PDF aún se está cargando. Inténtalo de nuevo."); return; }
+      const doc = new jspdf.jsPDF({ unit: "mm", format: "a4" });
+      const W = 210, M = 18; let y = 0;
+      const lila: [number, number, number] = [124, 92, 196], tinta: [number, number, number] = [31, 26, 46];
+
+      doc.setFillColor(238, 232, 251); doc.rect(0, 0, W, 58, "F");
+      doc.setFillColor(...lila); doc.roundedRect(M, 16, 14, 14, 3, 3, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(24); doc.setTextColor(...tinta);
+      doc.text("Lunaria Learn", M + 20, 27);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.setTextColor(93, 86, 112);
+      doc.text(titulo, M, 44); doc.text("Documento de muestra para portafolio", M, 50);
+      y = 72;
+
+      cursos.forEach(c => {
+        if (y > 245) { doc.addPage(); y = 22; }
+        doc.setDrawColor(221, 210, 246); doc.roundedRect(M, y - 6, W - 2 * M, 44, 3, 3, "S");
+        doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(...tinta); doc.text(c.titulo, M + 5, y + 2);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(...lila);
+        doc.text(`${c.categoria.toUpperCase()} · ${c.nivel} · ${c.horas} h · USD ${c.precio}`, M + 5, y + 8);
+        doc.setTextColor(...tinta); doc.text(doc.splitTextToSize(c.resumen, W - 2 * M - 10), M + 5, y + 15);
+        doc.setTextColor(93, 86, 112); doc.text(c.temario.map((t, i) => `${i + 1}. ${t}`).join("   "), M + 5, y + 24, { maxWidth: W - 2 * M - 10 });
+        y += 52;
+      });
+
+      doc.setFillColor(...lila); doc.rect(0, 287, W, 10, "F");
+      doc.setFont("helvetica", "italic"); doc.setFontSize(8.5); doc.setTextColor(255, 255, 255);
+      doc.text("Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire", W / 2, 293, { align: "center" });
+      doc.save(archivo);
+    }
+
+    /* ============================================================
+       App
+       ============================================================ */
+    function App() {
+      const [oscuro, setOscuro] = useState<boolean>(() => { try { return localStorage.getItem("lunaria-dark") === "1"; } catch { return false; } });
+      const { toast, Toast } = useToast();
+      useEffect(() => {
+        document.documentElement.classList.toggle("dark", oscuro);
+        try { localStorage.setItem("lunaria-dark", oscuro ? "1" : "0"); } catch { /* sin almacenamiento */ }
+      }, [oscuro]);
+
+      return (
+        <>
+          <Header oscuro={oscuro} setOscuro={setOscuro} />
+          <main>
+            <Hero />
+            <Cursos onPDF={c => { generarPDF([c], `Temario del curso · ${c.titulo}`, `Lunaria-${c.id}-temario.pdf`); toast("Temario descargado"); }} />
+            <Carrusel />
+            <Planes onPDF={() => { generarPDF(CURSOS, "Catálogo de cursos", "Lunaria-catalogo.pdf"); toast("Catálogo descargado"); }} />
+            <Contacto toast={toast} />
+          </main>
+          <footer className="border-t border-lila-100 dark:border-white/10 py-10">
+            <div className="mx-auto max-w-[1440px] px-[clamp(1.25rem,5vw,7rem)] flex flex-wrap justify-between gap-4 text-sm text-tinta-soft dark:text-lila-100/70">
+              <span>© {new Date().getFullYear()} Lunaria Learn · Marca ficticia</span>
+              <span>Hecho con React 18, TypeScript y Tailwind CSS · Fotos de Unsplash: Mary Eineman, Arnold Francisca, Deng Xiang, Amélie Mourichon y Brooke Cagle</span>
+            </div>
+            <p className="text-center text-xs italic text-tinta-soft dark:text-lila-100/60 mt-6 px-6">✦ Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire</p>
+          </footer>
+          <Toast />
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chanchito Aplicación · Caso de estudio · Valentina Quintero</title>
+  <meta name="description" content="Caso de estudio de la tesis Chanchito Aplicación: aplicación web full-stack para una clínica veterinaria con Node.js, Express y MySQL.">
+  <meta name="theme-color" content="#0c0d10">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230c0d10'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Georgia' font-size='34' fill='%23ff5a3c'%3EV%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <script>document.documentElement.classList.remove('no-js');try{var t=localStorage.getItem('vq-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+  <script type="module">
+    import { initTheme } from "../assets/js/modules/theme.js";
+    import { initNav } from "../assets/js/modules/nav.js";
+    import { initReveal } from "../assets/js/modules/reveal.js";
+    import { initPointerEffects } from "../assets/js/modules/pointer.js";
+    initTheme(); initNav(); initReveal(); initPointerEffects();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <nav class="container nav" aria-label="Principal">
+      <a class="brand" href="../index.html">Valentina<span>.</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html#proyectos">Proyectos</a></li>
+        <li><a href="../index.html#servicios">Servicios</a></li>
+        <li><a href="../index.html#contacto">Contacto</a></li>
+      </ul>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Cambiar entre tema claro y oscuro">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="contenido" class="container">
+    <header class="case-hero">
+      <a class="eyebrow reveal" href="../index.html#tesis">← Volver al portafolio</a>
+      <h1 class="reveal">Chanchito Aplicación</h1>
+      <p class="reveal">Una aplicación web full-stack que conecta a los dueños de mascotas con su veterinario: solicitudes de consulta, aprobación y un historial clínico ordenado, todo desde el navegador.</p>
+    </header>
+
+    <div class="case-grid">
+      <aside class="case-aside reveal">
+        <div class="card" style="padding:1.5rem">
+          <dl>
+            <div><dt>Proyecto</dt><dd>Tesis de grado · Ingeniería en Informática (URBE)</dd></div>
+            <div><dt>Equipo</dt><dd>Desarrollo en conjunto con un compañero de carrera</dd></div>
+            <div><dt>Mi rol</dt><dd>Co-desarrolladora full-stack</dd></div>
+            <div><dt>Stack</dt><dd>Node.js · Express · MySQL · JavaScript · HTML · SCSS · Nodemailer</dd></div>
+            <div><dt>Código</dt><dd>Repositorio privado (disponible a solicitud)</dd></div>
+          </dl>
+        </div>
+      </aside>
+
+      <article class="case-body">
+        <h2 class="reveal">El problema</h2>
+        <p class="reveal">En una consulta veterinaria pequeña, las solicitudes llegan por llamadas y mensajes sueltos: se pierden datos, el veterinario no ve de un vistazo qué está pendiente y los dueños no saben en qué estado está su solicitud.</p>
+
+        <h2 class="reveal">La solución</h2>
+        <p class="reveal">Una aplicación web con dos perfiles —dueño de mascota y veterinario— que centraliza el proceso de principio a fin.</p>
+        <div class="flow">
+          <div class="card reveal"><b>Registro</b><span>El dueño crea su cuenta e inicia sesión de forma segura.</span></div>
+          <div class="card reveal"><b>Paciente</b><span>Registra a su mascota (perro o gato) con sus datos.</span></div>
+          <div class="card reveal"><b>Solicitud</b><span>Pide una consulta; el veterinario la acepta o la rechaza.</span></div>
+          <div class="card reveal"><b>Historial</b><span>Ambos consultan el historial de consultas del paciente.</span></div>
+        </div>
+
+        <h2 class="reveal">Funcionalidades principales</h2>
+        <ul class="reveal">
+          <li>Registro, inicio y cierre de sesión, con sesiones basadas en cookies.</li>
+          <li>Recuperación de contraseña por correo electrónico (Nodemailer).</li>
+          <li>Registro de pacientes y consulta por usuario.</li>
+          <li>Solicitudes de consulta con estado visible: activas, en curso, aceptadas o rechazadas.</li>
+          <li>Historial clínico por paciente y vista de perfil.</li>
+          <li>Interfaz con estilos organizados en SCSS y vistas separadas para cada flujo.</li>
+        </ul>
+
+        <h2 class="reveal">Arquitectura</h2>
+        <div class="arch reveal">Navegador (HTML · SCSS · JavaScript)
+   │  login · registro · perfil · solicitud · historial
+   ▼
+Servidor Node.js + Express
+   │  rutas REST: /paciente · /solicitudes-por-usuario/:id
+   │              /historial · /verificar-datos · /logout
+   │  middlewares: cookie-parser · method-override
+   ├──► Nodemailer  →  correos de recuperación de clave
+   ▼
+Base de datos MySQL  →  usuarios · pacientes · solicitudes · historial</div>
+
+        <h2 class="reveal">Qué aprendí</h2>
+        <ul class="reveal">
+          <li>Modelar un proceso real (la consulta veterinaria) como datos, rutas y pantallas.</li>
+          <li>Conectar frontend, API y base de datos en una sola aplicación coherente.</li>
+          <li>Trabajar en equipo con Git: ramas, commits frecuentes e integración de cambios.</li>
+          <li>Diseñar para dos usuarios con necesidades distintas en la misma interfaz.</li>
+        </ul>
+
+        <p class="note reveal">El código de la tesis se mantiene en un repositorio privado. Si quieres verlo en una entrevista o revisión técnica, <a href="mailto:valentinaquintero14102002@gmail.com" style="text-decoration:underline">escríbeme</a> y te muestro una demo.</p>
+
+        <div class="hero-actions reveal" style="margin:3rem 0 5rem">
+          <a class="btn btn-primary magnetic" href="../index.html#proyectos">Ver más proyectos</a>
+          <a class="btn btn-ghost magnetic" href="../index.html#contacto">Trabajemos juntos</a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© 2026 Valentina Quintero</span>
+      <span><a href="../index.html" style="text-decoration:underline">Volver al inicio</a></span>
+    </div>
+  </footer>
+</body>
+</html>

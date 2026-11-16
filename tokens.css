@@ -1,0 +1,65 @@
+/* ==========================================================
+   Design tokens — Valentina Quintero · Portfolio
+   Cambia aquí colores, tipografías y espaciados de todo el sitio.
+   ========================================================== */
+:root {
+  /* Paleta (modo oscuro por defecto) */
+  --bg: #0c0d10;
+  --bg-soft: #14161b;
+  --surface: #191c22;
+  --line: #2a2e37;
+  --ink: #f3efe8;
+  --ink-soft: #b9b4ab;
+  --muted: #7d7a74;
+  --accent: #ff5a3c;          /* coral eléctrico */
+  --accent-ink: #0c0d10;
+  --accent-soft: rgba(255, 90, 60, 0.14);
+  --ok: #7dd3a7;
+
+  /* Tipografía */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --fs-xs: 0.78rem;
+  --fs-sm: 0.9rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.2rem;
+  --fs-xl: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+  --fs-hero: clamp(2.8rem, 1.6rem + 6vw, 6.4rem);
+
+  /* Espaciado y forma */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --radius: 18px;
+  --radius-sm: 10px;
+  --container: 1180px;
+
+  /* Movimiento */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 600ms;
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f2ec;
+  --bg-soft: #ece8e0;
+  --surface: #ffffff;
+  --line: #ddd7cc;
+  --ink: #121316;
+  --ink-soft: #4a4a4f;
+  --muted: #7a776f;
+  --accent: #e8442a;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(232, 68, 42, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 0ms; }
+}

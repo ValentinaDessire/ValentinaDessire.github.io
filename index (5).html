@@ -1,0 +1,611 @@
+<!doctype html>
+<!--
+  ============================================================
+  03 · Maison Pétale — Boutique de moda femenina
+  Stack: HTML5 + CSS3 + Vue 3 (CDN, Options API) + jsPDF (CDN)
+  Extra: selector de idioma ES / EN hecho con Vue (i18n ligero).
+  Proyecto de muestra para portafolio. Marca y textos ficticios.
+  Fotografías: Unsplash (licencia Unsplash). Código: licencia MIT.
+  Autora: Valentina Dessire
+  ============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maison Pétale · Boutique de moda (proyecto de muestra)</title>
+  <meta name="description" content="Maison Pétale: boutique ficticia de moda femenina hecha con Vue 3. Plantilla de portafolio por Valentina Dessire.">
+  <meta name="theme-color" content="#FFFBF8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <style>
+    /* ================= 1. TOKENS ================= */
+    :root {
+      --marfil: #FFFBF8; --nude: #F3DCD4; --nude-2: #F9ECE7; --rosa: #C98A8B; --vino: #5B1E2D; --dorado: #B8925A;
+      --ink: #2a1a1e; --ink-soft: #6f5a5f; --line: #ecd9d2; --white: #fff;
+      --font-display: "Bodoni Moda", Didot, Georgia, serif;
+      --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --container: 1440px; --gutter: clamp(1.25rem, 5vw, 7rem);
+      --radius: 4px; --shadow: 0 30px 60px -35px rgba(91, 30, 45, .45);
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-size: clamp(16px, .35vw + 11px, 20px); }
+    body { margin: 0; background: var(--marfil); color: var(--ink); font: 400 1rem/1.65 var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--dorado); outline-offset: 3px; }
+    .container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+    .eyebrow { font-size: .72rem; letter-spacing: .28em; text-transform: uppercase; color: var(--dorado); font-weight: 600; }
+    .display { font-family: var(--font-display); font-weight: 400; line-height: 1.05; letter-spacing: -.01em; margin: .4rem 0 1rem; }
+    h2.display { font-size: clamp(2.1rem, 4vw, 3.6rem); }
+    section { padding-block: clamp(4rem, 9vw, 8rem); }
+    .btn { display: inline-flex; align-items: center; gap: .6rem; padding: .95rem 1.7rem; border: 1px solid var(--vino); background: var(--vino); color: var(--marfil); text-decoration: none; font-size: .8rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; transition: background .3s, color .3s, transform .3s var(--ease); }
+    .btn:hover { background: transparent; color: var(--vino); }
+    .btn.ghost { background: transparent; color: var(--vino); }
+    .btn.ghost:hover { background: var(--vino); color: var(--marfil); }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    [v-cloak] { display: none; }
+
+    /* ================= 2. HEADER ================= */
+    .promo { background: var(--vino); color: var(--nude); text-align: center; font-size: .75rem; letter-spacing: .14em; padding: .55rem 1rem; text-transform: uppercase; }
+    header { position: sticky; top: 0; z-index: 50; background: rgba(255, 251, 248, .88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 76px; }
+    .logo { font-family: var(--font-display); font-size: 1.55rem; text-decoration: none; letter-spacing: .04em; }
+    .logo em { color: var(--rosa); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+    .nav-links a { text-decoration: none; font-size: .82rem; letter-spacing: .14em; text-transform: uppercase; position: relative; }
+    .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -4px; height: 1px; background: var(--dorado); transition: right .35s var(--ease); }
+    .nav-links a:hover::after { right: 0; }
+    .nav-tools { display: flex; align-items: center; gap: .5rem; }
+    .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+    .lang button { border: 0; background: none; padding: .35rem .7rem; font-size: .72rem; font-weight: 700; letter-spacing: .1em; }
+    .lang button[aria-pressed="true"] { background: var(--vino); color: var(--marfil); }
+    .icon-btn { position: relative; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--line); background: var(--white); border-radius: 50%; }
+    .icon-btn svg { width: 20px; height: 20px; }
+    .badge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--rosa); color: #fff; font-size: .7rem; font-weight: 700; display: grid; place-items: center; }
+    .burger { display: none; }
+    .mobile-menu { display: none; }
+
+    /* ================= 3. HERO ================= */
+    .hero { padding-block: clamp(2rem, 5vw, 4rem) clamp(3rem, 7vw, 6rem); }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(2rem, 5vw, 6rem); align-items: center; }
+    .hero h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.8rem, 6.4vw, 6.4rem); line-height: .98; margin: .8rem 0 1.4rem; }
+    .hero h1 em { color: var(--rosa); }
+    .hero p.lead { max-width: 34rem; color: var(--ink-soft); font-size: 1.08rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+    .hero-stats { display: flex; gap: clamp(1.5rem, 4vw, 3.5rem); margin-top: 2.8rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+    .hero-stats strong { display: block; font-family: var(--font-display); font-size: 2rem; font-weight: 400; color: var(--vino); }
+    .hero-stats span { font-size: .78rem; color: var(--ink-soft); letter-spacing: .06em; }
+    .hero-media { position: relative; }
+    .hero-media .main { aspect-ratio: 4 / 5; object-fit: cover; width: 100%; border-radius: 200px 200px var(--radius) var(--radius); box-shadow: var(--shadow); max-height: 82vh; }
+    .hero-media .mini { position: absolute; left: -12%; bottom: 8%; width: 38%; aspect-ratio: 1; object-fit: cover; border: 8px solid var(--marfil); box-shadow: var(--shadow); }
+    .hero-media .seal { position: absolute; right: -4%; top: 8%; width: 120px; height: 120px; border-radius: 50%; background: var(--nude); display: grid; place-items: center; text-align: center; font-family: var(--font-display); font-style: italic; color: var(--vino); line-height: 1.1; font-size: .95rem; animation: spin 18s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .credit { position: absolute; right: .6rem; bottom: .6rem; font-size: .65rem; color: #fff; background: rgba(42, 26, 30, .45); padding: .15rem .5rem; border-radius: 999px; }
+
+    /* ================= 4. CATÁLOGO ================= */
+    .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2.2rem; }
+    .filters { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .chip { padding: .55rem 1.1rem; border: 1px solid var(--line); background: var(--white); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; border-radius: 999px; transition: .3s; }
+    .chip[aria-pressed="true"] { background: var(--vino); border-color: var(--vino); color: var(--marfil); }
+    .tools { display: flex; gap: .7rem; align-items: center; flex-wrap: wrap; }
+    .tools select { padding: .55rem .9rem; border: 1px solid var(--line); background: var(--white); border-radius: 999px; font-size: .82rem; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1rem, 2vw, 2rem); }
+    .card { background: var(--white); border: 1px solid var(--line); display: flex; flex-direction: column; transition: transform .4s var(--ease), box-shadow .4s; }
+    .card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+    .card-img { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: var(--nude-2); }
+    .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+    .card:hover .card-img img { transform: scale(1.06); }
+    .tag { position: absolute; left: .8rem; top: .8rem; background: var(--marfil); padding: .25rem .6rem; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--vino); }
+    .fav { position: absolute; right: .7rem; top: .7rem; width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--marfil); display: grid; place-items: center; transition: transform .3s; }
+    .fav:hover { transform: scale(1.1); }
+    .fav svg { width: 18px; height: 18px; }
+    .fav[aria-pressed="true"] svg { fill: var(--rosa); stroke: var(--rosa); }
+    .card-body { padding: 1.1rem 1.1rem 1.3rem; display: flex; flex-direction: column; gap: .35rem; flex: 1; }
+    .card-body h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.3rem; margin: 0; }
+    .price { color: var(--vino); font-weight: 700; }
+    .sizes { display: flex; gap: .3rem; flex-wrap: wrap; margin: .3rem 0 .6rem; }
+    .sizes button { min-width: 36px; height: 32px; border: 1px solid var(--line); background: none; font-size: .74rem; }
+    .sizes button[aria-pressed="true"] { border-color: var(--vino); background: var(--nude); }
+    .card .btn { margin-top: auto; justify-content: center; padding: .75rem 1rem; }
+    .empty { text-align: center; color: var(--ink-soft); padding: 3rem 0; grid-column: 1 / -1; }
+
+    /* ================= 5. LOOKBOOK (carrusel) ================= */
+    .lookbook { background: var(--nude-2); }
+    .carousel { position: relative; overflow: hidden; }
+    .track { display: flex; transition: transform .8s var(--ease); }
+    .look { flex: 0 0 100%; display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(1.5rem, 4vw, 4rem); align-items: center; }
+    .look-img { position: relative; aspect-ratio: 16 / 11; overflow: hidden; }
+    .look-img img { width: 100%; height: 100%; object-fit: cover; }
+    .look h3 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 3.6vw, 3.2rem); margin: .5rem 0; line-height: 1.05; }
+    .look p { color: var(--ink-soft); max-width: 30rem; }
+    .car-ctrl { display: flex; align-items: center; gap: 1rem; margin-top: 2rem; }
+    .car-ctrl .icon-btn { background: var(--marfil); }
+    .progress { flex: 1; height: 2px; background: var(--line); position: relative; max-width: 260px; }
+    .progress span { position: absolute; inset: 0 auto 0 0; background: var(--vino); transition: width .6s var(--ease); }
+    .counter { font-family: var(--font-display); font-size: 1.2rem; }
+
+    /* ================= 6. GUÍA DE TALLAS ================= */
+    .sizer { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+    .sizer-box { background: var(--white); border: 1px solid var(--line); padding: clamp(1.5rem, 3vw, 2.6rem); }
+    .range { margin-bottom: 1.4rem; }
+    .range label { display: flex; justify-content: space-between; font-size: .85rem; font-weight: 600; margin-bottom: .4rem; }
+    .range input { width: 100%; accent-color: var(--vino); }
+    .result { display: flex; align-items: center; gap: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+    .result strong { font-family: var(--font-display); font-size: 3.2rem; font-weight: 400; color: var(--vino); line-height: 1; }
+
+    /* ================= 7. NEWSLETTER ================= */
+    .news { background: var(--vino); color: var(--marfil); text-align: center; }
+    .news .display { color: var(--marfil); }
+    .news p { color: var(--nude); max-width: 34rem; margin-inline: auto; }
+    .news form { display: flex; gap: .6rem; max-width: 520px; margin: 2rem auto 0; flex-wrap: wrap; }
+    .field { flex: 1 1 240px; text-align: left; }
+    .field input { width: 100%; padding: .95rem 1.1rem; border: 1px solid rgba(255, 255, 255, .35); background: transparent; color: var(--marfil); }
+    .field input::placeholder { color: rgba(243, 220, 212, .7); }
+    .field input[aria-invalid="true"] { border-color: #ffb3b8; }
+    .field small { display: block; min-height: 1.2em; font-size: .78rem; color: #ffc9cc; margin-top: .3rem; }
+    .news .btn { background: var(--dorado); border-color: var(--dorado); color: var(--vino); align-self: flex-start; }
+    .news .btn:hover { background: transparent; color: var(--marfil); }
+
+    /* ================= 8. CARRITO (drawer) ================= */
+    .overlay { position: fixed; inset: 0; background: rgba(42, 26, 30, .4); z-index: 70; opacity: 0; pointer-events: none; transition: opacity .35s; }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100%); background: var(--marfil); z-index: 80; transform: translateX(100%); transition: transform .5s var(--ease); display: flex; flex-direction: column; }
+    .drawer.open { transform: none; }
+    .drawer-head { display: flex; justify-content: space-between; align-items: center; padding: 1.3rem 1.5rem; border-bottom: 1px solid var(--line); }
+    .drawer-head h2 { font-family: var(--font-display); font-weight: 400; margin: 0; }
+    .drawer-list { flex: 1; overflow: auto; padding: 1rem 1.5rem; }
+    .line { display: grid; grid-template-columns: 64px 1fr auto; gap: .9rem; padding: .9rem 0; border-bottom: 1px solid var(--line); align-items: center; }
+    .line img { width: 64px; height: 80px; object-fit: cover; }
+    .line h4 { margin: 0; font-weight: 600; font-size: .9rem; }
+    .qty { display: inline-flex; align-items: center; border: 1px solid var(--line); margin-top: .35rem; }
+    .qty button { width: 28px; height: 28px; border: 0; background: none; }
+    .qty span { min-width: 24px; text-align: center; font-size: .85rem; }
+    .remove { border: 0; background: none; font-size: .75rem; text-decoration: underline; color: var(--ink-soft); }
+    .drawer-foot { padding: 1.3rem 1.5rem; border-top: 1px solid var(--line); display: grid; gap: .7rem; }
+    .row { display: flex; justify-content: space-between; font-size: .9rem; }
+    .row.total { font-weight: 700; font-size: 1.05rem; color: var(--vino); }
+    .ship { height: 4px; background: var(--line); }
+    .ship span { display: block; height: 100%; background: var(--dorado); transition: width .5s var(--ease); }
+
+    /* ================= 9. TOAST & FOOTER ================= */
+    .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 140%); background: var(--ink); color: var(--marfil); padding: .8rem 1.3rem; z-index: 90; font-size: .88rem; transition: transform .45s var(--ease), visibility .45s; }
+    .toast { visibility: hidden; } .toast.show { transform: translate(-50%, 0); visibility: visible; }
+    footer { padding: 3.5rem 0 2.5rem; border-top: 1px solid var(--line); }
+    .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; align-items: center; font-size: .82rem; color: var(--ink-soft); }
+    .credits { margin-top: 1.4rem; text-align: center; font-size: .72rem; color: var(--ink-soft); }
+    .footer-note { margin-top: 1rem; text-align: center; font-family: var(--font-display); font-style: italic; color: var(--vino); }
+
+    /* ================= 10. RESPONSIVE ================= */
+    @media (min-width: 1800px) { .grid { grid-template-columns: repeat(4, 1fr); } .hero-media .main { max-height: 900px; } }
+    @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } .nav-links { gap: 1.2rem; } }
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .burger { display: grid; }
+      .mobile-menu { display: block; position: fixed; inset: 76px 0 auto 0; background: var(--marfil); border-bottom: 1px solid var(--line); padding: 1rem var(--gutter) 1.6rem; transform: translateY(-120%); transition: transform .45s var(--ease); z-index: 40; }
+      .mobile-menu.open { transform: none; }
+      .mobile-menu a { display: block; padding: .9rem 0; border-bottom: 1px solid var(--line); text-decoration: none; font-family: var(--font-display); font-size: 1.4rem; }
+      .hero-grid, .sizer, .look { grid-template-columns: 1fr; }
+      .hero-media { max-width: 520px; margin-inline: auto; width: 100%; }
+      .hero-media .mini { left: -4%; }
+      .hero-media .seal { right: 0; }
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px) {
+      .nav { height: 66px; }
+      .mobile-menu { inset: 66px 0 auto 0; }
+      .logo { font-size: 1.25rem; }
+      .lang button { padding: .3rem .5rem; }
+      .icon-btn { width: 40px; height: 40px; }
+      .grid { grid-template-columns: 1fr 1fr; gap: .7rem; }
+      .card-body { padding: .8rem; }
+      .card-body h3 { font-size: 1.05rem; }
+      .sizes button { min-width: 30px; height: 28px; }
+      .hero-media .seal { width: 90px; height: 90px; font-size: .75rem; }
+      .hero-stats { gap: 1.2rem; }
+      .hero-stats strong { font-size: 1.5rem; }
+    }
+    @media (max-width: 380px) { .grid { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+<div id="app" v-cloak>
+  <div class="promo">{{ t.promo }}</div>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="container nav">
+      <a class="logo" href="#inicio">Maison <em>Pétale</em></a>
+      <nav aria-label="Principal">
+        <ul class="nav-links">
+          <li v-for="l in t.nav" :key="l.href"><a :href="l.href">{{ l.label }}</a></li>
+        </ul>
+      </nav>
+      <div class="nav-tools">
+        <div class="lang" role="group" aria-label="Idioma / Language">
+          <button type="button" :aria-pressed="lang === 'es'" @click="setLang('es')">ES</button>
+          <button type="button" :aria-pressed="lang === 'en'" @click="setLang('en')">EN</button>
+        </div>
+        <button class="icon-btn" type="button" @click="cartOpen = true" :aria-label="t.cartAria + ' (' + cartCount + ')'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+          <span class="badge" v-if="cartCount">{{ cartCount }}</span>
+        </button>
+        <button class="icon-btn burger" type="button" @click="menuOpen = !menuOpen" :aria-expanded="menuOpen" aria-controls="mobile-menu" :aria-label="t.menu">
+          <svg v-if="!menuOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+          <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-menu" id="mobile-menu" :class="{ open: menuOpen }" aria-label="Menú móvil">
+      <a v-for="l in t.nav" :key="'m' + l.href" :href="l.href" @click="menuOpen = false">{{ l.label }}</a>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">{{ t.heroEyebrow }}</span>
+          <h1 v-html="t.heroTitle"></h1>
+          <p class="lead">{{ t.heroLead }}</p>
+          <div class="hero-actions">
+            <a class="btn" href="#coleccion">{{ t.heroCta }}</a>
+            <button class="btn ghost" type="button" @click="downloadLookbook">{{ t.pdfBtn }}</button>
+          </div>
+          <div class="hero-stats">
+            <div><strong>48</strong><span>{{ t.stat1 }}</span></div>
+            <div><strong>100%</strong><span>{{ t.stat2 }}</span></div>
+            <div><strong>4.9★</strong><span>{{ t.stat3 }}</span></div>
+          </div>
+        </div>
+        <div class="hero-media">
+          <img class="main" :src="img('1532453288672-3a27e9be9efd', 1100)" :alt="t.heroAlt" fetchpriority="high">
+          <img class="mini" :src="img('1569397288884-4d43d6738fbd', 500)" alt="" loading="lazy">
+          <div class="seal" aria-hidden="true">{{ t.seal }}</div>
+          <span class="credit">Foto: Marcus Loke / Unsplash</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CATÁLOGO ===== -->
+    <section id="coleccion" style="padding-top:0">
+      <div class="container">
+        <div class="head">
+          <div><span class="eyebrow">{{ t.catEyebrow }}</span><h2 class="display">{{ t.catTitle }}</h2></div>
+          <div class="tools">
+            <div class="filters" role="group" :aria-label="t.filterAria">
+              <button v-for="c in cats" :key="c" class="chip" type="button" :aria-pressed="filter === c" @click="filter = c">{{ t.cats[c] }}</button>
+            </div>
+            <label class="sr-only" for="sort">{{ t.sortLabel }}</label>
+            <select id="sort" v-model="sort">
+              <option value="destacados">{{ t.sort.destacados }}</option>
+              <option value="asc">{{ t.sort.asc }}</option>
+              <option value="desc">{{ t.sort.desc }}</option>
+            </select>
+          </div>
+        </div>
+        <transition-group tag="div" class="grid" name="list">
+          <article class="card" v-for="p in visible" :key="p.id">
+            <div class="card-img">
+              <img :src="img(p.photo, 700)" :alt="p.name[lang]" loading="lazy">
+              <span class="tag" v-if="p.tag">{{ t.tags[p.tag] }}</span>
+              <button class="fav" type="button" :aria-pressed="favs.includes(p.id)" @click="toggleFav(p)" :aria-label="t.favAria + ' ' + p.name[lang]">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+              </button>
+            </div>
+            <div class="card-body">
+              <small class="eyebrow">{{ t.cats[p.cat] }}</small>
+              <h3>{{ p.name[lang] }}</h3>
+              <span class="price">{{ money(p.price) }}</span>
+              <div class="sizes" role="group" :aria-label="t.sizeAria">
+                <button v-for="s in p.sizes" :key="s" type="button" :aria-pressed="picked[p.id] === s" @click="picked[p.id] = s">{{ s }}</button>
+              </div>
+              <button class="btn" type="button" @click="addToCart(p)">{{ t.add }}</button>
+            </div>
+          </article>
+          <p class="empty" v-if="!visible.length" key="empty">{{ t.empty }}</p>
+        </transition-group>
+      </div>
+    </section>
+
+    <!-- ===== LOOKBOOK (carrusel) ===== -->
+    <section id="lookbook" class="lookbook">
+      <div class="container">
+        <span class="eyebrow">Lookbook</span>
+        <h2 class="display">{{ t.lookTitle }}</h2>
+        <div class="carousel" @mouseenter="pause = true" @mouseleave="pause = false" @touchstart.passive="touchStart" @touchend="touchEnd" aria-roledescription="carrusel" :aria-label="t.lookTitle">
+          <div class="track" :style="{ transform: 'translateX(' + (-slide * 100) + '%)' }">
+            <article class="look" v-for="(l, i) in looks" :key="i" :aria-hidden="slide !== i" role="group" aria-roledescription="diapositiva" :aria-label="(i + 1) + ' / ' + looks.length">
+              <div class="look-img"><img :src="img(l.photo, 1300)" :alt="l.title[lang]" loading="lazy"><span class="credit">Foto: {{ l.credit }} / Unsplash</span></div>
+              <div>
+                <span class="eyebrow">{{ t.chapter }} {{ i + 1 }}</span>
+                <h3>{{ l.title[lang] }}</h3>
+                <p>{{ l.text[lang] }}</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="car-ctrl">
+          <button class="icon-btn" type="button" @click="go(-1)" :aria-label="t.prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="icon-btn" type="button" @click="go(1)" :aria-label="t.next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="progress" aria-hidden="true"><span :style="{ width: ((slide + 1) / looks.length * 100) + '%' }"></span></div>
+          <span class="counter" aria-live="polite">0{{ slide + 1 }} / 0{{ looks.length }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== GUÍA DE TALLAS ===== -->
+    <section id="tallas">
+      <div class="container sizer">
+        <div>
+          <span class="eyebrow">{{ t.sizerEyebrow }}</span>
+          <h2 class="display">{{ t.sizerTitle }}</h2>
+          <p style="color:var(--ink-soft);max-width:30rem">{{ t.sizerText }}</p>
+        </div>
+        <div class="sizer-box">
+          <div class="range" v-for="m in ['busto', 'cintura', 'cadera']" :key="m">
+            <label :for="m"><span>{{ t.measures[m] }}</span><span>{{ measures[m] }} cm</span></label>
+            <input :id="m" type="range" min="70" max="130" v-model.number="measures[m]">
+          </div>
+          <div class="result" aria-live="polite">
+            <strong>{{ suggestedSize }}</strong>
+            <span>{{ t.sizeResult }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== NEWSLETTER ===== -->
+    <section id="club" class="news">
+      <div class="container">
+        <span class="eyebrow">Club Pétale</span>
+        <h2 class="display">{{ t.newsTitle }}</h2>
+        <p>{{ t.newsText }}</p>
+        <form novalidate @submit.prevent="subscribe">
+          <div class="field">
+            <label class="sr-only" for="email">Email</label>
+            <input id="email" type="email" v-model.trim="email" @input="touched && validate()" @blur="touched = true; validate()" :aria-invalid="!!emailError" aria-describedby="email-err" :placeholder="t.emailPh" autocomplete="email">
+            <small id="email-err">{{ emailError }}</small>
+          </div>
+          <button class="btn" type="submit">{{ t.join }}</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <a class="logo" href="#inicio">Maison <em>Pétale</em></a>
+        <span>{{ t.footer }}</span>
+        <span>© 2026 · MIT</span>
+      </div>
+      <p class="credits">{{ t.photos }} <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>: Marcus Loke, Andrej Lišakov, Genesis Warner, Jan Kopřiva, Alex Azabache, Chitto Cancio.</p>
+      <p class="footer-note">Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire</p>
+    </div>
+  </footer>
+
+  <!-- ===== CARRITO ===== -->
+  <div class="overlay" :class="{ open: cartOpen }" @click="cartOpen = false"></div>
+  <aside class="drawer" :class="{ open: cartOpen }" role="dialog" aria-modal="true" aria-labelledby="cart-title" :aria-hidden="!cartOpen">
+    <div class="drawer-head">
+      <h2 id="cart-title">{{ t.cartTitle }}</h2>
+      <button class="icon-btn" type="button" @click="cartOpen = false" :aria-label="t.close">✕</button>
+    </div>
+    <div class="drawer-list">
+      <p v-if="!cart.length" style="color:var(--ink-soft)">{{ t.cartEmpty }}</p>
+      <div class="line" v-for="(it, i) in cart" :key="it.id + it.size">
+        <img :src="img(it.photo, 200)" alt="">
+        <div>
+          <h4>{{ it.name[lang] }}</h4>
+          <small>{{ t.size }} {{ it.size }} · {{ money(it.price) }}</small><br>
+          <div class="qty">
+            <button type="button" @click="changeQty(i, -1)" :aria-label="t.less">−</button><span>{{ it.qty }}</span><button type="button" @click="changeQty(i, 1)" :aria-label="t.more">+</button>
+          </div>
+        </div>
+        <button class="remove" type="button" @click="cart.splice(i, 1)">{{ t.remove }}</button>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <small>{{ shippingMsg }}</small>
+      <div class="ship"><span :style="{ width: Math.min(subtotal / FREE_SHIP * 100, 100) + '%' }"></span></div>
+      <div class="row"><span>Subtotal</span><span>{{ money(subtotal) }}</span></div>
+      <div class="row"><span>{{ t.shipping }}</span><span>{{ shippingCost ? money(shippingCost) : t.free }}</span></div>
+      <div class="row total"><span>Total</span><span>{{ money(subtotal + shippingCost) }}</span></div>
+      <button class="btn" type="button" :disabled="!cart.length" @click="downloadOrder" style="justify-content:center">{{ t.orderPdf }}</button>
+    </div>
+  </aside>
+
+  <div class="toast" :class="{ show: toast }" role="status" aria-live="polite">{{ toast }}</div>
+</div>
+
+<script>
+/* ============================================================
+   Datos y traducciones
+   ============================================================ */
+const I18N = {
+  es: {
+    promo: "Envío gratis desde $150 · Cambios sin costo por 30 días",
+    nav: [{ href: "#coleccion", label: "Colección" }, { href: "#lookbook", label: "Lookbook" }, { href: "#tallas", label: "Tallas" }, { href: "#club", label: "Club" }],
+    menu: "Abrir menú", cartAria: "Abrir carrito", heroEyebrow: "Colección Otoño · Invierno 2026",
+    heroTitle: "Elegancia que <em>florece</em> contigo", heroLead: "Piezas atemporales en tonos nude, vino y marfil, confeccionadas en pequeños lotes para vestir con calma y durar muchas temporadas.",
+    heroCta: "Ver colección", pdfBtn: "Descargar lookbook PDF", stat1: "piezas nuevas", stat2: "fibras naturales", stat3: "valoración media",
+    heroAlt: "Perchero con prendas en tonos neutros", seal: "hecho · en · lotes · pequeños",
+    catEyebrow: "Tienda", catTitle: "Nuevos esenciales", filterAria: "Filtrar por categoría", sortLabel: "Ordenar",
+    cats: { todo: "Todo", ropa: "Ropa", bolsos: "Bolsos", accesorios: "Accesorios", calzado: "Calzado" },
+    sort: { destacados: "Destacados", asc: "Precio: menor a mayor", desc: "Precio: mayor a menor" },
+    tags: { nuevo: "Nuevo", top: "Más vendido" }, favAria: "Guardar en favoritos", sizeAria: "Elegir talla", add: "Añadir a la bolsa",
+    empty: "No hay piezas en esta categoría.", lookTitle: "Historias de temporada", chapter: "Capítulo", prev: "Anterior", next: "Siguiente",
+    sizerEyebrow: "Guía de tallas", sizerTitle: "Encuentra tu talla ideal", sizerText: "Mueve los controles con tus medidas en centímetros y te sugerimos la talla con la que te sentirás más cómoda.",
+    measures: { busto: "Busto", cintura: "Cintura", cadera: "Cadera" }, sizeResult: "es la talla que te recomendamos según tus medidas.",
+    newsTitle: "Primero en enterarte", newsText: "Únete al club y recibe acceso anticipado a lanzamientos y un 10 % en tu primera compra.",
+    emailPh: "tu@correo.com", join: "Unirme", footer: "Boutique ficticia · Caracas · Bogotá · Madrid", photos: "Fotografías de",
+    cartTitle: "Tu bolsa", close: "Cerrar", cartEmpty: "Tu bolsa está vacía. ¡Descubre la colección!", size: "Talla", less: "Restar", more: "Sumar", remove: "Quitar",
+    shipping: "Envío", free: "Gratis", orderPdf: "Descargar resumen PDF",
+    toastAdded: (n) => `${n} se añadió a tu bolsa`, toastFav: "Guardado en favoritos", toastUnfav: "Quitado de favoritos", pickSize: "Elige una talla primero",
+    shipLeft: (m) => `Te faltan ${m} para el envío gratis`, shipOk: "¡Tienes envío gratis!",
+    errEmpty: "Escribe tu correo electrónico.", errEmail: "Revisa el formato, por ejemplo: nombre@correo.com", subscribed: "¡Bienvenida al Club Pétale!",
+    pdfTitle: "Lookbook Otoño · Invierno 2026", pdfOrder: "Resumen de pedido", pdfReady: "PDF descargado"
+  },
+  en: {
+    promo: "Free shipping over $150 · Free exchanges for 30 days",
+    nav: [{ href: "#coleccion", label: "Collection" }, { href: "#lookbook", label: "Lookbook" }, { href: "#tallas", label: "Sizes" }, { href: "#club", label: "Club" }],
+    menu: "Open menu", cartAria: "Open bag", heroEyebrow: "Fall · Winter 2026 Collection",
+    heroTitle: "Elegance that <em>blooms</em> with you", heroLead: "Timeless pieces in nude, wine and ivory tones, made in small batches to dress slowly and last for many seasons.",
+    heroCta: "Shop the collection", pdfBtn: "Download lookbook PDF", stat1: "new pieces", stat2: "natural fibers", stat3: "average rating",
+    heroAlt: "Clothing rack with neutral-toned garments", seal: "made · in · small · batches",
+    catEyebrow: "Shop", catTitle: "New essentials", filterAria: "Filter by category", sortLabel: "Sort",
+    cats: { todo: "All", ropa: "Clothing", bolsos: "Bags", accesorios: "Accessories", calzado: "Shoes" },
+    sort: { destacados: "Featured", asc: "Price: low to high", desc: "Price: high to low" },
+    tags: { nuevo: "New", top: "Best seller" }, favAria: "Save to favorites", sizeAria: "Choose size", add: "Add to bag",
+    empty: "No pieces in this category.", lookTitle: "Season stories", chapter: "Chapter", prev: "Previous", next: "Next",
+    sizerEyebrow: "Size guide", sizerTitle: "Find your perfect size", sizerText: "Move the sliders to your measurements in centimeters and we will suggest the size you will feel most comfortable in.",
+    measures: { busto: "Bust", cintura: "Waist", cadera: "Hips" }, sizeResult: "is the size we recommend for your measurements.",
+    newsTitle: "Be the first to know", newsText: "Join the club for early access to launches and 10% off your first order.",
+    emailPh: "you@email.com", join: "Join", footer: "Fictional boutique · Caracas · Bogotá · Madrid", photos: "Photos from",
+    cartTitle: "Your bag", close: "Close", cartEmpty: "Your bag is empty. Discover the collection!", size: "Size", less: "Decrease", more: "Increase", remove: "Remove",
+    shipping: "Shipping", free: "Free", orderPdf: "Download PDF summary",
+    toastAdded: (n) => `${n} was added to your bag`, toastFav: "Saved to favorites", toastUnfav: "Removed from favorites", pickSize: "Choose a size first",
+    shipLeft: (m) => `${m} away from free shipping`, shipOk: "You've got free shipping!",
+    errEmpty: "Please enter your email.", errEmail: "Check the format, e.g. name@email.com", subscribed: "Welcome to Club Pétale!",
+    pdfTitle: "Fall · Winter 2026 Lookbook", pdfOrder: "Order summary", pdfReady: "PDF downloaded"
+  }
+};
+
+const PRODUCTS = [
+  { id: 1, cat: "ropa", price: 129, tag: "nuevo", photo: "1519220279207-fddf068f2141", sizes: ["XS", "S", "M", "L"], name: { es: "Blazer Rosa Antiguo", en: "Antique Rose Blazer" } },
+  { id: 2, cat: "bolsos", price: 189, tag: "top", photo: "1683921377994-928bd73b889f", sizes: ["U"], name: { es: "Bolso Camille", en: "Camille Bag" } },
+  { id: 3, cat: "accesorios", price: 74, tag: "", photo: "1615160460366-2c9a41771b51", sizes: ["50ml", "100ml"], name: { es: "Eau de Pétale", en: "Eau de Pétale" } },
+  { id: 4, cat: "accesorios", price: 96, tag: "nuevo", photo: "1569397288884-4d43d6738fbd", sizes: ["U"], name: { es: "Set Perla Dorada", en: "Golden Pearl Set" } },
+  { id: 5, cat: "calzado", price: 142, tag: "", photo: "1590099033615-be195f8d575c", sizes: ["36", "37", "38", "39"], name: { es: "Tacón Nude Élise", en: "Élise Nude Heel" } },
+  { id: 6, cat: "ropa", price: 158, tag: "top", photo: "1532453288672-3a27e9be9efd", sizes: ["S", "M", "L"], name: { es: "Abrigo Marfil Lune", en: "Lune Ivory Coat" } },
+  { id: 7, cat: "bolsos", price: 119, tag: "", photo: "1683921377994-928bd73b889f", sizes: ["U"], name: { es: "Mini bolso Vino", en: "Wine Mini Bag" } },
+  { id: 8, cat: "calzado", price: 98, tag: "nuevo", photo: "1590099033615-be195f8d575c", sizes: ["36", "37", "38"], name: { es: "Bailarina Seda", en: "Silk Ballet Flat" } }
+];
+
+const LOOKS = [
+  { photo: "1519220279207-fddf068f2141", credit: "Andrej Lišakov", title: { es: "Mañanas en lino", en: "Linen mornings" }, text: { es: "Capas ligeras y tonos empolvados para empezar el día sin prisa. Combina el blazer con la bailarina de seda.", en: "Light layers and powdery tones to start the day slowly. Pair the blazer with the silk flats." } },
+  { photo: "1683921377994-928bd73b889f", credit: "Genesis Warner", title: { es: "Detalles que hablan", en: "Details that speak" }, text: { es: "Un bolso estructurado eleva cualquier conjunto: piel vegana, herrajes dorados y espacio para lo esencial.", en: "A structured bag elevates any outfit: vegan leather, golden hardware and room for the essentials." } },
+  { photo: "1615160460366-2c9a41771b51", credit: "Jan Kopřiva", title: { es: "Ritual de noche", en: "Evening ritual" }, text: { es: "Notas de rosa, vainilla y ámbar. La fragancia de la casa nace para acompañar tus noches especiales.", en: "Notes of rose, vanilla and amber. The house fragrance was born to accompany your special nights." } },
+  { photo: "1590099033615-be195f8d575c", credit: "Chitto Cancio", title: { es: "Pasos con intención", en: "Steps with intention" }, text: { es: "Hormas cómodas y líneas limpias para caminar la ciudad con estilo de la mañana a la noche.", en: "Comfortable fits and clean lines to walk the city in style from morning to night." } }
+];
+
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      lang: "es", menuOpen: false, cartOpen: false, filter: "todo", sort: "destacados",
+      cats: ["todo", "ropa", "bolsos", "accesorios", "calzado"], products: PRODUCTS, looks: LOOKS,
+      picked: {}, favs: [], cart: [], slide: 0, pause: false, timer: null, touchX: 0,
+      measures: { busto: 88, cintura: 70, cadera: 96 }, email: "", emailError: "", touched: false,
+      toast: "", toastTimer: null, FREE_SHIP: 150
+    };
+  },
+  computed: {
+    t() { return I18N[this.lang]; },
+    visible() {
+      const list = this.products.filter(p => this.filter === "todo" || p.cat === this.filter);
+      if (this.sort === "asc") return [...list].sort((a, b) => a.price - b.price);
+      if (this.sort === "desc") return [...list].sort((a, b) => b.price - a.price);
+      return list;
+    },
+    cartCount() { return this.cart.reduce((n, i) => n + i.qty, 0); },
+    subtotal() { return this.cart.reduce((n, i) => n + i.qty * i.price, 0); },
+    shippingCost() { return this.subtotal === 0 || this.subtotal >= this.FREE_SHIP ? 0 : 9; },
+    shippingMsg() { return this.subtotal >= this.FREE_SHIP ? this.t.shipOk : this.t.shipLeft(this.money(this.FREE_SHIP - this.subtotal)); },
+    suggestedSize() {
+      // Tabla orientativa: usamos la medida más grande para no apretar
+      const m = Math.max(this.measures.busto, this.measures.cintura + 18, this.measures.cadera - 8);
+      if (m < 84) return "XS"; if (m < 92) return "S"; if (m < 100) return "M"; if (m < 110) return "L"; return "XL";
+    }
+  },
+  watch: {
+    lang(v) { document.documentElement.lang = v; try { localStorage.setItem("mp-lang", v); } catch (e) {} },
+    cartOpen(v) { document.body.style.overflow = v ? "hidden" : ""; }
+  },
+  methods: {
+    img(id, w) { return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`; },
+    money(n) { return new Intl.NumberFormat(this.lang === "es" ? "es-ES" : "en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n); },
+    setLang(l) { this.lang = l; },
+    notify(msg) { this.toast = msg; clearTimeout(this.toastTimer); this.toastTimer = setTimeout(() => (this.toast = ""), 2600); },
+    toggleFav(p) {
+      const i = this.favs.indexOf(p.id);
+      i > -1 ? this.favs.splice(i, 1) : this.favs.push(p.id);
+      this.notify(i > -1 ? this.t.toastUnfav : this.t.toastFav);
+    },
+    addToCart(p) {
+      const size = p.sizes.length === 1 ? p.sizes[0] : this.picked[p.id];
+      if (!size) return this.notify(this.t.pickSize);
+      const found = this.cart.find(i => i.id === p.id && i.size === size);
+      found ? found.qty++ : this.cart.push({ ...p, size, qty: 1 });
+      this.notify(this.t.toastAdded(p.name[this.lang]));
+    },
+    changeQty(i, d) { const it = this.cart[i]; it.qty += d; if (it.qty < 1) this.cart.splice(i, 1); },
+    go(d) { this.slide = (this.slide + d + this.looks.length) % this.looks.length; },
+    touchStart(e) { this.touchX = e.touches[0].clientX; },
+    touchEnd(e) { const dx = e.changedTouches[0].clientX - this.touchX; if (Math.abs(dx) > 45) this.go(dx < 0 ? 1 : -1); },
+    validate() {
+      if (!this.email) this.emailError = this.t.errEmpty;
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(this.email)) this.emailError = this.t.errEmail;
+      else this.emailError = "";
+      return !this.emailError;
+    },
+    subscribe() { this.touched = true; if (this.validate()) { this.notify(this.t.subscribed); this.email = ""; this.touched = false; } },
+    pdfBase(title) {
+      const { jsPDF } = window.jspdf; const doc = new jsPDF({ unit: "mm", format: "a4" });
+      doc.setFillColor(91, 30, 45); doc.rect(0, 0, 210, 42, "F");
+      doc.setTextColor(255, 251, 248); doc.setFont("times", "normal"); doc.setFontSize(26); doc.text("Maison Pétale", 18, 22);
+      doc.setFontSize(11); doc.setFont("helvetica", "normal"); doc.text(title, 18, 32);
+      doc.setTextColor(42, 26, 30); return doc;
+    },
+    pdfFooter(doc) {
+      doc.setDrawColor(184, 146, 90); doc.line(18, 280, 192, 280);
+      doc.setFontSize(8); doc.setTextColor(111, 90, 95);
+      doc.text("Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire", 105, 286, { align: "center" });
+    },
+    downloadLookbook() {
+      if (!window.jspdf) return this.notify("…");
+      const doc = this.pdfBase(this.t.pdfTitle); let y = 58;
+      this.looks.forEach((l, i) => {
+        doc.setFont("times", "italic"); doc.setFontSize(16); doc.setTextColor(91, 30, 45);
+        doc.text(`${this.t.chapter} ${i + 1} · ${l.title[this.lang]}`, 18, y);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(42, 26, 30);
+        const lines = doc.splitTextToSize(l.text[this.lang], 174); doc.text(lines, 18, y + 7); y += 14 + lines.length * 5;
+      });
+      y += 4; doc.setFont("times", "normal"); doc.setFontSize(15); doc.setTextColor(91, 30, 45); doc.text(this.t.catTitle, 18, y); y += 8;
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(42, 26, 30);
+      this.products.forEach(p => { doc.text(`· ${p.name[this.lang]} — ${this.t.cats[p.cat]}`, 18, y); doc.text(this.money(p.price), 192, y, { align: "right" }); y += 6.5; });
+      this.pdfFooter(doc); doc.save("maison-petale-lookbook.pdf"); this.notify(this.t.pdfReady);
+    },
+    downloadOrder() {
+      if (!window.jspdf || !this.cart.length) return;
+      const doc = this.pdfBase(this.t.pdfOrder + " · " + new Date().toLocaleDateString(this.lang)); let y = 60;
+      doc.setFontSize(10.5);
+      this.cart.forEach(i => { doc.text(`${i.qty} × ${i.name[this.lang]} (${this.t.size} ${i.size})`, 18, y); doc.text(this.money(i.qty * i.price), 192, y, { align: "right" }); y += 7; });
+      doc.line(18, y, 192, y); y += 8;
+      doc.text("Subtotal", 18, y); doc.text(this.money(this.subtotal), 192, y, { align: "right" }); y += 7;
+      doc.text(this.t.shipping, 18, y); doc.text(this.shippingCost ? this.money(this.shippingCost) : this.t.free, 192, y, { align: "right" }); y += 9;
+      doc.setFont("helvetica", "bold"); doc.setTextColor(91, 30, 45); doc.text("Total", 18, y); doc.text(this.money(this.subtotal + this.shippingCost), 192, y, { align: "right" });
+      this.pdfFooter(doc); doc.save("maison-petale-pedido.pdf"); this.notify(this.t.pdfReady);
+    }
+  },
+  mounted() {
+    try { const l = localStorage.getItem("mp-lang"); if (l) this.lang = l; } catch (e) {}
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduce) this.timer = setInterval(() => { if (!this.pause && !document.hidden) this.go(1); }, 5500);
+    addEventListener("keydown", e => { if (e.key === "Escape") { this.cartOpen = false; this.menuOpen = false; } });
+  },
+  beforeUnmount() { clearInterval(this.timer); }
+}).mount("#app");
+</script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valentina Quintero · CV</title>
+<meta name="description" content="Currículum de Valentina Quintero, Ingeniera en Informática y cursante de Maestría en Telemática.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef2f7; --paper:#ffffff; --ink:#0f1b2d; --muted:#55657a; --line:#dbe3ee;
+  --navy:#0b2545; --navy-2:#13315c; --accent:#1d6fd8; --accent-soft:#e6f0fd; --red:#c8102e;
+  --side-ink:#e8eef7; --side-muted:#a9b8cc; --chip:#f2f6fb; --shadow:0 20px 50px -20px rgba(11,37,69,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#08111e; --paper:#0f1b2d; --ink:#e7eef8; --muted:#9fb0c6; --line:#22344d;
+    --accent:#5b9dff; --accent-soft:#132a4a; --chip:#16263d; --shadow:0 20px 50px -20px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#08111e; --paper:#0f1b2d; --ink:#e7eef8; --muted:#9fb0c6; --line:#22344d;
+  --accent:#5b9dff; --accent-soft:#132a4a; --chip:#16263d; --shadow:0 20px 50px -20px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Inter,"DejaVu Sans",system-ui,sans-serif;line-height:1.55;font-size:15px;transition:background .3s,color .3s}
+a{color:inherit;text-decoration:none}
+
+/* ---------- barra superior ---------- */
+.topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 80%,transparent);border-bottom:1px solid var(--line)}
+.topbar .in{max-width:1120px;margin:auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+.brand{font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+.brand span{color:var(--accent)}
+.nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav a{font-size:13px;font-weight:600;color:var(--muted);padding:7px 11px;border-radius:999px;white-space:nowrap;transition:.2s}
+.nav a:hover,.nav a.on{background:var(--accent-soft);color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:7px;border:0;cursor:pointer;font:600 13px Inter,sans-serif;padding:9px 14px;border-radius:999px;background:var(--navy);color:#fff;white-space:nowrap;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn svg{width:16px;height:16px}
+
+/* ---------- hoja ---------- */
+.sheet{max-width:1120px;margin:28px auto 60px;display:grid;grid-template-columns:320px 1fr;background:var(--paper);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+aside{background:linear-gradient(170deg,var(--navy) 0%,var(--navy-2) 100%);color:var(--side-ink);padding:34px 28px;position:relative}
+aside::after{content:"";position:absolute;right:0;top:0;bottom:0;width:4px;background:linear-gradient(var(--accent),var(--red))}
+.photo{width:170px;height:170px;border-radius:50%;margin:0 auto 22px;padding:5px;background:conic-gradient(var(--accent),#7fb2ff,var(--red),var(--accent));}
+.photo img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;border-radius:50%;border:4px solid var(--navy);display:block}
+aside h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#fff;margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+aside h3::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.18)}
+.contact li{list-style:none;display:flex;gap:11px;align-items:flex-start;margin-bottom:12px;font-size:13.5px}
+.contact .ic{flex:none;width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.08);display:grid;place-items:center}
+.contact .ic svg{width:15px;height:15px;stroke:#9cc3ff}
+.contact small{display:block;color:var(--side-muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.contact .val{word-break:break-all}
+.copy{background:none;border:0;color:#9cc3ff;font:600 11px Inter,sans-serif;cursor:pointer;padding:0;margin-left:4px}
+.side-list{list-style:none}
+.side-list li{font-size:13.2px;padding:6px 0 6px 16px;position:relative;color:var(--side-ink)}
+.side-list li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:2px;background:#7fb2ff;transform:rotate(45deg)}
+.lang{margin-bottom:12px;font-size:13.2px}
+.lang .row{display:flex;justify-content:space-between}
+.lang .row span:last-child{color:var(--side-muted);font-size:12px}
+.dots{display:flex;gap:5px;margin-top:6px}
+.dots i{flex:1;height:5px;border-radius:4px;background:rgba(255,255,255,.15)}
+.dots i.f{background:linear-gradient(90deg,#7fb2ff,#cfe1ff)}
+
+main{padding:40px 44px}
+.hero h1{font-size:46px;line-height:1.03;letter-spacing:-.035em;font-weight:800;color:var(--ink)}
+.hero h1 span{color:var(--accent)}
+.role{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.tag.red{background:color-mix(in srgb,var(--red) 12%,transparent);color:var(--red)}
+.summary{margin-top:18px;color:var(--muted);font-size:14.5px;max-width:64ch}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:14px;background:linear-gradient(180deg,var(--paper),var(--chip))}
+.stat b{display:block;font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.stat span{font-size:12px;color:var(--muted);line-height:1.3;display:block}
+
+section{margin-top:38px;scroll-margin-top:80px}
+.sh{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.sh .n{font-size:12px;font-weight:700;color:#fff;background:var(--accent);width:28px;height:28px;border-radius:8px;display:grid;place-items:center}
+.sh h2{font-size:21px;letter-spacing:-.02em;font-weight:800}
+.sh::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* línea de tiempo */
+.tl{position:relative;padding-left:26px}
+.tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--accent),var(--line))}
+.job{position:relative;margin-bottom:16px;border:1px solid var(--line);border-radius:16px;background:var(--paper);transition:border-color .2s, box-shadow .2s}
+.job:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line));box-shadow:0 10px 30px -18px rgba(29,111,216,.6)}
+.job::before{content:"";position:absolute;left:-25px;top:22px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:3px solid var(--accent)}
+.job.now::before{background:var(--accent);box-shadow:0 0 0 5px var(--accent-soft)}
+.job summary{list-style:none;cursor:pointer;padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:start}
+.job summary::-webkit-details-marker{display:none}
+.job .t{font-weight:700;font-size:16px;letter-spacing:-.01em}
+.job .c{color:var(--accent);font-weight:600;font-size:13.5px}
+.job .d{font-size:12px;font-weight:700;color:var(--muted);background:var(--chip);padding:5px 10px;border-radius:999px;white-space:nowrap;grid-row:1;grid-column:2;justify-self:end}
+.job .chev{grid-column:2;justify-self:end;width:18px;height:18px;transition:transform .25s;stroke:var(--muted)}
+.job[open] .chev{transform:rotate(180deg)}
+.job .body{padding:0 18px 16px;font-size:13.8px;color:var(--muted)}
+.job .body p{margin-bottom:8px}
+.job ul{padding-left:18px}
+.job li{margin-bottom:5px}
+.job li::marker{color:var(--accent)}
+
+/* formación */
+.edu{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ed{border:1px solid var(--line);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden}
+.ed.hl{border-color:var(--accent);background:linear-gradient(135deg,var(--accent-soft),var(--paper) 70%)}
+.ed .y{font-size:11.5px;font-weight:700;color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
+.ed h4{font-size:14.5px;margin:3px 0 2px;letter-spacing:-.01em}
+.ed p{font-size:12.8px;color:var(--muted)}
+.badge{position:absolute;top:12px;right:12px;font-size:10.5px;font-weight:700;background:var(--red);color:#fff;padding:3px 8px;border-radius:999px}
+
+/* habilidades */
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.filters button{border:1px solid var(--line);background:var(--paper);color:var(--muted);font:600 12.5px Inter,sans-serif;padding:7px 13px;border-radius:999px;cursor:pointer;transition:.2s}
+.filters button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+:root[data-theme="dark"] .filters button.on{background:var(--accent);border-color:var(--accent)}
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sk{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--paper);transition:opacity .25s, transform .25s}
+.sk.hide{display:none}
+.sk .ico{flex:none;width:34px;height:34px;border-radius:10px;background:var(--accent-soft);display:grid;place-items:center}
+.sk .ico svg{width:17px;height:17px;stroke:var(--accent)}
+.sk h5{font-size:13.8px;letter-spacing:-.01em}
+.sk p{font-size:12.4px;color:var(--muted);line-height:1.45}
+.cat-label{display:none}
+
+/* referencias */
+.refs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ref{border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.ref .k{font-size:10.5px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+.ref h4{font-size:14.5px;margin:4px 0 2px}
+.ref p{font-size:12.8px;color:var(--muted)}
+.ref.blank{border-style:dashed;background:repeating-linear-gradient(135deg,transparent 0 10px,var(--chip) 10px 11px)}
+.ref.blank .ln{display:block;border-bottom:1px solid var(--line);height:18px;margin-top:6px}
+.ref.blank small{display:block;font-size:11px;color:var(--muted);margin-top:8px}
+
+footer.foot{text-align:center;font-size:12px;color:var(--muted);margin:-40px 0 40px}
+
+/* animación de entrada */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease, transform .6s ease}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;transition:.3s;pointer-events:none;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ---------- responsive ---------- */
+@media screen and (max-width:900px){
+  .sheet{grid-template-columns:1fr;margin:16px;border-radius:18px}
+  aside::after{left:0;right:0;top:auto;bottom:0;width:auto;height:4px;background:linear-gradient(90deg,var(--accent),var(--red))}
+  main{padding:28px 18px}
+  .hero h1{font-size:36px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .edu,.skills,.refs{grid-template-columns:1fr}
+  .nav{display:none}
+  .topbar .actions{margin-left:auto}
+}
+@media screen and (max-width:420px){ .btn .lbl{display:none} }
+
+/* ---------- impresión / PDF ---------- */
+@page{size:A4;margin:0}
+@media print{
+  :root,:root[data-theme="dark"]{--bg:#fff;--paper:#fff;--ink:#0f1b2d;--muted:#4b5a6e;--line:#d6deea;--accent:#1d6fd8;--accent-soft:#e8f1fd;--chip:#f3f6fa}
+  html{background:linear-gradient(90deg,#0b2545 0,#13315c 72mm,#1d6fd8 72mm,#c8102e 73mm,#fff 73mm)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:transparent;font-size:12px}
+  .sheet{background:transparent!important}
+  aside{background:transparent!important}
+  aside::after{display:none}
+  .topbar,.toast,.filters,.copy,.chev,footer.foot,.no-print{display:none!important}
+  .rv{opacity:1!important;transform:none!important}
+  .sheet{margin:0;max-width:none;border-radius:0;box-shadow:none;grid-template-columns:72mm 1fr;min-height:297mm}
+  aside{padding:12mm 8mm 10mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  aside *,main *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .photo{width:40mm;height:40mm;margin-bottom:6mm}
+  aside h3{margin:6mm 0 3mm;font-size:9.5px}
+  .contact li{font-size:10.5px;margin-bottom:7px}
+  .contact .ic{width:24px;height:24px}
+  .side-list li{font-size:10.4px;padding:3px 0 3px 13px}
+  .side-list li::before{top:8px}
+  .lang{font-size:10.5px}
+  main{padding:12mm 11mm 10mm}
+  .hero h1{font-size:30px}
+  .tag{font-size:10px;padding:4px 9px}
+  .summary{font-size:11.2px;margin-top:10px;max-width:none}
+  .stats{margin-top:12px;gap:7px}
+  .stat{padding:8px 10px}
+  .stat b{font-size:18px}
+  .stat span{font-size:9.4px}
+  section{margin-top:16px}
+  .sh{margin-bottom:9px}
+  .sh h2{font-size:15px}
+  .sh .n{width:21px;height:21px;font-size:10px}
+  .job{margin-bottom:8px;break-inside:avoid}
+  .job summary{padding:9px 12px}
+  .job .t{font-size:12.5px}
+  .job .c{font-size:11px}
+  .job .d{font-size:9.5px}
+  .job .body{padding:0 12px 9px;font-size:10.6px}
+  .job li{margin-bottom:2px}
+  .job::before{top:14px}
+  .edu{gap:7px}
+  .ed{padding:8px 11px;break-inside:avoid}
+  .ed h4{font-size:11.5px}
+  .ed p,.ed .y{font-size:9.8px}
+  .skills{gap:6px}
+  .sk{padding:7px 10px;break-inside:avoid}
+  .sk .ico{width:24px;height:24px;border-radius:7px}
+  .sk .ico svg{width:13px;height:13px}
+  .sk h5{font-size:11px}
+  .sk p{font-size:9.8px}
+  .sk.hide{display:flex!important}
+  .refs{gap:7px;break-inside:avoid}
+  .ref{padding:9px 11px}
+  .ref h4{font-size:11.5px}
+  .ref p{font-size:10px}
+  #referencias{break-inside:avoid}
+  .pb{break-before:page}
+  main{padding:9mm 10mm 8mm!important}
+  aside{padding-top:9mm!important}
+  .summary{font-size:10.4px!important;line-height:1.45}
+  .job .body{font-size:9.9px!important;line-height:1.42}
+  .job .body p{margin-bottom:4px}
+  .stat b{font-size:16px!important}
+  section{margin-top:12px!important}
+  .edu{grid-template-columns:repeat(3,1fr)!important}
+  .sk p{font-size:9.2px!important;line-height:1.35}
+  .sk{padding:6px 9px!important}
+  .skills{gap:5px!important}
+  .ed{padding:7px 10px!important}
+  .ref.blank .ln{height:14px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="in">
+    <a href="../../index.html" class="brand" title="Volver al portafolio">← V<span>Q</span></a>
+    <nav class="nav" id="nav">
+      <a href="#perfil">Perfil</a>
+      <a href="#experiencia">Experiencia</a>
+      <a href="#formacion">Formación</a>
+      <a href="#conocimientos">Conocimientos</a>
+      
+    </nav>
+    <div class="actions" style="display:flex;gap:8px">
+      <button class="btn ghost" id="theme" aria-label="Cambiar tema">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="btn" href="#"  id="dl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg><span class="lbl">Descargar PDF</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="sheet" id="top">
+  <aside>
+    <div class="photo"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwMDAgQDAwMEBAQFBgoGBgUFBgwICQcKDgwPDg4MDQ0PERYTDxAVEQ0NExoTFRcYGRkZDxIbHRsYHRYYGRj/2wBDAQQEBAYFBgsGBgsYEA0QGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBj/wAARCAFkAQQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwC4+c9TURFSnJoC1KQMh280mypivNLtp2EQbOKNntU22jbTAh2e1GziptvpRtoEQbaQrU22grQBAVpNtTlaQrQBAUpCtT7aaVoEQ7aaV9qnK00rQBAVpCtTlaaVpiIClNKVOVpCtAEBSmFfarBWmlaAINvFNK8VOVppXigCArTStTlaaVoEVytNKVOVppWgCuUphWrBWmFaAKzLUTJ7VaZajK0DKhQZoqcrzRQB24FLilApcVKLGbaXbT8UYpiGbaNtPAoxQBGRRt9qkxS4FAEO2k21MVpNtAEJWkK1MV5pCtAiErSEVMRTdtAERXmmlamIppWmBFtppWpiKaRQIhIppFTEU0igCErTStTEUwigCIrTSKmIppFAiEimstSkU0jigCErTSKmIphFAEJFRkVORTCKAICOKYVqYjimEUBcgK80U8jmimI7QDNLilA4pcVJoNxS4p2OaMUANxRin4pdtADMUYp+2jFADMcUhFSYpNtAiPFIRUpWmkUAREU0ipitNIpiIiKTFS7aaRQBERTSKlxzSEUAQkU0ipitNIoAhIphFTEU0igCIimEVMR7UwigRERTSKlIphFAERFMIqUimkUARNUZFTEUwigCFhTCKlIphHWmBERzRTiOaKBHZAU7FCinAVJoJjvRinYpcc0AIBS4pcUYoATFGKfikIoEMxRin4oIoAjIpMc1JikIoAjIphFSkUmKBEWKaRUpFJimBEVppFSkU0rQBERTStSke1NIoAiIppFSkUwigRERTCKmIqMigCIimkVKRTDxQBERTCKlNMIpgREVG1TkVGRQBCwphFSkUwigRERzRTiOaKAOyUU4UAUoFSaBilxSgcUtAhtOAoAp1AXG4oAp2KXFADDRTqMUwuMpCKeRSYpARkUmKkIppFMQzFNIqQ000AMxSEU/FIRRcCJhTCKlIppFAERFMIqUimlaBEJFMIqYimEUwuRGmEVKRTGFAEJHNNIqUioyKBEZFMIqUiozQBGRUZHFSmmGgCI8GilI5ooA7IU4CminCpLFpe9JSimAtFFLQAtFFLQAmKQ06kNADaMUuKKAGmkxTjTTQA0jNNxSscHP86xdd8U6J4dtfP1a/igz91M5dvoo5oA2DTSOK8qufjloguNtlpV/OvqSqfoTmo5/jZp5KCDS7scfMHZQc/nQKx6uRTCK4HSPiz4dv5VhvHlsHPAacAp/30On413kU0c8KywyLIjDKuhBBHqDTAU0w9akIppFAiIimEVKRTCKAIiKYRUhqM0CIyKYRUhph6UARmmGpD0qM0DIyKYakamGgRGQc0UHr0ooA7AdKcKaOlPFIsXFLSUtACinYpBS0AFLiiloENpcUUUAJSYp1IelADDTTTmrlvHXiUeGfCk11EwN1LmK3U/3yOv0A5oGcv8AEr4iNoe/RtDdDqAH76dvmW3BHQDu/wDKvA5Zr/W9YUSzSXV3O+PMkYszE+9dD4a0DxD4+1qeDSozIqtumupem49ST3J9K9Z8M/APV9L1BdQnuojKqna+fukjriuepiYU9G9TppYSpUs0tDw7UrNdOv202AA+ScO/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" alt="Fotografía de Valentina Quintero"></div>
+
+    <h3>Contacto</h3>
+    <ul class="contact">
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></span>
+        <div><small>Correo electrónico</small><a class="val" href="mailto:valentinaquintero14102002@gmail.com">valentinaquintero14102002@gmail.com</a><button class="copy" data-copy="valentinaquintero14102002@gmail.com">Copiar</button></div></li>
+          </ul>
+
+    <h3>Competencias clave</h3>
+    <ul class="side-list">
+      <li>Ventas y gestión comercial orientada a resultados</li>
+      <li>Liderazgo y supervisión de personal</li>
+      <li>Facturación, cotizaciones y presupuestos</li>
+      <li>Control de inventario y logística de despachos</li>
+      <li>Atención a clientes mayoristas y proveedores</li>
+      <li>Apoyo a procesos contables y administrativos</li>
+      <li>Análisis de datos y mejora continua</li>
+    </ul>
+
+    <h3>Idiomas</h3>
+    <div class="lang"><div class="row"><span>Español</span><span>Nativo</span></div><div class="dots"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></div></div>
+    <div class="lang"><div class="row"><span>Inglés</span><span>Intermedio B2 · EF SET</span></div><div class="dots"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div></div>
+
+    <h3>Herramientas</h3>
+    <ul class="side-list">
+      <li>Microsoft Office avanzado: Excel, Word, PowerPoint, Power BI</li>
+      <li>Automatización con macros en Excel</li>
+      <li>ERP Odoo (parametrización y migración)</li>
+      <li>HTML, CSS, JavaScript, React</li>
+      <li>Python, Node.js y SQL (nivel básico)</li>
+    </ul>
+  </aside>
+
+  <main>
+    <div class="hero rv" id="perfil">
+      <h1>Valentina<br><span>Quintero</span></h1>
+      <div class="role">
+        <span class="tag">Ingeniera en Informática</span>
+        <span class="tag red">Cursante de Maestría en Telemática</span>
+        <span class="tag">Asistente de Gerencia</span>
+      </div>
+      <p class="summary">Soy Ingeniera en Informática y actualmente curso una Maestría en Telemática, lo que fortalece mi perfil en redes, comunicaciones y sistemas de información. Cuento con más de seis años de experiencia en administración, gestión operativa y liderazgo comercial en el sector de repuestos de refrigeración y ventas técnicas. Me destaco por mi capacidad analítica, compromiso, orientación a resultados y enfoque en la mejora continua, con formación complementaria en ventas, atención al cliente y áreas creativas. Me apasionan la tecnología, la innovación y el aprendizaje constante.</p>
+      <div class="stats">
+        <div class="stat"><b data-count="6" data-plus="1">6+</b><span>años de experiencia profesional</span></div>
+        <div class="stat"><b data-count="3">3</b><span>sucursales con control de inventario</span></div>
+        <div class="stat"><b data-count="2">2</b><span>años como Gerente de Sucursal</span></div>
+        <div class="stat"><b>B2</b><span>nivel de inglés certificado</span></div>
+      </div>
+    </div>
+
+    <section id="experiencia" class="rv">
+      <div class="sh"><span class="n">01</span><h2>Experiencia profesional</h2></div>
+      <div class="tl">
+        <details class="job now" open>
+          <summary>
+            <div><div class="t">Asistente de Gerencia</div><div class="c">Celena Internacional C.A.</div></div>
+            <span class="d">2024 – Actualidad</span>
+          </summary>
+          <div class="body">
+            <p>Empresa mayorista a nivel nacional especializada en repuestos de refrigeración doméstica, automotriz y ferretería.</p>
+            <ul>
+              <li>Brindo apoyo directo a la gerencia en la gestión integral de facturación, la elaboración de cotizaciones y la atención a clientes y vendedores.</li>
+              <li>Controlo y organizo los despachos y órdenes de carga, asegurando precisión y puntualidad en las entregas.</li>
+              <li>Apoyo los procesos contables y el control administrativo, y me coordino con el área de ventas para optimizar la eficiencia operativa y la satisfacción del cliente.</li>
+              <li>Participo en la parametrización y migración al ERP Odoo, preparando el plan de cuentas, el catálogo de productos y las categorías de inventario.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="job" open>
+          <summary>
+            <div><div class="t">Vendedora Senior → Gerente de Sucursal y Administradora</div><div class="c">Frío Partes y Distribuciones J.N.</div></div>
+            <span class="d">2020 – 2024</span>
+          </summary>
+          <div class="body">
+            <p>Empresa dedicada a la venta de repuestos de refrigeración doméstica y automotriz.</p>
+            <ul>
+              <li>Inicié como vendedora y fui asumiendo mayores responsabilidades hasta encargarme de la gerencia de sucursal y la administración.</li>
+              <li>Dirigí la operación y administración de la empresa, incluyendo la gestión de ventas técnicas.</li>
+              <li>Controlé el inventario de tres sucursales y supervisé al personal.</li>
+              <li>Fui responsable de los presupuestos, la relación con proveedores y la atención a clientes mayoristas.</li>
+              <li>Durante dos años lideré una de las sucursales principales como Gerente de Ventas, impulsando estrategias de fidelización, mejoras logísticas y un crecimiento sostenido en las ventas.</li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <section id="formacion" class="rv pb">
+      <div class="sh"><span class="n">02</span><h2>Formación académica</h2></div>
+      <div class="edu">
+        <div class="ed hl"><div class="y" style="color:var(--red)">En curso</div><h4>Maestría en Telemática</h4><p>Universidad Rafael Belloso Chacín (URBE)</p></div>
+        <div class="ed hl"><div class="y">2020 – 2025</div><h4>Ingeniería en Informática</h4><p>Universidad Rafael Belloso Chacín (URBE)</p></div>
+        <div class="ed"><div class="y">2025</div><h4>Inglés Intermedio (B2)</h4><p>EF Standard English Test (EF SET)</p></div>
+        <div class="ed"><div class="y">2025</div><h4>Formación «La Fábrica de Vendedores»</h4><p>Work Acional / Manuel Trejo</p></div>
+        <div class="ed"><div class="y">2024</div><h4>Capacitación en Refrigeración y Aire Acondicionado</h4><p>Venacor / Z&amp;Z Ingenieros</p></div>
+      </div>
+    </section>
+
+    <section id="conocimientos" class="rv">
+      <div class="sh"><span class="n">03</span><h2>Conocimientos y habilidades</h2></div>
+      <div class="filters no-print" role="tablist">
+        <button class="on" data-f="all">Todas</button>
+        <button data-f="aca">Formación en Informática</button>
+        <button data-f="tec">Técnicas</button>
+        <button data-f="neg">Gestión y negocio</button>
+      </div>
+      <div class="skills">
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span><div><h5>Ofimática avanzada</h5><p>Microsoft Word, Excel, PowerPoint, Access y Power BI para gestión y reportes.</p></div></div>
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span><div><h5>Programación y algoritmos</h5><p>Lógica de programación, estructuras de datos y programación orientada a objetos.</p></div></div>
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></span><div><h5>Bases de datos</h5><p>Modelado entidad-relación, normalización y consultas SQL.</p></div></div>
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M10 6.5h4M17.5 10v4"/></svg></span><div><h5>Análisis y diseño de sistemas</h5><p>Levantamiento de requerimientos, modelado de procesos e ingeniería de software.</p></div></div>
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v5M12 12l-6 5.5M12 12l6 5.5"/></svg></span><div><h5>Redes y telecomunicaciones</h5><p>Fundamentos de redes de computadoras, protocolos y comunicación de datos.</p></div></div>
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><div><h5>Seguridad y auditoría de sistemas</h5><p>Buenas prácticas de seguridad de la información y control de sistemas.</p></div></div>
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span><div><h5>Sistemas operativos y arquitectura</h5><p>Arquitectura del computador, sistemas operativos y soporte técnico.</p></div></div>
+        <div class="sk" data-c="aca"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span><div><h5>Gerencia de proyectos e investigación de operaciones</h5><p>Planificación de proyectos, estadística y toma de decisiones basada en datos.</p></div></div>
+        <div class="sk" data-c="tec"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5"/></svg></span><div><h5>Desarrollo Frontend</h5><p>HTML, CSS, JavaScript y React.</p></div></div>
+        <div class="sk" data-c="tec"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg></span><div><h5>Backend (nivel básico)</h5><p>Python, Node.js y manejo de bases de datos SQL.</p></div></div>
+        <div class="sk" data-c="tec"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3 12h18"/></svg></span><div><h5>Diseño web y UX/UI</h5><p>Interfaces con enfoque moderno, funcional y centrado en el usuario.</p></div></div>
+        <div class="sk" data-c="tec"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></span><div><h5>Automatización y ERP</h5><p>Macros en Excel para procesos administrativos y parametrización del ERP Odoo.</p></div></div>
+        <div class="sk" data-c="neg"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg></span><div><h5>Liderazgo y gestión comercial</h5><p>Supervisión de personal, estrategias de fidelización y crecimiento de ventas.</p></div></div>
+        <div class="sk" data-c="neg"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span><div><h5>Logística e inventario</h5><p>Control de despachos, órdenes de carga e inventario multisucursal.</p></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+<footer class="foot">Valentina Quintero · Ingeniera en Informática · Disponible para nuevos retos</footer>
+<div class="toast" id="toast">Copiado</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  try{var s=localStorage.getItem('cv-theme');if(s)root.dataset.theme=s;}catch(e){}
+  document.getElementById('theme').addEventListener('click',function(){
+    var dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem('cv-theme',root.dataset.theme);}catch(e){}
+  });
+
+  // Descarga PDF: si el archivo no está junto al HTML, usar imprimir
+  document.getElementById('dl').addEventListener('click',function(ev){
+    ev.preventDefault(); window.print();
+  });
+
+  // Copiar
+  var toast=document.getElementById('toast');
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=b.dataset.copy;
+      (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){
+        toast.textContent='Copiado: '+t;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show')},1600);
+      }).catch(function(){});
+    });
+  });
+
+  // Filtros de habilidades
+  document.querySelectorAll('.filters button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.filters button').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+      var f=b.dataset.f;
+      document.querySelectorAll('.sk').forEach(function(s){s.classList.toggle('hide',f!=='all'&&s.dataset.c!==f)});
+    });
+  });
+
+  // Animación de entrada + contadores
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(!e.isIntersecting)return;e.target.classList.add('in');
+    e.target.querySelectorAll('[data-count]').forEach(function(n){
+      var end=+n.dataset.count,i=0;var t=setInterval(function(){i++;n.textContent=i+(i===end&&n.dataset.plus?'+':'');if(i>=end)clearInterval(t)},120);
+    });
+    io.unobserve(e.target);
+  })},{threshold:.12});
+  document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+
+  // Navegación activa
+  var links=[].slice.call(document.querySelectorAll('.nav a'));
+  var so=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id)})}
+  })},{rootMargin:'-45% 0px -50% 0px'});
+  ['perfil','experiencia','formacion','conocimientos'].forEach(function(id){so.observe(document.getElementById(id))});
+
+  // Al imprimir: abrir todo
+  window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=true})});
+})();
+</script>
+</body>
+</html>

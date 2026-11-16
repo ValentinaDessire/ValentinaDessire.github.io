@@ -1,0 +1,605 @@
+<!doctype html>
+<!--
+  ============================================================
+  05 · Orquídea UX Lab — Agencia de investigación y diseño UX
+  Stack: HTML5 + CSS3 + JavaScript (ES6+) + GSAP 3 + ScrollTrigger (CDN) + jsPDF (CDN)
+  Proyecto de muestra para portafolio. Marca y textos ficticios.
+  Fotografías: Unsplash (licencia Unsplash). Código: licencia MIT.
+  Autora: Valentina Dessire
+  ============================================================
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orquídea UX Lab · Investigación y diseño UX (proyecto de muestra)</title>
+  <meta name="description" content="Orquídea UX Lab: agencia ficticia de diseño UX con animaciones GSAP. Plantilla de portafolio por Valentina Dessire.">
+  <meta name="theme-color" content="#FAF7F5">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <style>
+    /* ================= TOKENS ================= */
+    :root {
+      --hueso: #FAF7F5; --lila: #D9CCF0; --lila-2: #EEE7F8; --orquidea: #A45AA0; --vino: #3D1230; --dorado: #C9A86A;
+      --ink: #26121f; --ink-soft: #6a5664; --line: #e9dfe8; --white: #fff;
+      --display: "Italiana", "Didot", Georgia, serif; --body: "Outfit", system-ui, -apple-system, sans-serif;
+      --container: 1440px; --gutter: clamp(1.25rem, 5vw, 7rem); --radius: 28px; --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { font-size: clamp(16px, .35vw + 11px, 20px); }
+    body { margin: 0; background: var(--hueso); color: var(--ink); font: 400 1rem/1.65 var(--body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    button, input, textarea, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--orquidea); outline-offset: 3px; }
+    .container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+    section { padding-block: clamp(4.5rem, 9vw, 8rem); }
+    .eyebrow { display: inline-flex; align-items: center; gap: .6rem; font-size: .74rem; letter-spacing: .24em; text-transform: uppercase; font-weight: 600; color: var(--orquidea); }
+    .eyebrow::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+    .h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 5vw, 4.6rem); line-height: 1; margin: .7rem 0 1.2rem; }
+    .muted { color: var(--ink-soft); }
+    .btn { display: inline-flex; align-items: center; gap: .6rem; padding: .95rem 1.6rem; border-radius: 999px; border: 1px solid var(--vino); background: var(--vino); color: var(--hueso); font-weight: 500; text-decoration: none; transition: transform .3s var(--ease), background .3s, color .3s; }
+    .btn:hover { transform: translateY(-2px); background: var(--orquidea); border-color: var(--orquidea); }
+    .btn.ghost { background: transparent; color: var(--vino); }
+    .btn.ghost:hover { background: var(--vino); color: var(--hueso); }
+    .credit { position: absolute; right: .8rem; bottom: .8rem; font-size: .66rem; color: #fff; background: rgba(38, 18, 31, .45); padding: .15rem .55rem; border-radius: 999px; backdrop-filter: blur(4px); }
+
+    /* ================= HEADER ================= */
+    header { position: fixed; inset: 0 0 auto 0; z-index: 60; transition: background .35s, box-shadow .35s; }
+    header.scrolled { background: rgba(250, 247, 245, .88); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--line); }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 78px; }
+    .logo { font-family: var(--display); font-size: 1.7rem; text-decoration: none; display: flex; align-items: center; gap: .55rem; }
+    .logo svg { width: 30px; height: 30px; }
+    .links { display: flex; gap: 2.2rem; list-style: none; margin: 0; padding: 0; }
+    .links a { text-decoration: none; font-size: .92rem; }
+    .links a:hover { color: var(--orquidea); }
+    .burger { display: none; width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: var(--white); position: relative; }
+    .burger span { position: absolute; left: 13px; right: 13px; height: 1.5px; background: var(--ink); transition: transform .35s var(--ease), opacity .2s; }
+    .burger span:nth-child(1) { top: 17px; } .burger span:nth-child(2) { top: 22px; } .burger span:nth-child(3) { top: 27px; }
+    .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+    .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+    .drawer { position: fixed; inset: 0; background: var(--vino); color: var(--hueso); z-index: 55; display: flex; flex-direction: column; justify-content: center; padding: var(--gutter); clip-path: circle(0 at calc(100% - 3rem) 2.4rem); transition: clip-path .7s var(--ease); visibility: hidden; }
+    .drawer.open { clip-path: circle(150% at calc(100% - 3rem) 2.4rem); visibility: visible; }
+    .drawer a { font-family: var(--display); font-size: clamp(2.4rem, 10vw, 3.4rem); text-decoration: none; line-height: 1.3; }
+    .drawer a:hover { color: var(--lila); }
+
+    /* ================= HERO ================= */
+    .hero { min-height: min(100svh, 1100px); display: grid; align-items: center; padding-top: 110px; position: relative; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 5vw, 6rem); align-items: center; }
+    .hero h1 { font-family: var(--display); font-weight: 400; font-size: clamp(3rem, 8vw, 8.4rem); line-height: .92; margin: 1rem 0 1.6rem; letter-spacing: -.01em; }
+    .hero h1 .line { display: block; overflow: hidden; }
+    .hero h1 .line > span { display: inline-block; }
+    .hero h1 em { font-style: normal; color: var(--orquidea); }
+    .hero p { max-width: 32rem; font-size: 1.1rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+    .hero-visual { position: relative; }
+    .orchid { position: relative; aspect-ratio: 3 / 4; border-radius: 999px 999px var(--radius) var(--radius); overflow: hidden; max-height: 78vh; margin-left: auto; box-shadow: 0 50px 80px -50px rgba(61, 18, 48, .6); }
+    .orchid img { width: 100%; height: 115%; object-fit: cover; }
+    .ring { position: absolute; width: 150px; height: 150px; left: -14%; bottom: 10%; border-radius: 50%; background: var(--lila); display: grid; place-items: center; text-align: center; font-size: .8rem; font-weight: 500; color: var(--vino); }
+    .ring strong { display: block; font-family: var(--display); font-size: 2.4rem; line-height: 1; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; z-index: -1; }
+    .b1 { width: 420px; height: 420px; background: var(--lila); right: -120px; top: 60px; }
+    .b2 { width: 300px; height: 300px; background: #f3d9e8; left: -100px; bottom: -40px; }
+    .marquee { border-block: 1px solid var(--line); overflow: hidden; white-space: nowrap; padding: 1.1rem 0; font-family: var(--display); font-size: clamp(1.4rem, 2.5vw, 2.2rem); color: var(--vino); }
+    .marquee-inner { display: inline-flex; gap: 2.5rem; }
+    .marquee-inner span::after { content: "✦"; margin-left: 2.5rem; color: var(--dorado); font-size: .7em; vertical-align: middle; }
+
+    /* ================= SERVICIOS ================= */
+    .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 2.5rem; }
+    .service { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 2rem; position: relative; overflow: hidden; transition: color .4s; }
+    .service::before { content: ""; position: absolute; inset: 0; background: var(--vino); transform: translateY(101%); transition: transform .55s var(--ease); z-index: 0; }
+    .service:hover::before { transform: none; }
+    .service:hover { color: var(--hueso); }
+    .service:hover .muted { color: var(--lila); }
+    .service > * { position: relative; z-index: 1; }
+    .service .num { font-family: var(--display); font-size: 2.6rem; color: var(--orquidea); }
+    .service h3 { font-weight: 500; font-size: 1.3rem; margin: .5rem 0; }
+
+    /* ================= PROCESO (scroll horizontal fijado) ================= */
+    .process { background: var(--vino); color: var(--hueso); overflow: hidden; }
+    .process .eyebrow { color: var(--lila); }
+    .process-wrap { display: flex; gap: 1.4rem; margin-top: 2.5rem; width: max-content; }
+    .step { width: min(440px, 80vw); flex: 0 0 auto; border: 1px solid rgba(217, 204, 240, .25); border-radius: var(--radius); padding: 2rem; background: rgba(255, 255, 255, .04); }
+    .step.has-img { padding: 0; overflow: hidden; position: relative; }
+    .step.has-img img { width: 100%; height: 100%; object-fit: cover; min-height: 320px; }
+    .step .n { font-family: var(--display); font-size: 4rem; color: var(--dorado); line-height: 1; }
+    .step h3 { font-weight: 500; font-size: 1.5rem; margin: 1rem 0 .5rem; }
+    .step p { color: var(--lila); margin: 0; }
+    .step ul { margin: 1rem 0 0; padding-left: 1.1rem; color: var(--lila); font-size: .92rem; }
+    .scroll-hint { margin-top: 1.4rem; font-size: .8rem; color: var(--lila); opacity: .8; }
+
+    /* ================= CASOS (carrusel GSAP) ================= */
+    .cases-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; }
+    .case-ctrl { display: flex; gap: .6rem; align-items: center; }
+    .round { width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--vino); background: transparent; display: grid; place-items: center; transition: .3s; }
+    .round:hover { background: var(--vino); color: var(--hueso); }
+    .round svg { width: 20px; height: 20px; }
+    .case-stage { position: relative; margin-top: 2.5rem; display: grid; }
+    .case { grid-area: 1 / 1; display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(1.5rem, 4vw, 4rem); align-items: center; visibility: hidden; }
+    .case.active { visibility: visible; }
+    .case-img { position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 11; }
+    .case-img img { width: 100%; height: 100%; object-fit: cover; }
+    .case h3 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 3.6vw, 3.4rem); line-height: 1.05; margin: .6rem 0; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.6rem; }
+    .metrics div { border-top: 1px solid var(--line); padding-top: .8rem; }
+    .metrics strong { display: block; font-family: var(--display); font-size: 2.2rem; color: var(--orquidea); line-height: 1.1; }
+    .metrics span { font-size: .8rem; color: var(--ink-soft); }
+    .dots { display: flex; gap: .4rem; }
+    .dots button { width: 10px; height: 10px; border-radius: 999px; border: 0; background: var(--line); transition: width .4s var(--ease), background .3s; padding: 0; }
+    .dots button[aria-current="true"] { width: 30px; background: var(--orquidea); }
+
+    /* ================= ANTES / DESPUÉS ================= */
+    .compare-sec { background: var(--lila-2); }
+    .compare { position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16 / 9; margin-top: 2.5rem; background: #fff; user-select: none; touch-action: pan-y; box-shadow: 0 40px 70px -50px rgba(61, 18, 48, .55); }
+    .ui { position: absolute; inset: 0; padding: 4%; display: grid; grid-template-rows: auto 1fr; gap: 4%; }
+    .ui.before { background: #e9e9e9; font-family: "Times New Roman", serif; }
+    .ui.after { background: var(--hueso); clip-path: inset(0 0 0 var(--pos, 50%)); }
+    .ui .bar { display: flex; justify-content: space-between; align-items: center; }
+    .before .bar { background: #3355aa; color: #ff0; padding: 1.5% 2%; font-size: clamp(.55rem, 1.3vw, 1rem); }
+    .before .body { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2%; }
+    .before .box { background: #fff; border: 2px dashed #aa3355; font-size: clamp(.45rem, 1vw, .8rem); padding: 4%; color: #333; overflow: hidden; }
+    .before .box b { color: red; display: block; }
+    .after .bar { font-size: clamp(.6rem, 1.4vw, 1.1rem); }
+    .after .bar .lg { font-family: var(--display); font-size: 1.6em; color: var(--vino); }
+    .after .bar .pill { background: var(--vino); color: #fff; border-radius: 999px; padding: .4em 1em; font-size: .85em; }
+    .after .body { display: grid; grid-template-columns: 1.3fr 1fr; gap: 4%; align-items: center; }
+    .after .big { font-family: var(--display); font-size: clamp(1.2rem, 4vw, 3.4rem); line-height: 1; color: var(--ink); }
+    .after .cards { display: grid; gap: 6%; }
+    .after .card-ui { background: #fff; border-radius: 14px; padding: 6%; font-size: clamp(.5rem, 1.1vw, .9rem); box-shadow: 0 10px 30px -18px rgba(61, 18, 48, .4); border-left: 4px solid var(--orquidea); }
+    .handle { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 2px; background: var(--vino); transform: translateX(-1px); pointer-events: none; }
+    .handle::after { content: "⇆"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; border-radius: 50%; background: var(--vino); color: #fff; display: grid; place-items: center; font-size: 1.2rem; }
+    .compare input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+    .tag-ui { position: absolute; top: 1rem; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; background: rgba(38, 18, 31, .7); color: #fff; padding: .25rem .7rem; border-radius: 999px; z-index: 2; }
+
+    /* ================= AUDITORÍA UX ================= */
+    .audit { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; margin-top: 2.5rem; }
+    .checks { display: grid; gap: .7rem; }
+    .check { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 1.2rem; background: var(--white); border: 1px solid var(--line); border-radius: 18px; cursor: pointer; transition: border-color .3s, background .3s; }
+    .check:hover { border-color: var(--orquidea); }
+    .check input { appearance: none; width: 24px; height: 24px; border: 1.5px solid var(--orquidea); border-radius: 7px; flex: 0 0 auto; display: grid; place-items: center; margin-top: 2px; transition: background .3s; }
+    .check input:checked { background: var(--orquidea); }
+    .check input:checked::after { content: "✓"; color: #fff; font-size: .85rem; }
+    .check strong { display: block; font-weight: 500; }
+    .check small { color: var(--ink-soft); }
+    .score-card { position: sticky; top: 100px; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 2rem; text-align: center; }
+    .gauge { width: 200px; height: 200px; margin: 0 auto 1rem; position: relative; }
+    .gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .gauge .val { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-size: 3.4rem; color: var(--vino); }
+    .gauge .val small { font-size: .3em; display: block; font-family: var(--body); color: var(--ink-soft); }
+    .verdict { font-weight: 500; margin-bottom: 1.2rem; }
+
+    /* ================= EQUIPO + CONTACTO ================= */
+    .contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+    .team-img { position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 4 / 3; }
+    .team-img img { width: 100%; height: 100%; object-fit: cover; }
+    form { display: grid; gap: 1rem; margin-top: 1.5rem; }
+    .f { display: grid; gap: .35rem; }
+    .f label { font-size: .85rem; font-weight: 500; }
+    .f input, .f textarea, .f select { padding: .9rem 1.1rem; border: 1px solid var(--line); border-radius: 16px; background: var(--white); transition: border-color .3s, box-shadow .3s; }
+    .f input:focus, .f textarea:focus, .f select:focus { outline: none; border-color: var(--orquidea); box-shadow: 0 0 0 4px rgba(164, 90, 160, .15); }
+    .f [aria-invalid="true"] { border-color: #c0395d; }
+    .f [aria-invalid="false"] { border-color: #6aa384; }
+    .f small { min-height: 1.1em; font-size: .78rem; color: #c0395d; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .budget { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .budget label { padding: .55rem 1rem; border: 1px solid var(--line); border-radius: 999px; font-size: .85rem; cursor: pointer; background: var(--white); }
+    .budget input { position: absolute; opacity: 0; }
+    .budget input:checked + span { color: var(--orquidea); font-weight: 600; }
+    .budget label:has(input:checked) { border-color: var(--orquidea); background: var(--lila-2); }
+
+    /* ================= FOOTER / TOAST ================= */
+    footer { background: var(--vino); color: var(--lila); padding: 4rem 0 2.5rem; }
+    .foot-big { font-family: var(--display); font-size: clamp(3rem, 11vw, 10rem); line-height: .9; color: var(--hueso); margin: 0 0 2rem; }
+    .foot-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: .85rem; border-top: 1px solid rgba(217, 204, 240, .25); padding-top: 1.4rem; }
+    .credits { margin-top: 1.4rem; font-size: .74rem; opacity: .8; text-align: center; }
+    .footer-note { margin: 1rem 0 0; text-align: center; font-family: var(--display); font-size: 1.15rem; color: var(--hueso); }
+    .toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 160%); background: var(--ink); color: var(--hueso); padding: .85rem 1.4rem; border-radius: 999px; z-index: 90; font-size: .9rem; transition: transform .45s var(--ease), visibility .45s; }
+    .toast { visibility: hidden; } .toast.show { transform: translate(-50%, 0); visibility: visible; }
+    .progress-bar { position: fixed; top: 0; left: 0; height: 3px; width: 100%; background: var(--orquidea); transform-origin: 0 50%; transform: scaleX(0); z-index: 70; }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 1000px) {
+      .links, .nav .btn { display: none; }
+      .burger { display: block; z-index: 61; }
+      header.menu-open .logo { color: var(--hueso); position: relative; z-index: 61; }
+      .hero-grid, .case, .audit, .contact { grid-template-columns: 1fr; }
+      .hero-visual { max-width: 460px; margin-inline: auto; width: 100%; }
+      .ring { left: -2%; }
+      .services { grid-template-columns: 1fr 1fr; }
+      .score-card { position: static; }
+      /* En pantallas pequeñas el proceso es una lista vertical */
+      .process-wrap { flex-direction: column; width: auto; }
+      .step { width: 100%; }
+      .scroll-hint { display: none; }
+    }
+    @media (max-width: 600px) {
+      .nav { height: 66px; }
+      .services, .row2, .metrics { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(3, 1fr); }
+      .metrics strong { font-size: 1.6rem; }
+      .ring { width: 110px; height: 110px; font-size: .7rem; }
+      .ring strong { font-size: 1.8rem; }
+      .compare { aspect-ratio: 4 / 5; }
+      .before .body { grid-template-columns: 1fr 1fr; }
+      .after .body { grid-template-columns: 1fr; }
+      .gauge { width: 170px; height: 170px; }
+    }
+    @media (min-width: 1800px) { .orchid { max-height: 880px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" aria-hidden="true"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header id="header">
+    <div class="container nav">
+      <a class="logo" href="#top" aria-label="Orquídea UX Lab, inicio">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#D9CCF0"/><path d="M16 6c3 3 3 8 0 10-3-2-3-7 0-10zM6 15c4-1 8 1 10 3-3 2-8 2-10-3zM26 15c-4-1-8 1-10 3 3 2 8 2 10-3zM16 18c2 2 2 6 0 8-2-2-2-6 0-8z" fill="#A45AA0"/></svg>
+        Orquídea
+      </a>
+      <nav aria-label="Principal"><ul class="links">
+        <li><a href="#servicios">Servicios</a></li><li><a href="#proceso">Proceso</a></li><li><a href="#casos">Casos</a></li><li><a href="#auditoria">Auditoría</a></li><li><a href="#contacto">Contacto</a></li>
+      </ul></nav>
+      <a class="btn" href="#contacto">Hablemos</a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <nav class="drawer" id="drawer" aria-label="Menú móvil" aria-hidden="true">
+    <a href="#servicios">Servicios</a><a href="#proceso">Proceso</a><a href="#casos">Casos</a><a href="#auditoria">Auditoría</a><a href="#contacto">Contacto</a>
+  </nav>
+
+  <main id="top">
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="blob b1"></div><div class="blob b2"></div>
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow hero-fade">Laboratorio de experiencia de usuario</span>
+          <h1><span class="line"><span>Diseñamos</span></span><span class="line"><span>experiencias que</span></span><span class="line"><span><em>florecen</em></span></span></h1>
+          <p class="muted hero-fade">Investigación con personas reales, arquitectura de información y prototipos que convierten. Hacemos que tus productos digitales se sientan fáciles, humanos y bonitos.</p>
+          <div class="hero-actions hero-fade">
+            <a class="btn" href="#auditoria">Haz tu mini auditoría</a>
+            <a class="btn ghost" href="#casos">Ver casos</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="orchid"><img src="https://images.unsplash.com/photo-1605996370592-b6f7a81e382e?auto=format&fit=crop&w=1000&q=80" alt="Orquídeas moradas en primer plano" fetchpriority="high"><span class="credit">Foto: Alfonso A. Ramírez / Unsplash</span></div>
+          <div class="ring"><div><strong data-count="98">0</strong>% clientas<br>satisfechas</div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee" aria-hidden="true"><div class="marquee-inner">
+      <span>Research</span><span>Wireframes</span><span>Prototipos</span><span>Pruebas de usabilidad</span><span>Design systems</span><span>Accesibilidad</span>
+      <span>Research</span><span>Wireframes</span><span>Prototipos</span><span>Pruebas de usabilidad</span><span>Design systems</span><span>Accesibilidad</span>
+    </div></div>
+
+    <!-- ===== SERVICIOS ===== -->
+    <section id="servicios">
+      <div class="container">
+        <span class="eyebrow">Servicios</span>
+        <h2 class="h2 reveal">Del problema a la solución</h2>
+        <div class="services">
+          <article class="service reveal"><span class="num">01</span><h3>Investigación UX</h3><p class="muted">Entrevistas, encuestas y mapas de empatía para entender qué necesitan tus usuarias de verdad.</p></article>
+          <article class="service reveal"><span class="num">02</span><h3>Diseño UI</h3><p class="muted">Interfaces claras, accesibles y coherentes con tu marca, listas para desarrollo.</p></article>
+          <article class="service reveal"><span class="num">03</span><h3>Prototipos y pruebas</h3><p class="muted">Prototipos navegables que validamos con personas antes de escribir una línea de código.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROCESO ===== -->
+    <section id="proceso" class="process">
+      <div class="container">
+        <span class="eyebrow">Nuestro proceso</span>
+        <h2 class="h2">Cuatro fases, cero suposiciones</h2>
+        <div class="process-wrap">
+          <article class="step"><span class="n">01</span><h3>Descubrir</h3><p>Escuchamos a tu equipo y a tus usuarias para encontrar el problema real.</p><ul><li>Entrevistas</li><li>Análisis de métricas</li><li>Benchmark</li></ul></article>
+          <article class="step has-img"><img src="https://images.unsplash.com/photo-1623652554515-91c833e3080e?auto=format&fit=crop&w=900&q=80" alt="Persona organizando notas adhesivas en un taller de ideas" loading="lazy"><span class="credit">Foto: FORTYTWO / Unsplash</span></article>
+          <article class="step"><span class="n">02</span><h3>Definir</h3><p>Ordenamos hallazgos en mapas de recorrido, personas y prioridades.</p><ul><li>Journey maps</li><li>Arquitectura de información</li><li>Criterios de éxito</li></ul></article>
+          <article class="step"><span class="n">03</span><h3>Diseñar</h3><p>Bocetos, wireframes y prototipos de alta fidelidad con tu identidad visual.</p><ul><li>Wireframes</li><li>Design system</li><li>Prototipo navegable</li></ul></article>
+          <article class="step has-img"><img src="https://images.unsplash.com/photo-1576153192396-180ecef2a715?auto=format&fit=crop&w=900&q=80" alt="Bocetos de pantallas de una aplicación móvil en papel" loading="lazy"><span class="credit">Foto: Amélie Mourichon / Unsplash</span></article>
+          <article class="step"><span class="n">04</span><h3>Validar</h3><p>Pruebas con usuarias, iteraciones y entrega documentada para desarrollo.</p><ul><li>Pruebas de usabilidad</li><li>Informe de hallazgos</li><li>Handoff</li></ul></article>
+        </div>
+        <p class="scroll-hint">Sigue bajando para recorrer el proceso →</p>
+      </div>
+    </section>
+
+    <!-- ===== CASOS (carrusel) ===== -->
+    <section id="casos">
+      <div class="container">
+        <div class="cases-head">
+          <div><span class="eyebrow">Casos ficticios</span><h2 class="h2">Resultados que se miden</h2></div>
+          <div class="case-ctrl">
+            <div class="dots" role="tablist" aria-label="Elegir caso"></div>
+            <button class="round" type="button" data-dir="-1" aria-label="Caso anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <button class="round" type="button" data-dir="1" aria-label="Caso siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+        <div class="case-stage" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ===== ANTES / DESPUÉS ===== -->
+    <section class="compare-sec">
+      <div class="container">
+        <span class="eyebrow">Antes y después</span>
+        <h2 class="h2 reveal">Desliza y mira la diferencia</h2>
+        <p class="muted" style="max-width:36rem">Una interfaz saturada frente a la versión rediseñada con jerarquía clara, contraste accesible y una sola acción principal.</p>
+        <div class="compare" id="compare">
+          <span class="tag-ui" style="left:1rem">Antes</span><span class="tag-ui" style="right:1rem">Después</span>
+          <div class="ui before" aria-hidden="true">
+            <div class="bar"><span>MI TIENDA ONLINE!!!</span><span>Inicio | Productos | Ofertas | Blog | Contacto | Ayuda | Login</span></div>
+            <div class="body">
+              <div class="box"><b>¡¡OFERTA!!</b>Compra ya, tiempo limitado, haz clic aquí ahora mismo</div>
+              <div class="box"><b>NUEVO</b>Lorem productos varios con muchos textos pequeños difíciles de leer</div>
+              <div class="box"><b>REGÍSTRATE</b>Formulario con 14 campos obligatorios</div>
+              <div class="box"><b>POPUP</b>Suscríbete · Acepta cookies · Descarga la app</div>
+              <div class="box">Botón 1 · Botón 2 · Botón 3 · Botón 4</div>
+              <div class="box"><b>¡ATENCIÓN!</b>Envíos (consultar condiciones)</div>
+              <div class="box">Banner animado parpadeante</div>
+              <div class="box">Más enlaces · Más enlaces · Más enlaces</div>
+            </div>
+          </div>
+          <div class="ui after" aria-hidden="true">
+            <div class="bar"><span class="lg">Bloom</span><span class="pill">Comprar</span></div>
+            <div class="body">
+              <div class="big">Flores frescas a tu puerta en 24 h</div>
+              <div class="cards"><div class="card-ui"><strong>Envío gratis</strong><br>Desde $40</div><div class="card-ui"><strong>Registro en 1 paso</strong><br>Solo tu correo</div></div>
+            </div>
+          </div>
+          <div class="handle" aria-hidden="true"></div>
+          <label class="sr-only" for="cmp" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Comparar antes y después</label>
+          <input id="cmp" type="range" min="0" max="100" value="50" aria-valuetext="50 % del diseño nuevo visible">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MINI AUDITORÍA UX ===== -->
+    <section id="auditoria">
+      <div class="container">
+        <span class="eyebrow">Herramienta</span>
+        <h2 class="h2 reveal">Mini auditoría UX de tu sitio</h2>
+        <p class="muted" style="max-width:36rem">Marca lo que tu web ya cumple. Calculamos una puntuación orientativa y puedes descargar el informe en PDF con recomendaciones.</p>
+        <div class="audit">
+          <div class="checks" id="checks"></div>
+          <aside class="score-card" aria-live="polite">
+            <div class="gauge">
+              <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="#EEE7F8" stroke-width="10"/><circle id="arc" cx="60" cy="60" r="52" fill="none" stroke="#A45AA0" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+              <div class="val"><div><span id="score">0</span><small>de 100</small></div></div>
+            </div>
+            <p class="verdict" id="verdict">Empieza a marcar los puntos</p>
+            <button class="btn" type="button" id="pdf-audit">Descargar informe PDF</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACTO ===== -->
+    <section id="contacto" style="background:var(--lila-2)">
+      <div class="container contact">
+        <div>
+          <div class="team-img reveal"><img src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?auto=format&fit=crop&w=1100&q=80" alt="Equipo de mujeres trabajando alrededor de una mesa" loading="lazy"><span class="credit">Foto: CoWomen / Unsplash</span></div>
+        </div>
+        <div>
+          <span class="eyebrow">Contacto</span>
+          <h2 class="h2">Cuéntanos tu proyecto</h2>
+          <form id="form" novalidate>
+            <div class="row2">
+              <div class="f"><label for="n">Nombre</label><input id="n" name="n" autocomplete="name" aria-describedby="n-e"><small id="n-e"></small></div>
+              <div class="f"><label for="e">Correo</label><input id="e" name="e" type="email" autocomplete="email" aria-describedby="e-e"><small id="e-e"></small></div>
+            </div>
+            <div class="f"><label for="u">Sitio web (opcional)</label><input id="u" name="u" type="url" placeholder="https://" aria-describedby="u-e"><small id="u-e"></small></div>
+            <fieldset class="f" style="border:0;padding:0;margin:0"><legend style="font-size:.85rem;font-weight:500;margin-bottom:.4rem">Presupuesto estimado</legend>
+              <div class="budget"><label><input type="radio" name="b" value="< $1k" checked><span>&lt; $1k</span></label><label><input type="radio" name="b" value="$1k – $5k"><span>$1k – $5k</span></label><label><input type="radio" name="b" value="> $5k"><span>&gt; $5k</span></label></div>
+            </fieldset>
+            <div class="f"><label for="m">Mensaje</label><textarea id="m" name="m" rows="4" aria-describedby="m-e"></textarea><small id="m-e"></small></div>
+            <button class="btn" type="submit" style="justify-content:center">Enviar mensaje</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p class="foot-big">Hagamos algo bonito.</p>
+      <div class="foot-row"><span>Orquídea UX Lab · Agencia ficticia</span><span>hola@orquidea-ux.example</span><span>© 2026 · Plantilla MIT</span></div>
+      <p class="credits">Fotografías de <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>: Alfonso Alberto Ramírez Álvarez, FORTYTWO, Amélie Mourichon, CoWomen, Arnold Francisca y Brooke Cagle.</p>
+      <p class="footer-note">Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire</p>
+    </div>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (s, c = document) => c.querySelector(s), $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasGsap = !!window.gsap && !!window.ScrollTrigger;
+  const IMG = (id, w = 1200) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
+  const toast = (m) => { const t = $(".toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2800); };
+
+  /* ---------- Header y menú móvil ---------- */
+  const header = $("#header"), burger = $(".burger"), drawer = $("#drawer");
+  const setMenu = (open) => {
+    burger.setAttribute("aria-expanded", open); drawer.classList.toggle("open", open); drawer.setAttribute("aria-hidden", !open);
+    header.classList.toggle("menu-open", open); document.body.style.overflow = open ? "hidden" : "";
+  };
+  burger.addEventListener("click", () => setMenu(burger.getAttribute("aria-expanded") !== "true"));
+  $$("a", drawer).forEach(a => a.addEventListener("click", () => setMenu(false)));
+  addEventListener("keydown", e => e.key === "Escape" && setMenu(false));
+  addEventListener("scroll", () => header.classList.toggle("scrolled", scrollY > 30), { passive: true });
+
+  /* ---------- Casos (carrusel) ---------- */
+  const CASES = [
+    { title: "App de citas médicas Lúa", tag: "Salud · App móvil", img: IMG("1576153192396-180ecef2a715"), credit: "Amélie Mourichon", text: "Rediseñamos el flujo de reserva: de 9 pantallas a 4, con recordatorios y accesibilidad AA.", m: [["+46%", "citas completadas"], ["-58%", "abandono"], ["4.8", "en tiendas"]] },
+    { title: "Plataforma educativa Aula Viva", tag: "Edtech · Web", img: IMG("1543269865-cbf427effbad"), credit: "Brooke Cagle", text: "Investigación con 32 estudiantes para crear un panel que muestra el progreso de forma clara y motivadora.", m: [["+31%", "retención"], ["x2", "tiempo de estudio"], ["92%", "satisfacción"]] },
+    { title: "Fintech Semilla", tag: "Finanzas · Web + App", img: IMG("1555066931-4365d14bab8c"), credit: "Arnold Francisca", text: "Design system de 120 componentes y onboarding simplificado para nuevas ahorristas.", m: [["-40%", "tiempo de registro"], ["+22%", "conversión"], ["120", "componentes"]] },
+    { title: "Marketplace Hecho a Mano", tag: "E-commerce", img: IMG("1623652554515-91c833e3080e"), credit: "FORTYTWO", text: "Talleres de co-creación con artesanas para un catálogo más fácil de publicar y de comprar.", m: [["+64%", "ventas"], ["3 min", "publicar producto"], ["-35%", "devoluciones"]] }
+  ];
+  const stage = $(".case-stage"), dotsBox = $(".dots");
+  stage.innerHTML = CASES.map((c, i) => `
+    <article class="case${i === 0 ? " active" : ""}" role="group" aria-roledescription="diapositiva" aria-label="${i + 1} de ${CASES.length}">
+      <div class="case-img"><img src="${c.img}" alt="${c.title}" loading="lazy"><span class="credit">Foto: ${c.credit} / Unsplash</span></div>
+      <div class="case-txt"><span class="eyebrow">${c.tag}</span><h3>${c.title}</h3><p class="muted">${c.text}</p>
+        <div class="metrics">${c.m.map(([a, b]) => `<div><strong>${a}</strong><span>${b}</span></div>`).join("")}</div></div>
+    </article>`).join("");
+  dotsBox.innerHTML = CASES.map((c, i) => `<button type="button" role="tab" aria-label="Caso ${i + 1}" aria-current="${i === 0}"></button>`).join("");
+  const slides = $$(".case", stage), dots = $$("button", dotsBox);
+  let current = 0, busy = false, auto;
+  const show = (next, dir = 1) => {
+    if (busy || next === current) return;
+    const from = slides[current], to = slides[next];
+    dots.forEach((d, i) => d.setAttribute("aria-current", i === next));
+    if (!hasGsap || reduce) { from.classList.remove("active"); to.classList.add("active"); current = next; return; }
+    busy = true; to.classList.add("active");
+    gsap.timeline({ onComplete: () => { from.classList.remove("active"); busy = false; } })
+      .to(from, { autoAlpha: 0, x: -60 * dir, duration: .5, ease: "power2.in" })
+      .fromTo($(".case-img", to), { clipPath: dir > 0 ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0%)", duration: .9, ease: "expo.out" }, "-=.1")
+      .fromTo($(".case-txt", to).children, { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: .08, duration: .6, ease: "power3.out" }, "<.15")
+      .set(to, { autoAlpha: 1, x: 0 }, 0);
+    current = next;
+  };
+  const step = (d) => show((current + d + CASES.length) % CASES.length, d);
+  $$(".round").forEach(b => b.addEventListener("click", () => { step(+b.dataset.dir); restart(); }));
+  dots.forEach((d, i) => d.addEventListener("click", () => { show(i, i > current ? 1 : -1); restart(); }));
+  let sx = 0; stage.addEventListener("touchstart", e => sx = e.touches[0].clientX, { passive: true });
+  stage.addEventListener("touchend", e => { const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 45) { step(dx < 0 ? 1 : -1); restart(); } });
+  const restart = () => { clearInterval(auto); if (!reduce) auto = setInterval(() => !document.hidden && step(1), 6500); };
+  stage.addEventListener("mouseenter", () => clearInterval(auto)); stage.addEventListener("mouseleave", restart);
+  restart();
+
+  /* ---------- Antes / después ---------- */
+  const cmp = $("#compare"), range = $("#cmp");
+  const setPos = v => { cmp.style.setProperty("--pos", v + "%"); range.setAttribute("aria-valuetext", `${v} % del diseño nuevo visible`); };
+  range.addEventListener("input", () => setPos(100 - range.value));
+  setPos(50);
+
+  /* ---------- Mini auditoría ---------- */
+  const CHECKS = [
+    ["Carga en menos de 3 segundos", "La velocidad influye en el abandono y en el SEO.", "Optimiza imágenes (WebP/AVIF), usa carga diferida y reduce scripts de terceros."],
+    ["Se ve bien en el móvil", "Más del 60 % del tráfico llega desde teléfonos.", "Diseña primero para móvil y revisa botones de al menos 44 px."],
+    ["Una acción principal clara por pantalla", "Evita que la usuaria dude qué hacer.", "Define un botón primario y baja el peso visual del resto."],
+    ["Textos con buen contraste", "Mínimo 4.5:1 según WCAG AA.", "Revisa colores con un verificador de contraste y ajusta tu paleta."],
+    ["Formularios cortos y con validación", "Cada campo extra reduce conversiones.", "Pide solo lo necesario y muestra errores en tiempo real."],
+    ["Navegación con 7 opciones o menos", "Menos opciones, decisiones más rápidas.", "Agrupa secciones y usa un menú secundario en el pie."],
+    ["Se puede usar con teclado", "Accesibilidad para todas las personas.", "Asegura foco visible y un orden lógico de tabulación."],
+    ["Has hecho pruebas con usuarias reales", "5 pruebas detectan ~85 % de los problemas.", "Haz pruebas de 20 minutos con 5 personas de tu público."]
+  ];
+  $("#checks").innerHTML = CHECKS.map(([t, d], i) => `<label class="check reveal"><input type="checkbox" value="${i}"><span><strong>${t}</strong><small>${d}</small></span></label>`).join("");
+  const arc = $("#arc"), scoreEl = $("#score"), verdict = $("#verdict"), C = 326.7, gaugeState = { v: 0 };
+  const getScore = () => Math.round($$("#checks input:checked").length / CHECKS.length * 100);
+  const verdictFor = s => s === 100 ? "¡Excelente! Tu sitio está muy bien cuidado." : s >= 70 ? "Muy bien: unos ajustes y quedará redondo." : s >= 40 ? "Vas por buen camino, hay mejoras claras." : s > 0 ? "Hay oportunidades importantes de mejora." : "Empieza a marcar los puntos";
+  const renderGauge = v => { arc.style.strokeDashoffset = C - C * v / 100; scoreEl.textContent = Math.round(v); };
+  $("#checks").addEventListener("change", () => {
+    const s = getScore(); verdict.textContent = verdictFor(s);
+    if (hasGsap && !reduce) gsap.to(gaugeState, { v: s, duration: .8, ease: "power3.out", onUpdate: () => renderGauge(gaugeState.v) });
+    else renderGauge(s);
+  });
+
+  /* ---------- PDF de auditoría ---------- */
+  $("#pdf-audit").addEventListener("click", () => {
+    if (!window.jspdf) return toast("Cargando generador de PDF…");
+    const { jsPDF } = window.jspdf, doc = new jsPDF({ unit: "mm", format: "a4" }), s = getScore();
+    const done = $$("#checks input").map(i => i.checked);
+    doc.setFillColor(61, 18, 48); doc.rect(0, 0, 210, 46, "F");
+    doc.setTextColor(250, 247, 245); doc.setFont("times", "normal"); doc.setFontSize(26); doc.text("Orquídea UX Lab", 18, 22);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(11); doc.text("Informe de mini auditoría UX · " + new Date().toLocaleDateString("es"), 18, 33);
+    doc.setFillColor(217, 204, 240); doc.circle(176, 23, 15, "F"); doc.setTextColor(61, 18, 48); doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text(String(s), 176, 26, { align: "center" });
+    let y = 62; doc.setFontSize(12); doc.text("Diagnóstico: " + verdictFor(s), 18, y); y += 12;
+    CHECKS.forEach(([t, , rec], i) => {
+      doc.setFont("helvetica", "bold"); doc.setFontSize(10.5);
+      doc.setTextColor(done[i] ? 60 : 164, done[i] ? 130 : 90, done[i] ? 90 : 160);
+      doc.text((done[i] ? "[OK] " : "[Mejorar] ") + t, 18, y); y += 5.5;
+      if (!done[i]) { doc.setFont("helvetica", "normal"); doc.setTextColor(38, 18, 31); const l = doc.splitTextToSize("Recomendación: " + rec, 170); doc.text(l, 22, y); y += l.length * 5; }
+      y += 3.5;
+    });
+    doc.setDrawColor(201, 168, 106); doc.line(18, 280, 192, 280); doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(106, 86, 100);
+    doc.text("Diseño y desarrollo conceptual creado exclusivamente como muestra de portafolio por Valentina Dessire", 105, 286, { align: "center" });
+    doc.save("orquidea-auditoria-ux.pdf"); toast("Informe PDF descargado");
+  });
+
+  /* ---------- Formulario con validación en tiempo real ---------- */
+  const form = $("#form");
+  const rules = {
+    n: v => v.trim().length < 2 ? "Escribe tu nombre." : "",
+    e: v => !v.trim() ? "Escribe tu correo." : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "Formato no válido (nombre@correo.com)." : "",
+    u: v => v && !/^https?:\/\/[^\s.]+\.[^\s]{2,}/.test(v) ? "Debe empezar por https:// y tener un dominio." : "",
+    m: v => v.trim().length < 15 ? "Cuéntanos un poco más (mínimo 15 caracteres)." : ""
+  };
+  const validate = (el, force) => {
+    if (!force && !el.dataset.touched) return true;
+    const msg = rules[el.name](el.value); $("#" + el.name + "-e").textContent = msg;
+    el.setAttribute("aria-invalid", !!msg); return !msg;
+  };
+  Object.keys(rules).forEach(k => { const el = form.elements[k];
+    el.addEventListener("blur", () => { el.dataset.touched = 1; validate(el); });
+    el.addEventListener("input", () => validate(el)); });
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const ok = Object.keys(rules).map(k => { form.elements[k].dataset.touched = 1; return validate(form.elements[k], true); }).every(Boolean);
+    if (!ok) return toast("Revisa los campos marcados");
+    toast(`¡Gracias, ${form.elements.n.value.trim().split(" ")[0]}! Te responderemos en 24 h.`);
+    form.reset(); Object.keys(rules).forEach(k => { const el = form.elements[k]; delete el.dataset.touched; el.removeAttribute("aria-invalid"); });
+  });
+
+  /* ---------- Contador del anillo ---------- */
+  const countEl = $("[data-count]"), target = +countEl.dataset.count;
+
+  /* ============================================================
+     ANIMACIONES GSAP + SCROLLTRIGGER
+     Si GSAP no carga o la persona prefiere menos movimiento,
+     el contenido queda visible y estático.
+     ============================================================ */
+  if (!hasGsap || reduce) { countEl.textContent = target; $(".progress-bar").style.display = "none"; return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Barra de progreso de lectura
+  gsap.to(".progress-bar", { scaleX: 1, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: .3 } });
+
+  // Intro del hero: líneas del título suben, resto aparece
+  gsap.timeline({ defaults: { ease: "expo.out" } })
+    .from(".hero h1 .line > span", { yPercent: 110, duration: 1.2, stagger: .12 })
+    .from(".hero-fade", { y: 24, autoAlpha: 0, duration: .9, stagger: .1 }, "-=.8")
+    .from(".orchid", { clipPath: "inset(100% 0 0 0)", duration: 1.4 }, 0.1)
+    .from(".ring", { scale: 0, rotate: -90, duration: 1, ease: "back.out(1.7)" }, "-=.7")
+    .to({ v: 0 }, { v: target, duration: 1.4, ease: "power2.out", onUpdate() { countEl.textContent = Math.round(this.targets()[0].v); } }, "<");
+
+  // Parallax de la orquídea y de los blobs
+  gsap.to(".orchid img", { yPercent: -12, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+  gsap.to(".b1", { y: 120, x: -60, ease: "none", scrollTrigger: { trigger: ".hero", scrub: true } });
+
+  // Marquesina infinita que acelera con el scroll
+  const mq = gsap.to(".marquee-inner", { xPercent: -50, duration: 22, ease: "none", repeat: -1 });
+  ScrollTrigger.create({ onUpdate: self => gsap.to(mq, { timeScale: 1 + Math.min(Math.abs(self.getVelocity()) / 400, 4), duration: .2, overwrite: true, onComplete: () => gsap.to(mq, { timeScale: 1, duration: 1 }) }) });
+
+  // Aparición de bloques al entrar en pantalla
+  ScrollTrigger.batch(".reveal", { start: "top 88%", once: true, onEnter: els => gsap.fromTo(els, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: .08, duration: .9, ease: "power3.out", overwrite: true }) });
+
+  // Proceso: scroll horizontal fijado solo en pantallas anchas
+  const mm = gsap.matchMedia();
+  mm.add("(min-width: 1001px)", () => {
+    const wrap = $(".process-wrap");
+    const dist = () => wrap.scrollWidth - document.querySelector("#proceso .container").clientWidth + parseFloat(getComputedStyle(document.querySelector("#proceso .container")).paddingRight) * 2;
+    gsap.to(wrap, { x: () => -dist(), ease: "none", scrollTrigger: { trigger: "#proceso", start: "top top", end: () => "+=" + dist(), pin: true, scrub: 1, invalidateOnRefresh: true } });
+  });
+  mm.add("(max-width: 1000px)", () => {
+    gsap.utils.toArray(".step").forEach(s => gsap.from(s, { y: 50, autoAlpha: 0, duration: .8, ease: "power3.out", scrollTrigger: { trigger: s, start: "top 90%", once: true } }));
+  });
+
+  // Título del footer con efecto de escala
+  gsap.from(".foot-big", { yPercent: 30, autoAlpha: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: "footer", start: "top 85%" } });
+
+  // Recalcula cuando cargan las imágenes (cambian alturas)
+  addEventListener("load", () => ScrollTrigger.refresh());
+});
+</script>
+</body>
+</html>
