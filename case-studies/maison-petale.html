@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maison Pétale · Caso de estudio de diseño · Valentina Quintero</title>
+  <meta name="description" content="Caso de estudio de diseño de Maison Pétale: proceso, paleta, tipografía, decisiones de UX y versión móvil de una boutique de moda hecha con Vue 3.">
+  <meta name="theme-color" content="#0c0d10">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230c0d10'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Georgia' font-size='34' fill='%23ff5a3c'%3EV%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <style>
+    .cover { position: relative; border-radius: 22px; overflow: hidden; aspect-ratio: 16 / 7; margin: 0 0 3rem; }
+    .cover img { width: 100%; height: 100%; object-fit: cover; }
+    .cover small { position: absolute; right: .8rem; bottom: .7rem; font-size: .7rem; color: #fff; background: rgba(0,0,0,.45); padding: .15rem .55rem; border-radius: 999px; }
+    .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: .7rem; margin: 1.2rem 0 2rem; }
+    .swatch { border-radius: 14px; overflow: hidden; border: 1px solid var(--line, rgba(127,127,127,.25)); }
+    .swatch i { display: block; height: 84px; }
+    .swatch span { display: block; padding: .55rem .7rem; font: 500 .78rem/1.35 "JetBrains Mono", monospace; }
+    .swatch span b { display: block; font: 600 .82rem/1.3 Inter, sans-serif; }
+    .type-sample { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.2rem 0 2rem; }
+    .type-sample .card { padding: 1.4rem; }
+    .type-sample .big { font: 400 2.6rem/1 "Bodoni Moda", serif; margin: .4rem 0; }
+    .type-sample .big em { color: #C98A8B; }
+    .type-sample .body { font: 400 1rem/1.6 Manrope, sans-serif; margin: .4rem 0 0; }
+    .decisions { display: grid; gap: .8rem; margin: 1.2rem 0 2rem; }
+    .decisions .card { padding: 1.2rem 1.4rem; }
+    .decisions b { display: block; margin-bottom: .25rem; }
+    .bp { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin: 1.2rem 0 2rem; }
+    .bp .card { padding: 1.1rem; text-align: center; }
+    .bp strong { display: block; font: 600 1.4rem/1.2 Fraunces, serif; }
+    @media (max-width: 700px) {
+      .swatches { grid-template-columns: repeat(2, 1fr); }
+      .type-sample, .bp { grid-template-columns: 1fr; }
+      .cover { aspect-ratio: 4 / 3; }
+    }
+  </style>
+  <script>document.documentElement.classList.remove('no-js');try{var t=localStorage.getItem('vq-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+  <script type="module">
+    import { initTheme } from "../assets/js/modules/theme.js";
+    import { initNav } from "../assets/js/modules/nav.js";
+    import { initReveal } from "../assets/js/modules/reveal.js";
+    import { initPointerEffects } from "../assets/js/modules/pointer.js";
+    initTheme(); initNav(); initReveal(); initPointerEffects();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <nav class="container nav" aria-label="Principal">
+      <a class="brand" href="../index.html">Valentina<span>.</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html#proyectos">Proyectos</a></li>
+        <li><a href="../index.html#servicios">Servicios</a></li>
+        <li><a href="../index.html#contacto">Contacto</a></li>
+      </ul>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Cambiar entre tema claro y oscuro">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="contenido" class="container">
+    <header class="case-hero">
+      <a class="eyebrow reveal" href="../index.html#proyectos">← Volver al portafolio</a>
+      <h1 class="reveal">Maison Pétale</h1>
+      <p class="reveal">Caso de estudio de diseño: cómo convertí la idea de una boutique de moda femenina en un sitio elegante, fácil de comprar desde el móvil y disponible en dos idiomas.</p>
+    </header>
+
+    <figure class="cover reveal">
+      <img src="https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?auto=format&fit=crop&w=1600&q=80" alt="Perchero con prendas en tonos neutros, imagen principal del sitio">
+      <small>Foto: Marcus Loke / Unsplash</small>
+    </figure>
+
+    <div class="case-grid">
+      <aside class="case-aside reveal">
+        <div class="card" style="padding:1.5rem">
+          <dl>
+            <div><dt>Proyecto</dt><dd>Concepto propio para portafolio (marca ficticia)</dd></div>
+            <div><dt>Mi rol</dt><dd>Diseño UI/UX, contenido y desarrollo frontend</dd></div>
+            <div><dt>Stack</dt><dd>Vue 3 · JavaScript · CSS · jsPDF</dd></div>
+            <div><dt>Entregables</dt><dd>Sitio responsive, sistema visual, versión ES/EN</dd></div>
+            <div><dt>Enlaces</dt><dd><a href="../projects/plantillas/03-boutique-moda/" style="text-decoration:underline">Ver sitio</a> · <a href="https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/03-boutique-moda" target="_blank" rel="noopener" style="text-decoration:underline">Código</a></dd></div>
+          </dl>
+        </div>
+      </aside>
+
+      <article class="case-body">
+        <h2 class="reveal">El reto</h2>
+        <p class="reveal">Una boutique pequeña necesita transmitir lujo sin parecer inalcanzable, y vender sobre todo desde el teléfono. Me propuse tres objetivos: que la marca se sintiera elegante en el primer segundo, que comprar tomara pocos toques y que la clienta resolviera sola su duda más común, «¿qué talla soy?».</p>
+
+        <h2 class="reveal">Proceso</h2>
+        <div class="flow">
+          <div class="card reveal"><b>1. Referentes</b><span>Analicé boutiques y editoriales de moda: mucho aire, tipografía con contraste y fotografía protagonista.</span></div>
+          <div class="card reveal"><b>2. Arquitectura</b><span>Ordené la página según el recorrido de compra: inspirar, explorar, decidir y volver.</span></div>
+          <div class="card reveal"><b>3. Sistema visual</b><span>Definí paleta, tipografías, espaciados y componentes reutilizables.</span></div>
+          <div class="card reveal"><b>4. Prototipo y ajuste</b><span>Construí la versión navegable y la probé en móvil, tableta y pantallas grandes.</span></div>
+        </div>
+
+        <h2 class="reveal">Paleta de color</h2>
+        <p class="reveal">Tonos nude y vino para una sensación cálida y sofisticada. El vino se usa en botones y textos clave porque tiene contraste suficiente sobre el marfil; el dorado queda solo para detalles.</p>
+        <div class="swatches reveal">
+          <div class="swatch"><i style="background:#FFFBF8"></i><span><b>Marfil</b>#FFFBF8 · fondo</span></div>
+          <div class="swatch"><i style="background:#F3DCD4"></i><span><b>Nude</b>#F3DCD4 · superficies</span></div>
+          <div class="swatch"><i style="background:#C98A8B"></i><span><b>Rosa</b>#C98A8B · acentos</span></div>
+          <div class="swatch"><i style="background:#5B1E2D"></i><span><b>Vino</b>#5B1E2D · acción</span></div>
+          <div class="swatch"><i style="background:#B8925A"></i><span><b>Dorado</b>#B8925A · detalles</span></div>
+        </div>
+
+        <h2 class="reveal">Tipografía</h2>
+        <div class="type-sample reveal">
+          <div class="card"><small>Títulos · Bodoni Moda</small><p class="big">Elegancia que <em>florece</em></p><small>Alto contraste, evoca revistas de moda.</small></div>
+          <div class="card"><small>Textos e interfaz · Manrope</small><p class="body">Sans serif geométrica, muy legible en tamaños pequeños: precios, tallas, botones y formularios.</p></div>
+        </div>
+
+        <h2 class="reveal">Decisiones de UX</h2>
+        <div class="decisions">
+          <div class="card reveal"><b>Guía de tallas interactiva</b>Tres controles deslizables (busto, cintura y cadera) recomiendan una talla al instante. Así se resuelve la duda que más frena la compra de ropa en línea.</div>
+          <div class="card reveal"><b>Carrito lateral con barra de envío gratis</b>El carrito se abre sin salir de la página, y una barra muestra cuánto falta para el envío gratis. Es un incentivo claro para sumar otra pieza.</div>
+          <div class="card reveal"><b>Talla obligatoria antes de añadir</b>Si la prenda tiene varias tallas, el sitio pide elegir una con un aviso amable, en vez de dejar un pedido incompleto.</div>
+          <div class="card reveal"><b>Español e inglés</b>Un selector ES/EN traduce toda la interfaz, incluidos precios en el formato de cada idioma, y recuerda la elección de la visitante.</div>
+          <div class="card reveal"><b>Lookbook como historia</b>Un carrusel por capítulos que se desliza con el dedo, para inspirar antes de vender.</div>
+          <div class="card reveal"><b>Resumen en PDF</b>El lookbook y el resumen del pedido se descargan en PDF para guardarlos o compartirlos.</div>
+        </div>
+
+        <h2 class="reveal">Diseño responsive</h2>
+        <p class="reveal">Diseñé primero para el teléfono y amplié hacia pantallas grandes, con tipografía y márgenes fluidos que escalan sin saltos.</p>
+        <div class="bp reveal">
+          <div class="card"><strong>360 px</strong><span>Menú desplegable, catálogo a dos columnas y botones grandes.</span></div>
+          <div class="card"><strong>768 px</strong><span>Portada en una columna y guía de tallas debajo del texto.</span></div>
+          <div class="card"><strong>1440 px +</strong><span>Portada a dos columnas, catálogo de cuatro y contenido centrado en 2K.</span></div>
+        </div>
+
+        <h2 class="reveal">Accesibilidad</h2>
+        <ul class="reveal">
+          <li>Contraste del color de acción (vino) adecuado sobre el fondo marfil.</li>
+          <li>Botones con nombres accesibles, estados <code>aria-pressed</code> y foco visible.</li>
+          <li>Carrito, menú y carrusel usables con teclado; la tecla Esc cierra los paneles.</li>
+          <li>Animaciones desactivadas si el sistema pide reducir el movimiento.</li>
+        </ul>
+
+        <h2 class="reveal">Qué haría después</h2>
+        <ul class="reveal">
+          <li>Pruebas con 5 usuarias reales para validar la guía de tallas y el carrito.</li>
+          <li>Ficha de producto con galería y reseñas.</li>
+          <li>Conexión con una pasarela de pago y un CMS para que la marca cargue productos.</li>
+        </ul>
+
+        <p class="note reveal">Maison Pétale es una marca ficticia creada para este proyecto. Las fotografías son de Unsplash.</p>
+
+        <div class="hero-actions reveal" style="margin:3rem 0 5rem">
+          <a class="btn btn-primary magnetic" href="../projects/plantillas/03-boutique-moda/">Ver el sitio</a>
+          <a class="btn btn-ghost magnetic" href="../index.html#contacto">Trabajemos juntos</a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© 2026 Valentina Quintero</span>
+      <span><a href="../index.html" style="text-decoration:underline">Volver al inicio</a></span>
+    </div>
+  </footer>
+</body>
+</html>
