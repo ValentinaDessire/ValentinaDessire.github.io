@@ -39,7 +39,8 @@
     ],
     "status": "Plantilla de portafolio",
     "demo": "projects/plantillas/03-boutique-moda/",
-    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/03-boutique-moda"
+    "repo": "https://github.com/ValentinaDessire/ValentinaDessire.github.io/tree/main/projects/plantillas/03-boutique-moda",
+    "case": "case-studies/maison-petale.html"
   },
   {
     "title": "Serena Flow · Estudio de bienestar",
@@ -84,11 +85,12 @@
   },
   {
     "title": "Inventario ICAR",
-    "summary": "Sistema web de inventario desarrollado principalmente en JavaScript, con componentes en PHP y estilos propios.",
+    "summary": "Sistema web para un concesionario: inventario de carros, clientes, vendedores, compras y ventas con CRUD completo e inicio de sesión.",
     "category": "fullstack",
     "tags": [
-      "JavaScript",
       "PHP",
+      "MySQL",
+      "JavaScript",
       "CSS"
     ],
     "status": "Proyecto académico",
