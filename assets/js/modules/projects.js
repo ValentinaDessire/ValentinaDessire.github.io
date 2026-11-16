@@ -19,6 +19,7 @@ function cardTemplate(p, i) {
   }
   const tags = (p.tags || []).map((t) => `<li class="tag">${escape(t)}</li>`).join("");
   const demo = p.demo ? `<a href="${escape(p.demo)}">Ver demo ${ARROW}</a>` : "";
+  const caso = p.case ? `<a href="${escape(p.case)}">Caso de estudio ${ARROW}</a>` : "";
   const repo = p.repo ? `<a href="${escape(p.repo)}" target="_blank" rel="noopener">Código ${ARROW}</a>` : "";
   return `
     <article class="card project reveal" data-category="${escape(p.category)}">
@@ -29,7 +30,7 @@ function cardTemplate(p, i) {
       <h3>${escape(p.title)}</h3>
       <p>${escape(p.summary)}</p>
       <ul class="tag-row" aria-label="Tecnologías">${tags}</ul>
-      <div class="links">${demo}${repo}</div>
+      <div class="links">${demo}${caso}${repo}</div>
     </article>`;
 }
 
